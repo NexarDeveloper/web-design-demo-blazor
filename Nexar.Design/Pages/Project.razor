@@ -1,0 +1,68 @@
+﻿@page "/project"
+@inherits AbstractPage
+@implements IDisposable
+@using Nexar.Design
+@using Blazorise.DataGrid
+
+@if (AppData.CurrentProject != null)
+{
+    <Heading Size="HeadingSize.Is1">Project</Heading>
+    <Card>
+        <CardBody>
+            <Field>
+                <FieldLabel>Name</FieldLabel>
+                <TextEdit ReadOnly="true" Text="@AppData.CurrentProject.Name" />
+            </Field>
+            <Field>
+                <FieldLabel>URL</FieldLabel>
+                <a href="@AppData.CurrentProject.Tag.Url" target="_blank">@AppData.CurrentProject.Tag.Url</a>
+            </Field>
+            <Field>
+                <Figure Size="FigureSize.Is128x128">
+                    <FigureImage Source="@AppData.CurrentProject.Tag.PreviewUrl" AlternateText="128x128" />
+                </Figure>
+            </Field>
+        </CardBody>
+    </Card>
+    <Card>
+        <CardHeader><Heading Size="HeadingSize.Is3">Parameters</Heading></CardHeader>
+        <CardBody>
+            <DataGrid TItem="IMyProjectParameter"
+                      Data="@AppData.CurrentProject.Tag.Parameters"
+                      Filterable="true"
+                      ShowPager="true"
+                      PagerPosition="DataGridPagerPosition.Top"
+                      ShowPageSizes="true">
+                <DataGridColumns>
+                    <DataGridColumn TItem="IMyProjectParameter"
+                                    Field="Name" Caption="Name" />
+                    <DataGridColumn TItem="IMyProjectParameter"
+                                    Field="Value" Caption="Value" />
+                </DataGridColumns>
+            </DataGrid>
+        </CardBody>
+    </Card>
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        if (AppData.CurrentProject == null)
+        {
+            NavManager.NavigateTo("");
+            return;
+        }
+
+        AppData.OnChangeProject += Update;
+    }
+
+    public void Dispose()
+    {
+        AppData.OnChangeProject -= Update;
+    }
+
+    void Update()
+    {
+        StateHasChanged();
+    }
+}

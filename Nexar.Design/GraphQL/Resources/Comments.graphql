@@ -1,0 +1,31 @@
+﻿query CommentThreads($projectId: ID!) {
+  desCommentThreads(
+    projectId: $projectId
+  ) {
+    ... MyThread
+  }
+}
+
+query CommentThread($projectId: ID!, $threadId: String!) {
+  desCommentThread(
+    projectId: $projectId
+    threadId: $threadId
+  ) {
+    ... MyThread
+  }
+}
+
+fragment MyThread on DesCommentThread {
+  threadNumber
+  originalStateScreenshotUrl
+  comments {
+    ... MyComment
+  }
+}
+
+fragment MyComment on DesComment {
+  text
+  createdBy {
+    email
+  }
+}

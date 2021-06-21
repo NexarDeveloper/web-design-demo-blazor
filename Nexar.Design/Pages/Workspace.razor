@@ -1,0 +1,43 @@
+﻿@page "/workspace"
+@inherits AbstractPage
+@implements IDisposable
+
+@if (AppData.CurrentWorkspace != null)
+{
+    <Heading Size="HeadingSize.Is1">Workspace</Heading>
+    <Card>
+        <CardBody>
+            <Field>
+                <FieldLabel>Name</FieldLabel>
+                <TextEdit ReadOnly="true" Text="@AppData.CurrentWorkspace.Name" />
+            </Field>
+            <Field>
+                <FieldLabel>URL</FieldLabel>
+                <a href="@AppData.CurrentWorkspace.Tag.Url" target="_blank">@AppData.CurrentWorkspace.Tag.Url</a>
+            </Field>
+        </CardBody>
+    </Card>
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        if (AppData.CurrentWorkspace == null)
+        {
+            NavManager.NavigateTo("");
+            return;
+        }
+
+        AppData.OnChangeWorkspace += Update;
+    }
+
+    public void Dispose()
+    {
+        AppData.OnChangeWorkspace -= Update;
+    }
+
+    void Update()
+    {
+        StateHasChanged();
+    }
+}

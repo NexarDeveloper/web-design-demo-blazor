@@ -1,0 +1,11 @@
+﻿query Workspaces {
+  desWorkspaces {
+    ... MyWorkspace
+  }
+}
+
+fragment MyWorkspace on DesWorkspace {
+  workspaceId
+  name
+  url
+}

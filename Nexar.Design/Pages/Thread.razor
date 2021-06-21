@@ -1,0 +1,60 @@
+﻿@page "/thread"
+@inherits AbstractPage
+@implements IDisposable
+@inject NexarClient Client
+
+@if (AppData.CurrentThread != null)
+{
+    <Heading Size="HeadingSize.Is1">Comments</Heading>
+
+    @if (AppData.CurrentThread.Tag.OriginalStateScreenshotUrl != null)
+    {
+        <Field>
+            <a href="@AppData.CurrentThread.Tag.OriginalStateScreenshotUrl" target="_blank">Original screenshot</a>
+        </Field>
+    }
+
+    @foreach (var comment in AppData.CurrentThread.Tag.Comments)
+    {
+        <Card>
+            <CardBody>
+                <CardTitle>
+                    <b>From</b>: @comment.CreatedBy.Email
+                </CardTitle>
+                <MemoEdit ReadOnly="true" Text="@comment.Text" Plaintext="true" Rows="@(CountRows(comment.Text))" />
+            </CardBody>
+        </Card>
+    }
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        if (AppData.CurrentThread == null)
+        {
+            NavManager.NavigateTo("");
+            return;
+        }
+
+        AppData.OnChangeThread += Update;
+    }
+
+    public void Dispose()
+    {
+        AppData.OnChangeThread -= Update;
+    }
+
+    void Update()
+    {
+        StateHasChanged();
+    }
+
+    static int CountRows(string text)
+    {
+        int n = 1;
+        foreach (var c in text)
+            if (c == '\n')
+                ++n;
+        return n;
+    }
+}
