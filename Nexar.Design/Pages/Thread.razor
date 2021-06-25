@@ -10,7 +10,10 @@
     @if (AppData.CurrentThread.Tag.OriginalStateScreenshotUrl != null)
     {
         <Field>
-            <a href="@AppData.CurrentThread.Tag.OriginalStateScreenshotUrl" target="_blank">Original screenshot</a>
+            <Figure Size="FigureSize.Is128x128">
+                <FigureImage Source="@AppData.CurrentThread.Tag.OriginalStateScreenshotUrl" AlternateText="128x128" />
+                <FigureCaption><a href="@AppData.CurrentThread.Tag.OriginalStateScreenshotUrl" target="_blank">Original screenshot</a></FigureCaption>
+            </Figure>
         </Field>
     }
 
