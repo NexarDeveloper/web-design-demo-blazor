@@ -5,7 +5,6 @@
 }
 
 fragment MyWorkspace on DesWorkspace {
-  workspaceId
   name
   url
 }
