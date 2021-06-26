@@ -134,14 +134,14 @@ type DesCommentNotification {
 }
 
 type DesCommentNotificationData {
-  projectGuid: String!
+  projectId: String!
   documentId: String
   documentName: String
-  threadGuid: String!
+  commentThreadId: String!
   threadDate: String!
   threadData: String
   threadStatus: String
-  commentGuid: String!
+  commentId: String!
   commentAuthor: String
   commentDate: String!
   commentText: String
@@ -204,13 +204,13 @@ type DesComponentParameter {
 }
 
 type DesCreateCommentPayload {
-  guid: String!
+  commentId: String!
   errors: [DesPayloadError!]!
 }
 
 type DesCreateCommentThreadPayload {
-  threadGuid: String!
-  commentGuid: String!
+  commentThreadId: String!
+  commentId: String!
   errors: [DesPayloadError!]!
 }
 
@@ -807,7 +807,7 @@ input DesComparableNullableOfDateTimeOperationFilterInput {
 
 input DesCreateCommentInput {
   entityId: ID!
-  threadGuid: String!
+  commentThreadId: String!
   text: String!
 }
 
@@ -822,13 +822,13 @@ input DesCreateCommentThreadInput {
 
 input DesDeleteCommentInput {
   entityId: ID!
-  threadGuid: String!
-  commentGuid: String!
+  commentThreadId: String!
+  commentId: String!
 }
 
 input DesDeleteCommentThreadInput {
   entityId: ID!
-  threadGuid: String!
+  commentThreadId: String!
 }
 
 input DesDeleteWorkflowsInput {
@@ -907,8 +907,8 @@ input DesSchematicFilterInput {
 
 input DesUpdateCommentInput {
   entityId: ID!
-  threadGuid: String!
-  commentGuid: String!
+  commentThreadId: String!
+  commentId: String!
   text: String!
 }
 

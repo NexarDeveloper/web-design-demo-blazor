@@ -1,24 +1,29 @@
 # Nexar.Design Demo
 
+[nexar.com]: https://nexar.com/
+[web-design-demo.nexar.com]: https://web-design-demo.nexar.com
+[nexar-token-cs]: https://github.com/NexarDeveloper/nexar-token-cs
+
 Demo Blazor WebAssembly with design queries powered by Nexar.
 
-Live demo: [web-design-demo.nexar.com](https://web-design-demo.nexar.com)
+Live demo: [web-design-demo.nexar.com]
 
 ## How to use
 
 In order to see anything useful in the app, you need your Altium Live
 credentials and have to be a member of at least one Altium 365 workspace.
 
-[nexar-token-cs]: https://github.com/NexarDeveloper/nexar-token-cs
+The app requires a token. Go to your [nexar.com] application details, click
+"Generate Token", sign in, and then click "Launch Nexar Design Demo". The app
+starts automatically connected, your Altium workspace and project tree should
+appear in the left panel.
 
-Get a Nexar Design token. For the moment there is no straightforward way which
-is both secure and friendly. Please use the dotnet console app [nexar-token-cs]
-and run it without arguments in order to sign in and get the token.
+Alternatively, you may get a token beforehand, either at [nexar.com] or using
+the [nexar-token-cs] tool, cloned and built for local use.
 
-Having got the token, copy it to the clipboard and navigate to the app URL. At
+Having got a token, copy it to the clipboard and navigate to the app URL. At
 the `Connect` page paste the token and click `Connect`. The browser remembers
-and restores the token on next runs. The token may be used many times until it
-expires.
+and restores the token on next runs. The token may be used until it expires.
 
 ## Building blocks
 
