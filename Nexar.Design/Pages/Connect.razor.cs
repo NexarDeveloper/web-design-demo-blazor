@@ -99,7 +99,22 @@ namespace Nexar.Design.Pages
                     ValidateToken(token);
                     _token = token;
                     AppData.Token = token;
-                    NavManager.NavigateTo("search");
+
+                    _loading = true;
+                    try
+                    {
+                        var res = await Client.Workspaces.ExecuteAsync();
+                        EnsureNoErrors(res);
+
+                        AppData.SetWorkspaces(res.Data.DesWorkspaces);
+
+                        // just to hide parameters in the address bar
+                        NavManager.NavigateTo("");
+                    }
+                    finally
+                    {
+                        _loading = false;
+                    }
                 }
                 else
                 {

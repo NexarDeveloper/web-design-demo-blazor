@@ -1,28 +1,32 @@
 ﻿@page "/"
 @inherits AbstractPage
 
-<Heading Size="HeadingSize.Is1">Connect</Heading>
-<Card>
-    <CardBody>
-        <Form>
-            <Validations @ref="validations" Mode="ValidationMode.Manual" ValidateOnLoad="false">
-                <Field>
-                    <FieldLabel>Nexar token</FieldLabel>
-                    <Validation Validator="@ValidateNotEmpty">
-                        <MemoEdit @bind-Text="@_token">
-                            <Feedback>
-                                <ValidationError>Expected token</ValidationError>
-                            </Feedback>
-                        </MemoEdit>
-                    </Validation>
-                </Field>
-            </Validations>
-            <Button Color="Color.Primary"
-                    Loading="@_loading"
-                    Clicked="ConnectAsync">
-                Connect
-            </Button>
-        </Form>
-    </CardBody>
-</Card>
+@if (AppData.TreeNodes == null)
+{
+    <Heading Size="HeadingSize.Is1">Connect</Heading>
+    <Card>
+        <CardBody>
+            <Form>
+                <Validations @ref="validations" Mode="ValidationMode.Manual" ValidateOnLoad="false">
+                    <Field>
+                        <FieldLabel>Nexar token</FieldLabel>
+                        <Validation Validator="@ValidateNotEmpty">
+                            <MemoEdit @bind-Text="@_token">
+                                <Feedback>
+                                    <ValidationError>Expected token</ValidationError>
+                                </Feedback>
+                            </MemoEdit>
+                        </Validation>
+                    </Field>
+                </Validations>
+                <Button Color="Color.Primary"
+                        Loading="@_loading"
+                        Clicked="ConnectAsync">
+                    Connect
+                </Button>
+            </Form>
+        </CardBody>
+    </Card>
+}
+
 <Paragraph>Demo Blazor app powered by <a href="@AppData.ApiEndpoint" target="_blank">@AppData.ApiEndpoint</a></Paragraph>
