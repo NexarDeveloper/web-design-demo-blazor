@@ -1,0 +1,18 @@
+﻿@if (AppData.TreeNodes == null)
+{
+    <MudNavMenu>
+        <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Filled.Login">Connect</MudNavLink>
+    </MudNavMenu>
+}
+else
+{
+    <MudContainer>
+        <MudBadge>Workspaces</MudBadge>
+        <MudTreeView T="TreeNode" Items="AppData.TreeNodes" Dense="true" CanActivate="true"
+                     ActivatedValueChanged="ActivatedValueChanged" ServerData="ServerDataAsync">
+            <ItemTemplate>
+                <MudTreeViewItem Value="@context" Items="@context.Nodes" Text="@context.Name" Icon="@context.Icon" />
+            </ItemTemplate>
+        </MudTreeView>
+    </MudContainer>
+}

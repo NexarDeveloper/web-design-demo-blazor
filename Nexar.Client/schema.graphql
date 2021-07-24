@@ -18,7 +18,7 @@ type Query {
   desTeam(workspaceUrl: String!): DesTeam!
   desUsers(workspaceUrl: String! ids: [String!]!): [DesUser]!
   "Search projects within a workspace with results in paged groups."
-  desProjects(first: Int after: String last: Int before: String "The web address of a workspace." workspaceUrl: String! "Optional filter for workflow modifications after the specific `DateTime`." modifiedWorkflowAfter: DateTime where: DesProjectFilterInput): DesProjectConnection
+  desProjects(first: Int after: String last: Int before: String "The web address of a workspace." workspaceUrl: String! "Optional filter for projects with workflows completed after the specific `DateTime`." completedWorkflowAfter: DateTime where: DesProjectFilterInput): DesProjectConnection
   "Search a specific project by its unique identifier."
   desProjectById("The node identifier for a project." id: ID!): DesProject
   desDesignItemById(id: ID!): DesDesignItem
@@ -62,7 +62,7 @@ type Mutation {
   desCreateCommentThread(input: DesCreateCommentThreadInput!): DesCreateCommentThreadPayload!
   desDeleteCommentThread(input: DesDeleteCommentThreadInput!): DesDeleteCommentThreadPayload!
   desLaunchWorkflow(input: DesLaunchWorkflowInput!): DesLaunchWorkflowPayload!
-  desDeleteWorkflows(input: DesDeleteWorkflowsInput!): DesDeleteWorkflowsPayload!
+  desTerminateWorkflows(input: DesTerminateWorkflowsInput!): DesTerminateWorkflowsPayload!
 }
 
 type Subscription {
@@ -126,6 +126,7 @@ type DesComment {
   text: String!
 }
 
+"A comment context provides additional information about associations for a comment thread."
 type DesCommentContext {
   "The reference identifier for the document associated with a comment thread."
   documentId: String
@@ -177,6 +178,7 @@ type DesCommentThread {
   originalStateScreenshotUrl: String
   "The sequence number of this comment thread."
   threadNumber: Int!
+  "The information about properties related to this comment thread."
   context: DesCommentContext!
 }
 
@@ -245,15 +247,6 @@ type DesDeleteCommentPayload {
 
 type DesDeleteCommentThreadPayload {
   errors: [DesPayloadError!]!
-}
-
-type DesDeleteWorkflowsError {
-  id: String!
-  message: String!
-}
-
-type DesDeleteWorkflowsPayload {
-  errors: [DesDeleteWorkflowsError!]!
 }
 
 "A design manages all of the schematic, PCB, and BOM content for a project."
@@ -509,7 +502,7 @@ type DesPosition2D {
 
 "A project manages all development stages of the PCB\/PCA product lifecycle."
 type DesProject implements Node {
-  "The node identifier for this project (used by `DesProjectById`)."
+  "The node identifier for this project (used by `desProjectById`)."
   id: ID!
   "The account information for who created this project."
   createdBy: DesUser
@@ -521,13 +514,13 @@ type DesProject implements Node {
   previewUrl: String!
   "The list of workflows associated with this project."
   workflows("An option to search workflows that have been completed." isClosed: Boolean! = false "An option to search workflows that have been modified after a specific `DateTime`." modifiedAfter: DateTime where: DesWorkflowFilterInput): [DesWorkflow!]
-  "The `DateTime` of the most recent workflow activity associated with this project."
-  modifiedWorkflowAt: DateTime
-  "The unique address of this project on the web."
+  "The `DateTime` of the most recent workflow completion associated with this project."
+  completedWorkflowAt: DateTime
+  "The Altium 365 web address."
   url: Url!
   "The reference identifier for this project."
   projectId: String!
-  "The assigned name for this Project."
+  "The assigned name for this project."
   name: String
   "The summary of this project content or purpose."
   description: String
@@ -688,6 +681,15 @@ type DesTeam {
   users: [DesUser!]!
 }
 
+type DesTerminateWorkflowsError {
+  id: String!
+  message: String!
+}
+
+type DesTerminateWorkflowsPayload {
+  errors: [DesTerminateWorkflowsError!]!
+}
+
 type DesTestPoints {
   testPointFiles: [DesDownloadableFile!]!
   packageName: String
@@ -774,7 +776,7 @@ type DesWorkflow {
   "The `DateTime` for the completion of this workflow."
   endedAt: DateTime
   "The label for this workflow."
-  businessKey: String!
+  name: String!
   "The reference identifier for definition of this workflow."
   processDefinitionId: String!
   "The label for the definition of this workflow."
@@ -813,7 +815,7 @@ type DesWorkspace implements Node {
   "The list of members authorized for this workspace."
   team: DesTeam!
   "The list of projects managed in this workspace."
-  projects("An option to search projects with workflows that have been modified after a specific `DateTime`." modifiedWorkflowAfter: DateTime where: DesProjectFilterInput): [DesProject!]!
+  projects("An option to search projects with workflows that have been completed after a specific `DateTime`." completedWorkflowAfter: DateTime where: DesProjectFilterInput): [DesProject!]!
   "The list of workflow definitions in this workspace."
   workflowDefinitions(where: DesWorkflowDefinitionFilterInput): [DesWorkflowDefinition!]
   "The list of workflows in this workspace."
@@ -914,16 +916,11 @@ input DesDeleteCommentThreadInput {
   commentThreadId: String!
 }
 
-input DesDeleteWorkflowsInput {
-  workspaceUrl: String!
-  workflowIds: [String!]!
-}
-
 input DesLaunchWorkflowInput {
   workspaceUrl: String!
   workflowDefinitionId: String!
-  title: String
-  vars: [DesWorkflowVariableInput!]!
+  name: String
+  variables: [DesWorkflowVariableInput!]!
 }
 
 input DesOnCommentUpdatedInput {
@@ -940,11 +937,11 @@ input DesPosition2DInput {
 input DesProjectFilterInput {
   and: [DesProjectFilterInput!]
   or: [DesProjectFilterInput!]
-  "The unique address of this project on the web."
+  "The Altium 365 web address."
   url: DesUriFilterInput
   "The reference identifier for this project."
   projectId: DesStringOperationFilterInput
-  "The assigned name for this Project."
+  "The assigned name for this project."
   name: DesStringOperationFilterInput
   "The summary of this project content or purpose."
   description: DesStringOperationFilterInput
@@ -989,6 +986,11 @@ input DesSchematicFilterInput {
   documentId: DesStringOperationFilterInput
   parentIds: DesListStringOperationFilterInput
   units: DesComparableInt32OperationFilterInput
+}
+
+input DesTerminateWorkflowsInput {
+  workspaceUrl: String!
+  workflowIds: [String!]!
 }
 
 input DesUpdateCommentInput {
@@ -1039,7 +1041,7 @@ input DesWorkflowFilterInput {
   "The `DateTime` for the completion of this workflow."
   endedAt: DesComparableNullableOfDateTimeOperationFilterInput
   "The label for this workflow."
-  businessKey: DesStringOperationFilterInput
+  name: DesStringOperationFilterInput
   "The reference identifier for definition of this workflow."
   processDefinitionId: DesStringOperationFilterInput
   "The label for the definition of this workflow."

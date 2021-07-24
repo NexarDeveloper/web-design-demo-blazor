@@ -4,19 +4,13 @@
 
 @if (AppData.CurrentWorkspace != null)
 {
-    <Heading Size="HeadingSize.Is1">Workspace</Heading>
-    <Card>
-        <CardBody>
-            <Field>
-                <FieldLabel>Name</FieldLabel>
-                <TextEdit ReadOnly="true" Text="@AppData.CurrentWorkspace.Name" />
-            </Field>
-            <Field>
-                <FieldLabel>URL</FieldLabel>
-                <a href="@AppData.CurrentWorkspace.Tag.Url" target="_blank">@AppData.CurrentWorkspace.Tag.Url</a>
-            </Field>
-        </CardBody>
-    </Card>
+    <MudContainer>
+        <MudText Typo="Typo.h4" GutterBottom="true">Workspace</MudText>
+        <MudTextFieldString Label="Name" Text="@AppData.CurrentWorkspace.Name" ReadOnly="true" Variant="Variant.Outlined" />
+        <MudField Label="URL" Variant="Variant.Outlined">
+            <MudLink Href="@AppData.CurrentWorkspace.Tag.Url" Target="_blank">@AppData.CurrentWorkspace.Tag.Url</MudLink>
+        </MudField>
+    </MudContainer>
 }
 
 @code {

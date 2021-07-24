@@ -28,13 +28,13 @@ and restores the token on next runs. The token may be used until it expires.
 ## Building blocks
 
 [Blazor]: https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor
-[Blazorise]: https://github.com/Megabit/Blazorise
+[MudBlazor]: https://github.com/Garderoben/MudBlazor
 
-The app is built with [Blazor] using [Blazorise] components.
+The app is built with [Blazor] using [MudBlazor] components.
 
 The Design domain data are provided by Nexar API: <https://api.nexar.com/graphql>.
 This is the GraphQL endpoint for queries and also the Banana Cake Pop GraphQL IDE in browsers.
 
 The [HotChocolate StrawberryShake](https://github.com/ChilliCream/hotchocolate) package
 is used for generating strongly typed C# client code for invoking GraphQL queries.
-See the source queries in [Resources](Nexar.Design/GraphQL/Resources).
+See the source queries in [Resources](Nexar.Client/Resources).

@@ -5,29 +5,26 @@
 
 @if (AppData.CurrentThread != null)
 {
-    <Heading Size="HeadingSize.Is1">Comments</Heading>
-
-    @if (AppData.CurrentThread.Tag.OriginalStateScreenshotUrl != null)
-    {
-        <Field>
-            <Figure Size="FigureSize.Is128x128">
-                <FigureCaption><a href="@AppData.CurrentThread.Tag.OriginalStateScreenshotUrl" target="_blank">Original screenshot</a></FigureCaption>
-                <FigureImage Source="@AppData.CurrentThread.Tag.OriginalStateScreenshotUrl" AlternateText="128x128" />
-            </Figure>
-        </Field>
-    }
-
-    @foreach (var comment in AppData.CurrentThread.Tag.Comments)
-    {
-        <Card>
-            <CardBody>
-                <CardTitle>
-                    <b>From</b>: @comment.CreatedBy.Email
-                </CardTitle>
-                <MemoEdit ReadOnly="true" Text="@comment.Text" Plaintext="true" Rows="@(CountRows(comment.Text))" />
-            </CardBody>
-        </Card>
-    }
+    <MudContainer>
+        <MudText Typo="Typo.h4" GutterBottom="true">Comments</MudText>
+        @if (AppData.CurrentThread.Tag.OriginalStateScreenshotUrl != null)
+        {
+            <MudField Label="Original screenshot" Variant="Variant.Outlined">
+                <MudLink Href="@AppData.CurrentThread.Tag.OriginalStateScreenshotUrl" Target="_blank">
+                    <img src="@AppData.CurrentThread.Tag.OriginalStateScreenshotUrl" alt="Preview" width="128" height="128" />
+                </MudLink>
+            </MudField>
+        }
+        @foreach (var comment in AppData.CurrentThread.Tag.Comments)
+        {
+            <MudCard Outlined="true">
+                <MudCardContent>
+                    <MudText><b>From:</b> @comment.CreatedBy.Email</MudText>
+                    <MudTextFieldString Text="@comment.Text" Lines="@(CountRows(comment.Text))" ReadOnly="true" />
+                </MudCardContent>
+            </MudCard>
+        }
+    </MudContainer>
 }
 
 @code {

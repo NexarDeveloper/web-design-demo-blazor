@@ -1,3 +1,4 @@
+using Nexar.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,10 +58,10 @@ namespace Nexar.Design
             OnChange?.Invoke();
         }
 
-        public IReadOnlyList<TreeNode> TreeNodes { get; private set; }
+        public HashSet<TreeNode> TreeNodes { get; private set; }
         public void SetWorkspaces(IReadOnlyList<IMyWorkspace> source)
         {
-            TreeNodes = source.Select(x => new WorkspaceNode(x)).ToArray();
+            TreeNodes = source.Select(x => (TreeNode)new WorkspaceNode(x)).ToHashSet();
             OnChange?.Invoke();
         }
 

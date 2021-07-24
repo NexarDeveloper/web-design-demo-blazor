@@ -2,46 +2,35 @@
 @inherits AbstractPage
 @implements IDisposable
 @using Nexar.Design
-@using Blazorise.DataGrid
 
 @if (AppData.CurrentProject != null)
 {
-    <Heading Size="HeadingSize.Is1">Project</Heading>
-    <Card>
-        <CardBody>
-            <Field>
-                <FieldLabel>Name</FieldLabel>
-                <TextEdit ReadOnly="true" Text="@AppData.CurrentProject.Name" />
-            </Field>
-            <Field>
-                <FieldLabel>URL</FieldLabel>
-                <a href="@AppData.CurrentProject.Tag.Url" target="_blank">@AppData.CurrentProject.Tag.Url</a>
-            </Field>
-            <Field>
-                <Figure Size="FigureSize.Is128x128">
-                    <FigureImage Source="@AppData.CurrentProject.Tag.PreviewUrl" AlternateText="128x128" />
-                </Figure>
-            </Field>
-        </CardBody>
-    </Card>
-    <Card>
-        <CardHeader><Heading Size="HeadingSize.Is3">Parameters</Heading></CardHeader>
-        <CardBody>
-            <DataGrid TItem="IMyProjectParameter"
-                      Data="@AppData.CurrentProject.Tag.Parameters"
-                      Filterable="true"
-                      ShowPager="true"
-                      PagerPosition="DataGridPagerPosition.Top"
-                      ShowPageSizes="true">
-                <DataGridColumns>
-                    <DataGridColumn TItem="IMyProjectParameter"
-                                    Field="Name" Caption="Name" />
-                    <DataGridColumn TItem="IMyProjectParameter"
-                                    Field="Value" Caption="Value" />
-                </DataGridColumns>
-            </DataGrid>
-        </CardBody>
-    </Card>
+    <MudContainer>
+        <MudText Typo="Typo.h4" GutterBottom="true">Project</MudText>
+        <MudTextFieldString Label="Name" Text="@AppData.CurrentProject.Name" ReadOnly="true" Variant="Variant.Outlined" />
+        <MudField Label="URL" Variant="Variant.Outlined">
+            <MudLink Href="@AppData.CurrentProject.Tag.Url.ToString()" Target="_blank">@AppData.CurrentProject.Tag.Url</MudLink>
+        </MudField>
+        <MudField Label="Preview" Variant="Variant.Outlined">
+            <img src="@AppData.CurrentProject.Tag.PreviewUrl" alt="Preview" width="128" height="128" />
+        </MudField>
+        <MudTable Items="@AppData.CurrentProject.Tag.Parameters">
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">Parameters</MudText>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh>Name</MudTh>
+                <MudTh>Value</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Name">@context.Name</MudTd>
+                <MudTd DataLabel="Value">@context.Value</MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+        </MudTable>
+    </MudContainer>
 }
 
 @code {

@@ -1,32 +1,23 @@
 ﻿@page "/"
 @inherits AbstractPage
 
-@if (AppData.TreeNodes == null)
-{
-    <Heading Size="HeadingSize.Is1">Connect</Heading>
-    <Card>
-        <CardBody>
-            <Form>
-                <Validations @ref="validations" Mode="ValidationMode.Manual" ValidateOnLoad="false">
-                    <Field>
-                        <FieldLabel>Nexar token</FieldLabel>
-                        <Validation Validator="@ValidateNotEmpty">
-                            <MemoEdit @bind-Text="@_token">
-                                <Feedback>
-                                    <ValidationError>Expected token</ValidationError>
-                                </Feedback>
-                            </MemoEdit>
-                        </Validation>
-                    </Field>
-                </Validations>
-                <Button Color="Color.Primary"
-                        Loading="@_loading"
-                        Clicked="ConnectAsync">
-                    Connect
-                </Button>
-            </Form>
-        </CardBody>
-    </Card>
-}
-
-<Paragraph>Demo Blazor app powered by <a href="@AppData.ApiEndpoint" target="_blank">@AppData.ApiEndpoint</a></Paragraph>
+<MudContainer>
+    <MudText>Demo Blazor app powered by <MudLink Href="@AppData.ApiEndpoint" Target="_blank">@AppData.ApiEndpoint</MudLink></MudText>
+    @if (AppData.TreeNodes == null)
+    {
+        <MudCard>
+            <MudCardContent>
+                <MudText Typo="Typo.h4" GutterBottom="true">Connect</MudText>
+                <MudText>Don't have a token? <MudLink Href="@AppData.NexarDotCom" Target="_blank">Sign Up</MudLink></MudText>
+                <MudTextField @bind-Value="@_token" Label="Nexar token" Placeholder="Nexar token" Variant="Variant.Outlined" />
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton Color="Color.Primary" OnClick="@ConnectAsync">Connect</MudButton>
+                @if (_loading)
+                {
+                    <MudProgressCircular Indeterminate="true" />
+                }
+            </MudCardActions>
+        </MudCard>
+    }
+</MudContainer>
