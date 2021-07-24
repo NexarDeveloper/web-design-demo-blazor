@@ -4,57 +4,53 @@ using System.Collections.Generic;
 
 namespace Nexar.Design
 {
-    public abstract class TreeNode
+    public abstract class TreeItem
     {
-        public virtual string Name { get; }
+        public abstract string Text { get; }
         public abstract string Icon { get; }
-        public HashSet<TreeNode> Nodes { get; set; }
+        public HashSet<TreeItem> Items { get; set; }
     }
 
-    public sealed class WorkspaceNode : TreeNode
+    public sealed class WorkspaceItem : TreeItem
     {
         public IMyWorkspace Tag { get; }
-        public WorkspaceNode(IMyWorkspace tag)
+        public WorkspaceItem(IMyWorkspace tag)
         {
             Tag = tag;
         }
-        public override string Name =>
+        public override string Text =>
             Tag.Name;
         public override string Icon =>
             Icons.Filled.FolderOpen;
     }
 
-    public sealed class ProjectNode : TreeNode
+    public sealed class ProjectItem : TreeItem
     {
         public IMyProject Tag { get; }
-        public WorkspaceNode Workspace { get; }
-        public ProjectNode(IMyProject tag, WorkspaceNode workspace)
+        public WorkspaceItem Workspace { get; }
+        public ProjectItem(IMyProject tag, WorkspaceItem workspace)
         {
             Tag = tag;
             Workspace = workspace;
         }
-        public override string Name =>
+        public override string Text =>
             Tag.Name;
         public override string Icon =>
             Icons.Filled.Memory;
     }
 
-    public sealed class ThreadNode : TreeNode
+    public sealed class ThreadItem : TreeItem
     {
         readonly string _name;
         public IMyThread Tag { get; }
-        public ProjectNode Project { get; }
-        public ThreadNode(IMyThread tag, ProjectNode project)
+        public ProjectItem Project { get; }
+        public ThreadItem(IMyThread tag, ProjectItem project)
         {
             Tag = tag;
             Project = project;
-
-            if (Tag.Comments.Count == 0)
-                _name = "<empty>";
-            else
-                _name = Tag.Comments[0].Text.Trim();
+            _name = Tag.Comments.Count == 0 ? "<empty>" : Tag.Comments[0].Text.Trim();
         }
-        public override string Name =>
+        public override string Text =>
             _name;
         public override string Icon =>
             Icons.Filled.ChatBubbleOutline;

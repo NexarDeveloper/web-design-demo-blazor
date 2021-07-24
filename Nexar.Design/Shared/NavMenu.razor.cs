@@ -30,33 +30,33 @@ namespace Nexar.Design.Shared
             GC.SuppressFinalize(this);
         }
 
-        async Task<HashSet<TreeNode>> ServerDataAsync(TreeNode node)
+        async Task<HashSet<TreeItem>> ServerDataAsync(TreeItem node)
         {
             try
             {
-                if (node is WorkspaceNode workspace)
+                if (node is WorkspaceItem workspace)
                 {
                     var res = await Client.Projects.ExecuteAsync(workspace.Tag.Url);
                     res.EnsureNoErrors();
 
-                    workspace.Nodes = res.Data.DesProjects.Nodes
-                        .Select(x => (TreeNode)new ProjectNode(x, workspace))
+                    workspace.Items = res.Data.DesProjects.Nodes
+                        .Select(x => (TreeItem)new ProjectItem(x, workspace))
                         .ToHashSet();
 
-                    return workspace.Nodes;
+                    return workspace.Items;
                 }
 
-                if (node is ProjectNode project)
+                if (node is ProjectItem project)
                 {
                     var res = await Client.CommentThreads.ExecuteAsync(project.Tag.Id);
                     res.EnsureNoErrors();
 
-                    project.Nodes = res.Data.DesCommentThreads
+                    project.Items = res.Data.DesCommentThreads
                         .OrderByDescending(x => x.ThreadNumber)
-                        .Select(x => (TreeNode)new ThreadNode(x, project))
+                        .Select(x => (TreeItem)new ThreadItem(x, project))
                         .ToHashSet();
 
-                    return project.Nodes;
+                    return project.Items;
                 }
             }
             catch (Exception ex)
@@ -66,23 +66,23 @@ namespace Nexar.Design.Shared
             return null;
         }
 
-        void ActivatedValueChanged(TreeNode node)
+        void ActivatedValueChanged(TreeItem node)
         {
-            if (node is WorkspaceNode workspace)
+            if (node is WorkspaceItem workspace)
             {
                 AppData.CurrentWorkspace = workspace;
                 NavManager.NavigateTo("workspace");
                 return;
             }
 
-            if (node is ProjectNode project)
+            if (node is ProjectItem project)
             {
                 AppData.CurrentProject = project;
                 NavManager.NavigateTo("project");
                 return;
             }
 
-            if (node is ThreadNode thread)
+            if (node is ThreadItem thread)
             {
                 AppData.CurrentThread = thread;
                 NavManager.NavigateTo("thread");

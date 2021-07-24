@@ -19,7 +19,7 @@
         {
             <MudCard Outlined="true">
                 <MudCardContent>
-                    <MudText><b>From:</b> @comment.CreatedBy.Email</MudText>
+                    <MudText Typo="Typo.body2"><b>From:</b> @comment.CreatedBy.Email</MudText>
                     <MudTextFieldString Text="@comment.Text" Lines="@(CountRows(comment.Text))" ReadOnly="true" />
                 </MudCardContent>
             </MudCard>
@@ -30,12 +30,6 @@
 @code {
     protected override void OnInitialized()
     {
-        if (AppData.CurrentThread == null)
-        {
-            NavManager.NavigateTo("");
-            return;
-        }
-
         AppData.OnChangeThread += Update;
     }
 
@@ -51,7 +45,7 @@
 
     static int CountRows(string text)
     {
-        int n = 1;
+        int n = 2;
         foreach (var c in text)
             if (c == '\n')
                 ++n;

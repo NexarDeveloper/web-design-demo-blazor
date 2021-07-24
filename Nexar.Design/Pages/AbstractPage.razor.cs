@@ -14,20 +14,17 @@ namespace Nexar.Design.Pages
         /// <summary>
         /// Common JS interop.
         /// </summary>
-        [Inject]
-        public IJSRuntime JS { get; init; }
+        [Inject] public IJSRuntime JS { get; init; }
 
         /// <summary>
         /// Common navigation manager.
         /// </summary>
-        [Inject]
-        public NavigationManager NavManager { get; init; }
+        [Inject] public NavigationManager NavManager { get; init; }
 
         /// <summary>
         /// The application state.
         /// </summary>
-        [Inject]
-        public AppData AppData { get; init; }
+        [Inject] public AppData AppData { get; init; }
 
         /// <summary>
         /// Check the operation result and throw on any errors.

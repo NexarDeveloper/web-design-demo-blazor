@@ -22,7 +22,7 @@ Alternatively, you may get a token beforehand, either at [nexar.com] or using
 the [nexar-token-cs] tool, cloned and built for local use.
 
 Having got a token, copy it to the clipboard and navigate to the app URL. At
-the `Connect` page paste the token and click `Connect`. The browser remembers
+the `Connect` page paste the token and click `CONNECT`. The browser remembers
 and restores the token on next runs. The token may be used until it expires.
 
 ## Building blocks

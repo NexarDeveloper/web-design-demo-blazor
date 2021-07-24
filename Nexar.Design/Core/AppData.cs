@@ -7,7 +7,7 @@ namespace Nexar.Design
 {
     /// <summary>
     /// The application state and options. Different modes and URLs are only
-    /// needed for internal development. Clients normally use *.nexar.com URLs.
+    /// needed for internal development. Clients normally use nexar.com URLs.
     /// </summary>
     public class AppData
     {
@@ -54,20 +54,20 @@ namespace Nexar.Design
         public void Reset()
         {
             Token = null;
-            TreeNodes = null;
+            TreeItems = null;
             OnChange?.Invoke();
         }
 
-        public HashSet<TreeNode> TreeNodes { get; private set; }
+        public HashSet<TreeItem> TreeItems { get; private set; }
         public void SetWorkspaces(IReadOnlyList<IMyWorkspace> source)
         {
-            TreeNodes = source.Select(x => (TreeNode)new WorkspaceNode(x)).ToHashSet();
+            TreeItems = source.Select(x => (TreeItem)new WorkspaceItem(x)).ToHashSet();
             OnChange?.Invoke();
         }
 
-        WorkspaceNode currentWorkspace;
+        WorkspaceItem currentWorkspace;
         public event Action OnChangeWorkspace;
-        public WorkspaceNode CurrentWorkspace
+        public WorkspaceItem CurrentWorkspace
         {
             get => currentWorkspace;
             set
@@ -77,9 +77,9 @@ namespace Nexar.Design
             }
         }
 
-        ProjectNode currentProject;
+        ProjectItem currentProject;
         public event Action OnChangeProject;
-        public ProjectNode CurrentProject
+        public ProjectItem CurrentProject
         {
             get => currentProject;
             set
@@ -89,9 +89,9 @@ namespace Nexar.Design
             }
         }
 
-        ThreadNode currentThread;
+        ThreadItem currentThread;
         public event Action OnChangeThread;
-        public ThreadNode CurrentThread
+        public ThreadItem CurrentThread
         {
             get => currentThread;
             set

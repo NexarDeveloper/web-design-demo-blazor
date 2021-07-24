@@ -1,4 +1,4 @@
-﻿@if (AppData.TreeNodes == null)
+﻿@if (AppData.TreeItems == null)
 {
     <MudNavMenu>
         <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Filled.Login">Connect</MudNavLink>
@@ -8,10 +8,10 @@ else
 {
     <MudContainer>
         <MudBadge>Workspaces</MudBadge>
-        <MudTreeView T="TreeNode" Items="AppData.TreeNodes" Dense="true" CanActivate="true"
+        <MudTreeView T="TreeItem" Items="AppData.TreeItems" Dense="true" CanActivate="true"
                      ActivatedValueChanged="ActivatedValueChanged" ServerData="ServerDataAsync">
             <ItemTemplate>
-                <MudTreeViewItem Value="@context" Items="@context.Nodes" Text="@context.Name" Icon="@context.Icon" />
+                <MudTreeViewItem Value="@context" Items="@context.Items" Text="@context.Text" Icon="@context.Icon" />
             </ItemTemplate>
         </MudTreeView>
     </MudContainer>
