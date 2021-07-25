@@ -33,7 +33,14 @@ namespace Nexar.Design.Pages
         {
             ValidateToken(token);
             AppData.Token = token;
-            await JS.InvokeVoidAsync("setLocalStorage", AppData.KeyToken, token);
+            try
+            {
+                await JS.InvokeVoidAsync("setLocalStorage", AppData.KeyToken, token);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         /// <summary>
@@ -41,6 +48,9 @@ namespace Nexar.Design.Pages
         /// </summary>
         async Task ConnectAsync()
         {
+            if (string.IsNullOrEmpty(_token))
+                return;
+
             _loading = true;
             try
             {
@@ -68,7 +78,7 @@ namespace Nexar.Design.Pages
         {
             // skip started
             _token = AppData.Token;
-            if (_token != null)
+            if (!string.IsNullOrEmpty(_token))
                 return;
 
             var uri = NavManager.ToAbsoluteUri(NavManager.Uri);

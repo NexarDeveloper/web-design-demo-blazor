@@ -10,14 +10,11 @@ namespace Nexar.Design.Shared
 {
     public partial class NavMenu : IDisposable
     {
-        [Inject]
-        NavigationManager NavManager { get; init; }
+        [Inject] NavigationManager NavManager { get; init; }
 
-        [Inject]
-        AppData AppData { get; init; }
+        [Inject] NexarClient Client { get; init; }
 
-        [Inject]
-        NexarClient Client { get; init; }
+        [Inject] AppData AppData { get; init; }
 
         protected override void OnInitialized()
         {
@@ -30,7 +27,7 @@ namespace Nexar.Design.Shared
             GC.SuppressFinalize(this);
         }
 
-        async Task<HashSet<TreeItem>> ServerDataAsync(TreeItem node)
+        async Task<HashSet<TreeItem>> ServerData(TreeItem node)
         {
             try
             {

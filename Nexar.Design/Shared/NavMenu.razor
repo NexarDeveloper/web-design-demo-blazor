@@ -9,7 +9,7 @@ else
     <MudContainer>
         <MudBadge>Workspaces</MudBadge>
         <MudTreeView T="TreeItem" Items="AppData.TreeItems" Dense="true" CanActivate="true"
-                     ActivatedValueChanged="ActivatedValueChanged" ServerData="ServerDataAsync">
+                     ActivatedValueChanged="ActivatedValueChanged" ServerData="ServerData">
             <ItemTemplate>
                 <MudTreeViewItem Value="@context" Items="@context.Items" Text="@context.Text" Icon="@context.Icon" />
             </ItemTemplate>
