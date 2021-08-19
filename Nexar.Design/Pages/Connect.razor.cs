@@ -14,35 +14,6 @@ namespace Nexar.Design.Pages
         string _token;
         bool _loading;
 
-        static void ValidateToken(string token)
-        {
-            try
-            {
-                var tokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
-                var jwtSecurityToken = tokenHandler.ReadJwtToken(token);
-                if (jwtSecurityToken.ValidTo < DateTime.UtcNow.AddSeconds(10))
-                    throw new Exception("Expired");
-            }
-            catch (Exception)
-            {
-                throw new Exception("Invalid or expired token.");
-            }
-        }
-
-        async Task AcceptToken(string token)
-        {
-            ValidateToken(token);
-            AppData.Token = token;
-            try
-            {
-                await JS.InvokeVoidAsync("setLocalStorage", AppData.KeyToken, token);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-        }
-
         /// <summary>
         /// Get token from the user input, then go to search.
         /// </summary>
@@ -54,12 +25,25 @@ namespace Nexar.Design.Pages
             _loading = true;
             try
             {
-                await AcceptToken(_token.Trim());
+                // share token for services
+                AppData.Token = _token;
 
+                // fetch workspaces
                 var res = await Client.Workspaces.ExecuteAsync();
                 EnsureNoErrors(res);
 
+                // share workspaces
                 AppData.SetWorkspaces(res.Data.DesWorkspaces);
+
+                // save "good token"
+                try
+                {
+                    await JS.InvokeVoidAsync("setLocalStorage", AppData.KeyToken, _token);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
             catch (Exception ex)
             {
@@ -94,7 +78,6 @@ namespace Nexar.Design.Pages
 
                 if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("token", out var token))
                 {
-                    ValidateToken(token);
                     _token = token;
                     AppData.Token = token;
 

@@ -61,6 +61,12 @@ type Mutation {
   desUpdateComment(input: DesUpdateCommentInput!): DesUpdateCommentPayload!
   desCreateCommentThread(input: DesCreateCommentThreadInput!): DesCreateCommentThreadPayload!
   desDeleteCommentThread(input: DesDeleteCommentThreadInput!): DesDeleteCommentThreadPayload!
+  "Creates a user."
+  desCreateUser(input: DesCreateUserInput!): DesCreateUserPayload!
+  "Deletes the specified user."
+  desDeleteUser(input: DesDeleteUserInput!): DesDeleteUserPayload!
+  "Updates the specified user properties."
+  desUpdateUser(input: DesUpdateUserInput!): DesUpdateUserPayload!
   desLaunchWorkflow(input: DesLaunchWorkflowInput!): DesLaunchWorkflowPayload!
   desTerminateWorkflows(input: DesTerminateWorkflowsInput!): DesTerminateWorkflowsPayload!
 }
@@ -186,22 +192,20 @@ type DesCommentThread {
 type DesComponent implements Node {
   "The node identifier for this component (used by `desComponentById`)."
   id: ID!
-  "The list of the part choices associated with this component."
-  manufacturerComponents: [DesManufacturerComponent!]!
+  "The component folder."
   folder: DesFolder
+  "The list of the part choices associated with this component."
+  manufacturerParts: [DesManufacturerPart!]!
+  "More component data, relatively expensive, recommended for individual components with `desComponentById`."
+  details: DesComponentDetails!
+  "The library label for this component."
+  name: String!
   "The additional information for this component."
   comment: String!
   "The summary of function or other performance details for this component."
   description: String!
-  "The library label for this component."
-  name: String!
+  "The component revision."
   revision: String!
-  "The list of the parameters describing this component."
-  parameters: [DesComponentParameter!]!
-  "The list of the symbols used for this component."
-  symbols: [DesSymbol!]!
-  "The list of the footprints used this component."
-  footprints: [DesFootprint!]!
   model3D: DesModel3D
 }
 
@@ -214,6 +218,15 @@ type DesComponentConnection {
   "A flattened list of the nodes."
   nodes: [DesComponent!]
   totalCount: Int!
+}
+
+type DesComponentDetails {
+  "The list of the parameters describing this component."
+  parameters: [DesComponentParameter!]!
+  "The list of the symbols used for this component."
+  symbols: [DesSymbol!]!
+  "The list of the footprints used this component."
+  footprints: [DesFootprint!]!
 }
 
 "An edge in a connection."
@@ -241,11 +254,19 @@ type DesCreateCommentThreadPayload {
   errors: [DesPayloadError!]!
 }
 
+type DesCreateUserPayload {
+  userId: String!
+}
+
 type DesDeleteCommentPayload {
   errors: [DesPayloadError!]!
 }
 
 type DesDeleteCommentThreadPayload {
+  errors: [DesPayloadError!]!
+}
+
+type DesDeleteUserPayload {
   errors: [DesPayloadError!]!
 }
 
@@ -382,11 +403,13 @@ type DesManufacturePackage {
   name: String!
 }
 
-type DesManufacturerComponent {
-  name: String!
+type DesManufacturerPart {
+  supplierParts: [DesSupplierPart!]!
+  "The manufacturer company name."
+  companyName: String!
+  "The part number (MPN)."
   partNumber: String!
   priority: Int!
-  supplierComponents: [DesSupplierComponent!]!
 }
 
 type DesMention {
@@ -659,10 +682,26 @@ type DesStackup {
   stacks: [DesStack!]!
 }
 
-type DesSupplierComponent {
-  name: String!
+type DesSupplierPart {
+  "The supplier company name."
+  companyName: String!
+  "The part number (SKU)."
   partNumber: String!
-  priority: Int!
+  "Available for library components."
+  prices: [DesSupplierPrice!]
+  "Available for library components."
+  stocks: [DesSupplierStock!]
+}
+
+type DesSupplierPrice {
+  currency: String!
+  price: Decimal!
+  breakQuantity: Int!
+}
+
+type DesSupplierStock {
+  locationName: String!
+  quantity: Decimal!
 }
 
 type DesSymbol {
@@ -679,6 +718,7 @@ type DesSymbol {
 
 type DesTeam {
   users: [DesUser!]!
+  groups: [DesUserGroup!]!
 }
 
 type DesTerminateWorkflowsError {
@@ -708,8 +748,14 @@ type DesUpdateCommentPayload {
   errors: [DesPayloadError!]!
 }
 
+type DesUpdateUserPayload {
+  errors: [DesPayloadError!]!
+}
+
 "A user information contains the identifier and nullable extra fields."
 type DesUser {
+  "Null if the user no longer exists."
+  groups: [DesUserGroup!]
   "The internal user ID."
   userId: String!
   "Null if the user no longer exists."
@@ -717,7 +763,15 @@ type DesUser {
   "Null if the user no longer exists."
   email: String
   "Null if the user no longer exists."
-  fullName: String
+  firstName: String
+  "Null if the user no longer exists."
+  lastName: String
+}
+
+"A user group information."
+type DesUserGroup {
+  "The group name."
+  name: String!
 }
 
 type DesVia {
@@ -905,6 +959,15 @@ input DesCreateCommentThreadInput {
   releaseId: String
 }
 
+input DesCreateUserInput {
+  workspaceUrl: String!
+  userName: String!
+  password: String!
+  firstName: String!
+  lastName: String!
+  email: String!
+}
+
 input DesDeleteCommentInput {
   entityId: ID!
   commentThreadId: String!
@@ -914,6 +977,11 @@ input DesDeleteCommentInput {
 input DesDeleteCommentThreadInput {
   entityId: ID!
   commentThreadId: String!
+}
+
+input DesDeleteUserInput {
+  workspaceUrl: String!
+  userId: String!
 }
 
 input DesLaunchWorkflowInput {
@@ -998,6 +1066,13 @@ input DesUpdateCommentInput {
   commentThreadId: String!
   commentId: String!
   text: String!
+}
+
+input DesUpdateUserInput {
+  workspaceUrl: String!
+  userId: String!
+  firstName: String
+  lastName: String
 }
 
 "A variant contains a specific configuration of a base design."
