@@ -67,6 +67,16 @@ type Mutation {
   desDeleteUser(input: DesDeleteUserInput!): DesDeleteUserPayload!
   "Updates the specified user properties."
   desUpdateUser(input: DesUpdateUserInput!): DesUpdateUserPayload!
+  "Creates a new user group."
+  desCreateUserGroup(input: DesCreateUserGroupInput!): DesCreateUserGroupPayload!
+  "Deletes the specified user group."
+  desDeleteUserGroup(input: DesDeleteUserGroupInput!): DesDeleteUserGroupPayload!
+  "Updates the specified user group."
+  desUpdateUserGroup(input: DesUpdateUserGroupInput!): DesUpdateUserGroupPayload!
+  "Adds users to the specified group."
+  desAddUsersToGroup(input: DesAddUsersToGroupInput!): DesAddUsersToGroupPayload!
+  "Removes users from the specified group."
+  desRemoveUsersFromGroup(input: DesRemoveUsersFromGroupInput!): DesRemoveUsersFromGroupPayload!
   desLaunchWorkflow(input: DesLaunchWorkflowInput!): DesLaunchWorkflowPayload!
   desTerminateWorkflows(input: DesTerminateWorkflowsInput!): DesTerminateWorkflowsPayload!
 }
@@ -82,6 +92,10 @@ interface Node {
 
 type DesAuthorizationToken {
   token: String!
+}
+
+type DesAddUsersToGroupPayload {
+  errors: [DesPayloadError!]!
 }
 
 type DesArea {
@@ -254,6 +268,10 @@ type DesCreateCommentThreadPayload {
   errors: [DesPayloadError!]!
 }
 
+type DesCreateUserGroupPayload {
+  id: ID!
+}
+
 type DesCreateUserPayload {
   userId: String!
 }
@@ -263,6 +281,10 @@ type DesDeleteCommentPayload {
 }
 
 type DesDeleteCommentThreadPayload {
+  errors: [DesPayloadError!]!
+}
+
+type DesDeleteUserGroupPayload {
   errors: [DesPayloadError!]!
 }
 
@@ -632,6 +654,10 @@ type DesReleaseVariant {
   schematics: [DesSchematic!]!
 }
 
+type DesRemoveUsersFromGroupPayload {
+  errors: [DesPayloadError!]!
+}
+
 "A schematic contains the design parts and logical connections."
 type DesSchematic {
   "The list of all part instances used in this schematic grouped into pages."
@@ -748,6 +774,10 @@ type DesUpdateCommentPayload {
   errors: [DesPayloadError!]!
 }
 
+type DesUpdateUserGroupPayload {
+  errors: [DesPayloadError!]!
+}
+
 type DesUpdateUserPayload {
   errors: [DesPayloadError!]!
 }
@@ -769,7 +799,9 @@ type DesUser {
 }
 
 "A user group information."
-type DesUserGroup {
+type DesUserGroup implements Node {
+  "The node ID."
+  id: ID!
   "The group name."
   name: String!
 }
@@ -944,6 +976,13 @@ input DesComparableNullableOfDateTimeOperationFilterInput {
   nlte: DateTime
 }
 
+input DesAddUsersToGroupInput {
+  "The group node ID."
+  id: ID!
+  "User IDs."
+  userIds: [String!]!
+}
+
 input DesCreateCommentInput {
   entityId: ID!
   commentThreadId: String!
@@ -957,6 +996,11 @@ input DesCreateCommentThreadInput {
   objectId: String
   area: DesRectangleInput
   releaseId: String
+}
+
+input DesCreateUserGroupInput {
+  workspaceUrl: String!
+  name: String!
 }
 
 input DesCreateUserInput {
@@ -979,6 +1023,11 @@ input DesDeleteCommentThreadInput {
   commentThreadId: String!
 }
 
+input DesDeleteUserGroupInput {
+  "The group node ID."
+  id: ID!
+}
+
 input DesDeleteUserInput {
   workspaceUrl: String!
   userId: String!
@@ -988,7 +1037,10 @@ input DesLaunchWorkflowInput {
   workspaceUrl: String!
   workflowDefinitionId: String!
   name: String
+  "The string variables."
   variables: [DesWorkflowVariableInput!]!
+  "The attachment variables."
+  attachments: [DesWorkflowAttachmentVariableInput!]
 }
 
 input DesOnCommentUpdatedInput {
@@ -1046,6 +1098,13 @@ input DesReleaseVariantFilterInput {
   schematics: DesListFilterInputTypeOfDesSchematicFilterInput
 }
 
+input DesRemoveUsersFromGroupInput {
+  "The group node ID."
+  id: ID!
+  "User IDs."
+  userIds: [String!]!
+}
+
 "A schematic contains the design parts and logical connections."
 input DesSchematicFilterInput {
   and: [DesSchematicFilterInput!]
@@ -1068,6 +1127,13 @@ input DesUpdateCommentInput {
   text: String!
 }
 
+input DesUpdateUserGroupInput {
+  "The group node ID."
+  id: ID!
+  "The group name."
+  name: String!
+}
+
 input DesUpdateUserInput {
   workspaceUrl: String!
   userId: String!
@@ -1083,6 +1149,13 @@ input DesWipVariantFilterInput {
   name: DesStringOperationFilterInput
   "The list of schematic documents for this design variant."
   schematics: DesListFilterInputTypeOfDesSchematicFilterInput
+}
+
+input DesWorkflowAttachmentVariableInput {
+  "The variable name."
+  name: String!
+  "Uploaded file references."
+  files: [String!]!
 }
 
 "A workflow definition contains a logical sequence of tasks."

@@ -3,12 +3,15 @@
 [nexar.com]: https://nexar.com/
 [web-design-demo.nexar.com]: https://web-design-demo.nexar.com
 [nexar-token-cs]: https://github.com/NexarDeveloper/nexar-token-cs
+[nexar-token-py]: https://github.com/NexarDeveloper/nexar-token-py
 
 Demo Blazor WebAssembly with design queries powered by Nexar.
 
 Live demo: [web-design-demo.nexar.com]
 
 ## How to use
+
+If you have not done this already, please [register at nexar.com](https://github.com/NexarDeveloper/nexar-forum/discussions/4).
 
 In order to see anything useful in the app, you need your Altium Live
 credentials and have to be a member of at least one Altium 365 workspace.
@@ -19,7 +22,7 @@ starts automatically connected, your Altium workspace and project tree should
 appear in the left panel.
 
 Alternatively, you may get a token beforehand, either at [nexar.com] or using
-the [nexar-token-cs] tool, cloned and built for local use.
+one of the tools: [nexar-token-cs], [nexar-token-py].
 
 Having got a token, copy it to the clipboard and navigate to the app URL. At
 the `Connect` page paste the token and click `CONNECT`. The browser remembers
