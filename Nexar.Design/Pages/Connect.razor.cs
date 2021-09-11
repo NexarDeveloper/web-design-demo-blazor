@@ -66,6 +66,7 @@ namespace Nexar.Design.Pages
                 return;
 
             var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+            _loading = true;
             try
             {
                 if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("mode", out var mode))
@@ -105,6 +106,10 @@ namespace Nexar.Design.Pages
             {
                 await ShowErrorAsync(ex.Message);
                 NavManager.NavigateTo("");
+            }
+            finally
+            {
+                _loading = false;
             }
         }
     }
