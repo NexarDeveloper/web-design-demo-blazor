@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
 using Nexar.Client;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Nexar.Design.Pages

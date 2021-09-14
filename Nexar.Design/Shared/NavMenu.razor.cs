@@ -37,6 +37,7 @@ namespace Nexar.Design.Shared
                     res.EnsureNoErrors();
 
                     workspace.Items = res.Data.DesProjects.Nodes
+                        .OrderBy(x => x.Name, StringComparer.OrdinalIgnoreCase)
                         .Select(x => (TreeItem)new ProjectItem(x, workspace))
                         .ToHashSet();
 

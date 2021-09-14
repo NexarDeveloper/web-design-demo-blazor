@@ -912,6 +912,8 @@ type DesWorkspace implements Node {
   url: String!
   "The summary of this workspace content or purpose."
   description: String
+  "Tells if the workspace is the current user default."
+  isDefault: Boolean!
 }
 
 "Information about pagination in a connection."
@@ -1217,6 +1219,8 @@ input DesWorkspaceFilterInput {
   url: DesStringOperationFilterInput
   "The summary of this workspace content or purpose."
   description: DesStringOperationFilterInput
+  "Tells if the workspace is the current user default."
+  isDefault: DesBooleanOperationFilterInput
 }
 
 input DesListFilterInputTypeOfDesSchematicFilterInput {
