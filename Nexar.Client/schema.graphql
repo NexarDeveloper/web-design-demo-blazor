@@ -607,7 +607,9 @@ type DesRectangle {
 }
 
 "A release is a published version of a design with additional generated files for manufacturing."
-type DesRelease {
+type DesRelease implements Node {
+  "The node identifier for this release (used by `desReleaseById`)."
+  id: ID!
   "The list of variations contained in this release."
   variants(where: DesReleaseVariantFilterInput): [DesReleaseVariant!]!
   manufacturePackages: [DesManufacturePackage!]!
@@ -1082,6 +1084,8 @@ input DesRectangleInput {
 input DesReleaseFilterInput {
   and: [DesReleaseFilterInput!]
   or: [DesReleaseFilterInput!]
+  "The node identifier for this release (used by `desReleaseById`)."
+  id: DesStringOperationFilterInput
   "The `DateTime` when this release was created."
   createdAt: DesComparableDateTimeOperationFilterInput
   "The summary of this release content or purpose."

@@ -20,7 +20,7 @@
             <MudCard Outlined="true">
                 <MudCardContent>
                     <MudText Typo="Typo.body2"><b>From:</b> @comment.CreatedBy.Email</MudText>
-                    <MudTextFieldString Text="@comment.Text" Lines="@(CountRows(comment.Text))" ReadOnly="true" />
+                    <MudTextField T="string" Text="@comment.Text" Lines="@(CountRows(comment.Text))" ReadOnly="true" />
                 </MudCardContent>
             </MudCard>
         }
