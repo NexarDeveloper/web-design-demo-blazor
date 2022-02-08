@@ -22,11 +22,6 @@ namespace Nexar.Design.Pages
         [Inject] public NavigationManager NavManager { get; init; }
 
         /// <summary>
-        /// The application state.
-        /// </summary>
-        [Inject] public AppData AppData { get; init; }
-
-        /// <summary>
         /// Check the operation result and throw on any errors.
         /// </summary>
         public static void EnsureNoErrors(IOperationResult result)

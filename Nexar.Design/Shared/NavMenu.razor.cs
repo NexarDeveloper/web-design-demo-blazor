@@ -12,10 +12,6 @@ namespace Nexar.Design.Shared
     {
         [Inject] NavigationManager NavManager { get; init; }
 
-        [Inject] NexarClient Client { get; init; }
-
-        [Inject] AppData AppData { get; init; }
-
         protected override void OnInitialized()
         {
             AppData.OnChange += StateHasChanged;
@@ -33,7 +29,8 @@ namespace Nexar.Design.Shared
             {
                 if (node is WorkspaceItem workspace)
                 {
-                    var res = await Client.Projects.ExecuteAsync(workspace.Tag.Url);
+                    var client = NexarClientFactory.GetClient(workspace.Tag.Location.ApiServiceUrl);
+                    var res = await client.Projects.ExecuteAsync(workspace.Tag.Url);
                     res.EnsureNoErrors();
 
                     workspace.Items = res.Data.DesProjects.Nodes
@@ -46,7 +43,8 @@ namespace Nexar.Design.Shared
 
                 if (node is ProjectItem project)
                 {
-                    var res = await Client.CommentThreads.ExecuteAsync(project.Tag.Id);
+                    var client = NexarClientFactory.GetClient(project.Workspace.Tag.Location.ApiServiceUrl);
+                    var res = await client.CommentThreads.ExecuteAsync(project.Tag.Id);
                     res.EnsureNoErrors();
 
                     project.Items = res.Data.DesCommentThreads

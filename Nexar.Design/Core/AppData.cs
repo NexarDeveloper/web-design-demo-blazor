@@ -9,15 +9,14 @@ namespace Nexar.Design
     /// The application state and options. Different modes and URLs are only
     /// needed for internal development. Clients normally use nexar.com URLs.
     /// </summary>
-    public class AppData
+    public static class AppData
     {
-        public string Token { get; set; }
-        public AppMode Mode { get; set; } = AppMode.Prod;
+        public static AppMode Mode { get; set; } = AppMode.Prod;
 
         /// <summary>
         /// The identity server endpoint.
         /// </summary>
-        public string Authority =>
+        public static string Authority =>
             Mode == AppMode.Prod
             ? "https://identity.nexar.com/"
             : "https://identity.nexar.com/";
@@ -25,7 +24,7 @@ namespace Nexar.Design
         /// <summary>
         /// The Nexar GraphQL API endpoint.
         /// </summary>
-        public string ApiEndpoint =>
+        public static string ApiEndpoint =>
             Mode == AppMode.Prod
             ? "https://api.nexar.com/graphql"
             : "https://api.nexar.com/graphql";
@@ -33,15 +32,15 @@ namespace Nexar.Design
         /// <summary>
         /// The Nexar home page.
         /// </summary>
-        public string NexarDotCom =>
+        public static string NexarDotCom =>
             Mode == AppMode.Prod
-            ? "http://nexar.com"
-            : "http://nexar.com";
+            ? "https://nexar.com"
+            : "https://nexar.com";
 
         /// <summary>
         /// The local storage key for token.
         /// </summary>
-        public string KeyToken =>
+        public static string KeyToken =>
             Mode == AppMode.Prod
             ? "_210528_p1"
             : "_210529_9a";
@@ -49,25 +48,25 @@ namespace Nexar.Design
         /// <summary>
         /// This event is triggered on changes.
         /// </summary>
-        public event Action OnChange;
+        public static event Action OnChange;
 
-        public void Reset()
+        public static void Reset()
         {
-            Token = null;
+            NexarClientFactory.AccessToken = null;
             TreeItems = null;
             OnChange?.Invoke();
         }
 
-        public HashSet<TreeItem> TreeItems { get; private set; }
-        public void SetWorkspaces(IReadOnlyList<IMyWorkspace> source)
+        public static HashSet<TreeItem> TreeItems { get; private set; }
+        public static void SetWorkspaces(IReadOnlyList<IMyWorkspace> source)
         {
             TreeItems = source.Select(x => (TreeItem)new WorkspaceItem(x)).ToHashSet();
             OnChange?.Invoke();
         }
 
-        WorkspaceItem currentWorkspace;
-        public event Action OnChangeWorkspace;
-        public WorkspaceItem CurrentWorkspace
+        static WorkspaceItem currentWorkspace;
+        public static event Action OnChangeWorkspace;
+        public static WorkspaceItem CurrentWorkspace
         {
             get => currentWorkspace;
             set
@@ -77,9 +76,9 @@ namespace Nexar.Design
             }
         }
 
-        ProjectItem currentProject;
-        public event Action OnChangeProject;
-        public ProjectItem CurrentProject
+        static ProjectItem currentProject;
+        public static event Action OnChangeProject;
+        public static ProjectItem CurrentProject
         {
             get => currentProject;
             set
@@ -89,9 +88,10 @@ namespace Nexar.Design
             }
         }
 
-        ThreadItem currentThread;
-        public event Action OnChangeThread;
-        public ThreadItem CurrentThread
+        static ThreadItem currentThread;
+
+        public static event Action OnChangeThread;
+        public static ThreadItem CurrentThread
         {
             get => currentThread;
             set

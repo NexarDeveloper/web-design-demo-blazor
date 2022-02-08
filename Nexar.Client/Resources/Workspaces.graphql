@@ -7,4 +7,7 @@
 fragment MyWorkspace on DesWorkspace {
   name
   url
+  location {
+    apiServiceUrl
+  }
 }

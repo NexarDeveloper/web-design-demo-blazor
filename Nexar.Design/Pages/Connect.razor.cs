@@ -1,17 +1,13 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.WebUtilities;
+﻿using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
 using Nexar.Client;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Nexar.Design.Pages
 {
     public partial class Connect
     {
-        [Inject] NexarClient Client { get; set; }
-
         string _token;
         bool _loading;
 
@@ -27,10 +23,11 @@ namespace Nexar.Design.Pages
             try
             {
                 // share token for services
-                AppData.Token = _token;
+                NexarClientFactory.AccessToken = _token;
 
                 // fetch workspaces
-                var res = await Client.Workspaces.ExecuteAsync();
+                var client = NexarClientFactory.GetClient(AppData.ApiEndpoint);
+                var res = await client.Workspaces.ExecuteAsync();
                 EnsureNoErrors(res);
 
                 // share workspaces
@@ -62,7 +59,7 @@ namespace Nexar.Design.Pages
         protected override async Task OnInitializedAsync()
         {
             // skip started
-            _token = AppData.Token;
+            _token = NexarClientFactory.AccessToken;
             if (!string.IsNullOrEmpty(_token))
                 return;
 
@@ -81,9 +78,10 @@ namespace Nexar.Design.Pages
                 if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("token", out var token))
                 {
                     _token = token;
-                    AppData.Token = token;
+                    NexarClientFactory.AccessToken = token;
 
-                    var res = await Client.Workspaces.ExecuteAsync();
+                    var client = NexarClientFactory.GetClient(AppData.ApiEndpoint);
+                    var res = await client.Workspaces.ExecuteAsync();
                     EnsureNoErrors(res);
 
                     AppData.SetWorkspaces(res.Data.DesWorkspaces);
