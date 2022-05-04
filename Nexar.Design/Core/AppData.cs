@@ -17,33 +17,45 @@ namespace Nexar.Design
         /// The identity server endpoint.
         /// </summary>
         public static string Authority =>
-            Mode == AppMode.Prod
-            ? "https://identity.nexar.com/"
-            : "https://identity.nexar.com/";
+            Mode switch
+            {
+                AppMode.Prod => "https://identity.nexar.com/",
+                AppMode.Dev => "https://identity.nexar.com/",
+                _ => "https://identity.nexar.com/",
+            };
 
         /// <summary>
         /// The Nexar GraphQL API endpoint.
         /// </summary>
         public static string ApiEndpoint =>
-            Mode == AppMode.Prod
-            ? "https://api.nexar.com/graphql"
-            : "https://api.nexar.com/graphql";
+            Mode switch
+            {
+                AppMode.Prod => "https://api.nexar.com/graphql",
+                AppMode.Dev => "https://api.nexar.com/graphql",
+                _ => "https://api.nexar.com/graphql",
+            };
 
         /// <summary>
         /// The Nexar home page.
         /// </summary>
         public static string NexarDotCom =>
-            Mode == AppMode.Prod
-            ? "https://nexar.com"
-            : "https://nexar.com";
+            Mode switch
+            {
+                AppMode.Prod => "https://nexar.com",
+                AppMode.Dev => "https://nexar.com",
+                _ => "https://nexar.com",
+            };
 
         /// <summary>
         /// The local storage key for token.
         /// </summary>
         public static string KeyToken =>
-            Mode == AppMode.Prod
-            ? "_210528_p1"
-            : "_210529_9a";
+            Mode switch
+            {
+                AppMode.Prod => "_210528_p1",
+                AppMode.Dev => "_210529_9a",
+                _ => "_220225_iz",
+            };
 
         /// <summary>
         /// This event is triggered on changes.
@@ -106,5 +118,6 @@ namespace Nexar.Design
     {
         Prod,
         Dev,
+        Uat,
     }
 }
