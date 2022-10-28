@@ -1,13 +1,12 @@
 # Nexar.Design Demo
 
 [nexar.com]: https://nexar.com/
-[web-design-demo.nexar.com]: https://web-design-demo.nexar.com
 [nexar-token-cs]: https://github.com/NexarDeveloper/nexar-token-cs
 [nexar-token-py]: https://github.com/NexarDeveloper/nexar-token-py
 
 Demo Blazor WebAssembly with design queries powered by Nexar.
 
-Live demo: [web-design-demo.nexar.com]
+Live demo: <https://web-design-demo.nexar.com>
 
 ## How to use
 
