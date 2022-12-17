@@ -3,48 +3,47 @@ using System;
 using System.Collections.Concurrent;
 using System.Net.Http.Headers;
 
-namespace Nexar.Client
+namespace Nexar.Client;
+
+/// <summary>
+/// Getting configured Nexar clients.
+/// </summary>
+public static class NexarClientFactory
 {
+    static readonly ConcurrentDictionary<string, NexarClient> _clients = new ConcurrentDictionary<string, NexarClient>();
+
     /// <summary>
-    /// Getting configured Nexar clients.
+    /// Nexar access token, must be assigned.
     /// </summary>
-    public static class NexarClientFactory
+    public static string AccessToken { get; set; }
+
+    /// <summary>
+    /// Gets the specified client.
+    /// </summary>
+    public static NexarClient GetClient(string endpoint)
     {
-        static readonly ConcurrentDictionary<string, NexarClient> _clients = new ConcurrentDictionary<string, NexarClient>();
+        if (string.IsNullOrEmpty(endpoint))
+            throw new ArgumentNullException(nameof(endpoint));
 
-        /// <summary>
-        /// Nexar access token, must be assigned.
-        /// </summary>
-        public static string AccessToken { get; set; }
+        if (string.IsNullOrEmpty(AccessToken))
+            throw new ArgumentNullException(nameof(AccessToken));
 
-        /// <summary>
-        /// Gets the specified client.
-        /// </summary>
-        public static NexarClient GetClient(string endpoint)
-        {
-            if (string.IsNullOrEmpty(endpoint))
-                throw new ArgumentNullException(nameof(endpoint));
+        var endpointUri = new Uri(endpoint);
+        return _clients.GetOrAdd(endpointUri.AbsoluteUri, _ => CreateClient(endpointUri));
+    }
 
-            if (string.IsNullOrEmpty(AccessToken))
-                throw new ArgumentNullException(nameof(AccessToken));
+    private static NexarClient CreateClient(Uri endpoint)
+    {
+        var serviceCollection = new ServiceCollection();
+        serviceCollection
+            .AddNexarClient()
+            .ConfigureHttpClient(c =>
+            {
+                c.BaseAddress = endpoint;
+                c.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
+            });
 
-            var endpointUri = new Uri(endpoint);
-            return _clients.GetOrAdd(endpointUri.AbsoluteUri, _ => CreateClient(endpointUri));
-        }
-
-        private static NexarClient CreateClient(Uri endpoint)
-        {
-            var serviceCollection = new ServiceCollection();
-            serviceCollection
-                .AddNexarClient()
-                .ConfigureHttpClient(c =>
-                {
-                    c.BaseAddress = endpoint;
-                    c.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
-                });
-
-            var services = serviceCollection.BuildServiceProvider();
-            return services.GetRequiredService<NexarClient>();
-        }
+        var services = serviceCollection.BuildServiceProvider();
+        return services.GetRequiredService<NexarClient>();
     }
 }
