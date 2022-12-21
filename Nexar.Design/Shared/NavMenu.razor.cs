@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Nexar.Client;
-using StrawberryShake;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Nexar.Design.Shared;
@@ -27,33 +24,8 @@ public partial class NavMenu : IDisposable
     {
         try
         {
-            if (node is WorkspaceItem workspaceItem)
-            {
-                var client = NexarClientFactory.GetClient(workspaceItem.Tag.Location.ApiServiceUrl);
-                var res = await client.Projects.ExecuteAsync(workspaceItem.Tag.Url);
-                res.EnsureNoErrors();
-
-                workspaceItem.Items = res.Data.DesProjects.Nodes
-                    .OrderBy(x => x.Name, StringComparer.OrdinalIgnoreCase)
-                    .Select(x => (TreeItem)new ProjectItem(x, workspaceItem))
-                    .ToHashSet();
-
-                return workspaceItem.Items;
-            }
-
-            if (node is ProjectItem projectItem)
-            {
-                var client = NexarClientFactory.GetClient(projectItem.WorkspaceItem.Tag.Location.ApiServiceUrl);
-                var res = await client.CommentThreads.ExecuteAsync(projectItem.Tag.Id);
-                res.EnsureNoErrors();
-
-                projectItem.Items = res.Data.DesCommentThreads
-                    .OrderByDescending(x => x.ThreadNumber)
-                    .Select(x => (TreeItem)new ThreadItem(x, projectItem))
-                    .ToHashSet();
-
-                return projectItem.Items;
-            }
+            var items = await node.ServerData();
+            return items;
         }
         catch (Exception ex)
         {
@@ -64,25 +36,11 @@ public partial class NavMenu : IDisposable
 
     void ActivatedValueChanged(TreeItem node)
     {
-        if (node is WorkspaceItem workspace)
-        {
-            AppData.CurrentWorkspace = workspace;
-            NavManager.NavigateTo("workspace");
+        if (node is null)
             return;
-        }
 
-        if (node is ProjectItem project)
-        {
-            AppData.CurrentProject = project;
-            NavManager.NavigateTo("project");
-            return;
-        }
-
-        if (node is ThreadItem thread)
-        {
-            AppData.CurrentThread = thread;
-            NavManager.NavigateTo("thread");
-            return;
-        }
+        var page = node.SetCurrent();
+        if (page is not null)
+            NavManager.NavigateTo(page);
     }
 }

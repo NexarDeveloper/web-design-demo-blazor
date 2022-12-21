@@ -1,0 +1,35 @@
+﻿@page "/release"
+@inherits AbstractPage
+@implements IDisposable
+
+@if (ReleaseItem.Current != null)
+{
+    <MudContainer>
+        <MudText Typo="Typo.h4" GutterBottom="true">Release</MudText>
+
+        <MudTextField T="string" Label="Id" Text="@ReleaseItem.Current.Tag.Id" ReadOnly="true" Variant="Variant.Outlined" />
+
+        <MudTextField T="string" Label="ReleaseId" Text="@ReleaseItem.Current.Tag.ReleaseId" ReadOnly="true" Variant="Variant.Outlined" />
+
+        <MudTextField T="string" Label="Description" Text="@ReleaseItem.Current.Tag.Description" ReadOnly="true" Variant="Variant.Outlined" />
+
+        <MudTextField T="string" Label="CreatedAt" Text="@ReleaseItem.Current.Tag.CreatedAt.ToString()" ReadOnly="true" Variant="Variant.Outlined" />
+    </MudContainer>
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        ReleaseItem.OnChange += Update;
+    }
+
+    public void Dispose()
+    {
+        ReleaseItem.OnChange -= Update;
+    }
+
+    void Update()
+    {
+        StateHasChanged();
+    }
+}

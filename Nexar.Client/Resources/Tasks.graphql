@@ -1,0 +1,24 @@
+query WorkspaceTasks($workspaceUrl: String!) {
+  desWorkspaceTasks(workspaceUrl: $workspaceUrl, first: 10000) {
+    nodes {
+      ...MyTask
+    }
+  }
+}
+
+query ProjectTasks($projectId: ID!) {
+  desProjectTasks(projectId: $projectId, first: 10000) {
+    nodes {
+      ...MyTask
+    }
+  }
+}
+
+fragment MyTask on DesTask {
+  id
+  name
+  refId
+  description
+  priority
+  status
+}

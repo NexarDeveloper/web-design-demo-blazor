@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace Nexar.Design.Pages;
 
-public partial class Connect
+public partial class ConnectPage
 {
     string _token;
     bool _loading;
+    bool _connecting;
 
     /// <summary>
     /// Get token from the user input, then go to search.
@@ -19,7 +20,7 @@ public partial class Connect
         if (string.IsNullOrEmpty(_token))
             return;
 
-        _loading = true;
+        _connecting = true;
         try
         {
             // share token for services
@@ -49,7 +50,7 @@ public partial class Connect
         }
         finally
         {
-            _loading = false;
+            _connecting = false;
         }
     }
 

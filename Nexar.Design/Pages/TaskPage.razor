@@ -1,0 +1,39 @@
+﻿@page "/task"
+@inherits AbstractPage
+@implements IDisposable
+
+@if (TaskItem.Current != null)
+{
+    <MudContainer>
+        <MudText Typo="Typo.h4" GutterBottom="true">Task</MudText>
+
+        <MudTextField T="string" Label="Id" Text="@TaskItem.Current.Tag.Id" ReadOnly="true" Variant="Variant.Outlined" />
+
+        <MudTextField T="string" Label="Name" Text="@TaskItem.Current.Tag.Name" ReadOnly="true" Variant="Variant.Outlined" />
+
+        <MudTextField T="string" Label="RefId" Text="@TaskItem.Current.Tag.RefId" ReadOnly="true" Variant="Variant.Outlined" />
+
+        <MudTextField T="string" Label="Priority" Text="@TaskItem.Current.Tag.Priority.ToString()" ReadOnly="true" Variant="Variant.Outlined" />
+
+        <MudTextField T="string" Label="Status" Text="@TaskItem.Current.Tag.Status.ToString()" ReadOnly="true" Variant="Variant.Outlined" />
+
+        <MudTextField T="string" Label="Description" Text="@TaskItem.Current.Tag.Description" Lines="@CountLines(TaskItem.Current.Tag.Description)" ReadOnly="true" Variant="Variant.Outlined" />
+    </MudContainer>
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        TaskItem.OnChange += Update;
+    }
+
+    public void Dispose()
+    {
+        TaskItem.OnChange -= Update;
+    }
+
+    void Update()
+    {
+        StateHasChanged();
+    }
+}

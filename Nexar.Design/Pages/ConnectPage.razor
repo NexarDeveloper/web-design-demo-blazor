@@ -2,8 +2,8 @@
 @inherits AbstractPage
 
 <MudContainer>
-    <MudText>Demo Blazor app powered by <MudLink Href="@AppData.ApiEndpoint" Target="_blank">@AppData.ApiEndpoint</MudLink></MudText>
-    @if (AppData.TreeItems == null)
+    <MudText>Blazor app powered by <MudLink Href="@AppData.ApiEndpoint" Target="_blank">@AppData.ApiEndpoint</MudLink></MudText>
+    @if (AppData.TreeItems == null && !_loading)
     {
         <MudCard>
             <MudCardContent>
@@ -13,7 +13,7 @@
             </MudCardContent>
             <MudCardActions>
                 <MudButton Color="Color.Primary" OnClick="@ConnectAsync">Connect</MudButton>
-                @if (_loading)
+                @if (_connecting)
                 {
                     <MudProgressCircular Indeterminate="true" />
                 }

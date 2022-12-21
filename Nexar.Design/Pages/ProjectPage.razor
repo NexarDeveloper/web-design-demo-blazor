@@ -1,0 +1,54 @@
+﻿@page "/project"
+@inherits AbstractPage
+@implements IDisposable
+@using Nexar.Design
+
+@if (ProjectItem.Current != null)
+{
+    <MudContainer>
+        <MudText Typo="Typo.h4" GutterBottom="true">Project</MudText>
+
+        <MudTextField T="string" Label="Id" Text="@ProjectItem.Current.Tag.Id" ReadOnly="true" Variant="Variant.Outlined" />
+
+        <MudField Label="Url" Variant="Variant.Outlined">
+            <MudLink Href="@ProjectItem.Current.Tag.Url" Target="_blank">@ProjectItem.Current.Tag.Url</MudLink>
+        </MudField>
+
+        <MudTextField T="string" Label="Name" Text="@ProjectItem.Current.Tag.Name" ReadOnly="true" Variant="Variant.Outlined" />
+
+        <MudField Label="Preview" Variant="Variant.Outlined">
+            <MudAvatar Square=true Image="@ProjectItem.Current.Tag.PreviewUrl" Style="height:128px; width:128px;" />
+        </MudField>
+
+        <MudTable Items="@ProjectItem.Current.Tag.Parameters">
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">Parameters</MudText>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh>Name</MudTh>
+                <MudTh>Value</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Name">@context.Name</MudTd>
+                <MudTd DataLabel="Value">@context.Value</MudTd>
+            </RowTemplate>
+        </MudTable>
+    </MudContainer>
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        ProjectItem.OnChange += Update;
+    }
+
+    public void Dispose()
+    {
+        ProjectItem.OnChange -= Update;
+    }
+
+    void Update()
+    {
+        StateHasChanged();
+    }
+}

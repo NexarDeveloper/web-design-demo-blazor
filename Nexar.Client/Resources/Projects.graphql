@@ -8,8 +8,8 @@
 
 fragment MyProject on DesProject {
   id
-  name
   url
+  name
   previewUrl
   parameters {
     ... MyProjectParameter

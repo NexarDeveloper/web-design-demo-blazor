@@ -1,0 +1,31 @@
+﻿@page "/wipVariant"
+@inherits AbstractPage
+@implements IDisposable
+
+@if (WipVariantItem.Current != null)
+{
+    <MudContainer>
+        <MudText Typo="Typo.h4" GutterBottom="true">Design Variant</MudText>
+
+        <MudTextField T="string" Label="Name" Text="@WipVariantItem.Current.Tag.Name" ReadOnly="true" Variant="Variant.Outlined" />
+
+        <MudTextField T="string" Label="Bom.Id" Text="@WipVariantItem.Current.Tag.Bom.Id" ReadOnly="true" Variant="Variant.Outlined" />
+    </MudContainer>
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        WipVariantItem.OnChange += Update;
+    }
+
+    public void Dispose()
+    {
+        WipVariantItem.OnChange -= Update;
+    }
+
+    void Update()
+    {
+        StateHasChanged();
+    }
+}

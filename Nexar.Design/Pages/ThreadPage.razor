@@ -1,0 +1,48 @@
+﻿@page "/thread"
+@inherits AbstractPage
+@implements IDisposable
+
+@if (ThreadItem.Current != null)
+{
+    <MudContainer>
+        <MudText Typo="Typo.h4" GutterBottom="true">Comments</MudText>
+
+        <MudTextField T="string" Label="CommentThreadId" Text="@ThreadItem.Current.Tag.CommentThreadId" ReadOnly="true" Variant="Variant.Outlined" />
+
+        @if (ThreadItem.Current.Tag.OriginalStateScreenshotUrl != null)
+        {
+            <MudField Label="Original screenshot" Variant="Variant.Outlined">
+                <MudLink Href="@ThreadItem.Current.Tag.OriginalStateScreenshotUrl" Target="_blank">
+                    <MudAvatar Square=true Image="@ThreadItem.Current.Tag.OriginalStateScreenshotUrl" Style="height:128px; width:128px;" />
+                </MudLink>
+            </MudField>
+        }
+
+        @foreach (var comment in ThreadItem.Current.Tag.Comments)
+        {
+            <MudCard Outlined="true">
+                <MudCardContent>
+                    <MudText Typo="Typo.body2"><b>From:</b> @comment.CreatedBy.Email</MudText>
+                    <MudTextField T="string" Text="@comment.Text" Lines="@(CountLines(comment.Text))" ReadOnly="true" />
+                </MudCardContent>
+            </MudCard>
+        }
+    </MudContainer>
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        ThreadItem.OnChange += Update;
+    }
+
+    public void Dispose()
+    {
+        ThreadItem.OnChange -= Update;
+    }
+
+    void Update()
+    {
+        StateHasChanged();
+    }
+}

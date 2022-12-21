@@ -1,13 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="StrawberryShake.CodeGeneration.CSharp.Analyzers" Version="12.15.2">
-      <TreatAsUsed>true</TreatAsUsed>
-    </PackageReference>
+    <None Remove="Resources\Project.Releases.graphql" />
+    <None Remove="Resources\Project.WipVarians.graphql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="StrawberryShake.CodeGeneration.CSharp.Analyzers" Version="12.15.2" />
     <PackageReference Include="StrawberryShake.Transport.Http" Version="12.15.2" />
   </ItemGroup>
 

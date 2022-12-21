@@ -56,4 +56,16 @@ public partial class AbstractPage : ComponentBase
         AppData.Reset();
         NavManager.NavigateTo("");
     }
+
+    /// <summary>
+    /// Gets line count for a text field.
+    /// </summary>
+    public static int CountLines(string text)
+    {
+        int n = 1;
+        foreach (var c in text)
+            if (c == '\n')
+                ++n;
+        return n;
+    }
 }

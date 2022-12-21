@@ -1,0 +1,39 @@
+﻿@page "/user"
+@inherits AbstractPage
+@implements IDisposable
+
+@if (UserItem.Current != null)
+{
+    <MudContainer>
+        <MudText Typo="Typo.h4" GutterBottom="true">User</MudText>
+
+        <MudTextField T="string" Label="UserId" Text="@UserItem.Current.Tag.UserId" ReadOnly="true" Variant="Variant.Outlined" />
+
+        <MudTextField T="string" Label="UserName" Text="@UserItem.Current.Tag.UserName" ReadOnly="true" Variant="Variant.Outlined" />
+
+        <MudTextField T="string" Label="Email" Text="@UserItem.Current.Tag.Email" ReadOnly="true" Variant="Variant.Outlined" />
+
+        <MudTextField T="string" Label="Groups" Text="@UserItem.Current.Groups" ReadOnly="true" Variant="Variant.Outlined" />
+
+        <MudField Label="Picture" Variant="Variant.Outlined">
+            <MudAvatar Square=true Image="@UserItem.Current.Tag.PictureUrl" Style="height:128px; width:128px;" />
+        </MudField>
+    </MudContainer>
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        UserItem.OnChange += Update;
+    }
+
+    public void Dispose()
+    {
+        UserItem.OnChange -= Update;
+    }
+
+    void Update()
+    {
+        StateHasChanged();
+    }
+}

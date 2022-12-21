@@ -8,6 +8,23 @@ Demo Blazor WebAssembly with design queries powered by Nexar.
 
 Live demo: <https://web-design-demo.nexar.com>
 
+It is:
+
+- Altium 365 hierarchical data tree with some notable branches.
+- The example of using various Nexar queries in .NET applications.
+- The example of using workspace region specific service endpoints.
+
+Altium 365 data tree:
+
+- Workspaces
+    - Projects
+        - Design
+        - Releases
+        - Comments
+        - Tasks
+    - Tasks
+    - Users
+
 ## How to use
 
 If you have not done this already, please register at [nexar.com].
@@ -19,7 +36,7 @@ The app requires a token. Go to your [nexar.com] application details, click
 "Generate token". Alternatively, you may get a token using one of the tools:
 [nexar-token-cs], [nexar-token-py].
 
-Having got a token, copy it to the clipboard and navigate to the app URL. At
+Having got a token, copy it to the clipboard and open the app in a browser. At
 the `Connect` page paste the token and click `CONNECT`. The browser remembers
 and restores the token on next runs. The token may be used until it expires.
 

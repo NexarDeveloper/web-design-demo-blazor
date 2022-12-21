@@ -1,0 +1,19 @@
+query TeamUsers($workspaceUrl: String!) {
+  desTeam(workspaceUrl: $workspaceUrl) {
+    users {
+      ...MyUser
+    }
+  }
+}
+
+fragment MyUser on DesUser {
+  userId
+  userName
+  email
+  firstName
+  lastName
+  pictureUrl
+  groups {
+    name
+  }
+}

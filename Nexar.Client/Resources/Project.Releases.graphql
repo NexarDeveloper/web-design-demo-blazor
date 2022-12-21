@@ -1,0 +1,18 @@
+﻿query ProjectReleases($id: ID!) {
+  desProjectById(id: $id) {
+    design {
+      releases(first: 10000) {
+        nodes {
+          ...MyRelease
+        }
+      }
+    }
+  }
+}
+
+fragment MyRelease on DesRelease {
+  id
+  releaseId
+  description
+  createdAt
+}

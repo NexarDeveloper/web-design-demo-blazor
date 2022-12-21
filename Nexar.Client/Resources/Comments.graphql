@@ -1,25 +1,21 @@
-﻿query CommentThreads($projectId: ID!) {
-  desCommentThreads(
-    projectId: $projectId
-  ) {
-    ... MyThread
+query CommentThreads($projectId: ID!) {
+  desCommentThreads(projectId: $projectId) {
+    ...MyThread
   }
 }
 
 query CommentThread($projectId: ID!, $threadId: String!) {
-  desCommentThread(
-    projectId: $projectId
-    threadId: $threadId
-  ) {
-    ... MyThread
+  desCommentThread(projectId: $projectId, threadId: $threadId) {
+    ...MyThread
   }
 }
 
 fragment MyThread on DesCommentThread {
   threadNumber
+  commentThreadId
   originalStateScreenshotUrl
   comments {
-    ... MyComment
+    ...MyComment
   }
 }
 
