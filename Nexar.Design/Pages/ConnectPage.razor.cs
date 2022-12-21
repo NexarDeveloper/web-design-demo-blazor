@@ -37,7 +37,7 @@ public partial class ConnectPage
             // save "good token"
             try
             {
-                await JS.InvokeVoidAsync("setLocalStorage", AppData.KeyToken, _token);
+                await JS.InvokeVoidAsync("window.localStorage.setItem", AppData.KeyToken, _token);
             }
             catch (Exception ex)
             {
@@ -94,7 +94,7 @@ public partial class ConnectPage
             {
                 try
                 {
-                    _token = await JS.InvokeAsync<string>("getLocalStorage", AppData.KeyToken);
+                    _token = await JS.InvokeAsync<string>("window.localStorage.getItem", AppData.KeyToken);
                 }
                 catch (Exception ex)
                 {
