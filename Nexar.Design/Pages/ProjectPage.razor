@@ -8,7 +8,7 @@
     <MudContainer>
         <MudText Typo="Typo.h4" GutterBottom="true">Project</MudText>
 
-        <MudTextField T="string" Label="Id" Text="@ProjectItem.Current.Tag.Id" ReadOnly="true" Variant="Variant.Outlined" />
+        <TextFieldCopy Label="Id" Text="@ProjectItem.Current.Tag.Id" />
 
         <MudField Label="Url" Variant="Variant.Outlined">
             <MudLink Href="@ProjectItem.Current.Tag.Url" Target="_blank">@ProjectItem.Current.Tag.Url</MudLink>

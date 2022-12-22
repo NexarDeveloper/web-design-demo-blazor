@@ -7,7 +7,7 @@
     <MudContainer>
         <MudText Typo="Typo.h4" GutterBottom="true">Workspace</MudText>
 
-        <MudTextField T="string" Label="Id" Text="@WorkspaceItem.Current.Tag.Id" ReadOnly="true" Variant="Variant.Outlined" />
+        <TextFieldCopy Label="Id" Text="@WorkspaceItem.Current.Tag.Id" />
 
         <MudField Label="Url" Variant="Variant.Outlined">
             <MudLink Href="@WorkspaceItem.Current.Tag.Url" Target="_blank">@WorkspaceItem.Current.Tag.Url</MudLink>
@@ -18,6 +18,8 @@
         <MudTextField T="string" Label="Description" Text="@WorkspaceItem.Current.Tag.Description" ReadOnly="true" Variant="Variant.Outlined" />
 
         <MudTextField T="string" Label="Location.Name" Text="@WorkspaceItem.Current.Tag.Location.Name" ReadOnly="true" Variant="Variant.Outlined" />
+
+        <MudTextField T="string" Label="Location.ApiServiceUrl" Text="@WorkspaceItem.Current.Tag.Location.ApiServiceUrl" ReadOnly="true" Variant="Variant.Outlined" />
     </MudContainer>
 }
 

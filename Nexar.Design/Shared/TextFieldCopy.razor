@@ -1,0 +1,24 @@
+﻿@inject Microsoft.JSInterop.IJSRuntime JS
+
+<MudTextField T="string"
+    Label="@Label"
+    Text="@Text"
+    ReadOnly="true"
+    Variant="Variant.Outlined"
+    Adornment="Adornment.End"
+    AdornmentIcon="@Icons.Filled.ContentCopy"
+    OnAdornmentClick="OnClick"
+    />
+
+@code {
+    [Parameter]
+    public string Label { get; set; }
+
+    [Parameter]
+    public string Text { get; set; }
+
+    private async Task OnClick()
+    {
+        await JS.InvokeVoidAsyncWithErrorHandling("navigator.clipboard.writeText", Text);
+    }
+}

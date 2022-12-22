@@ -7,7 +7,7 @@
     <MudContainer>
         <MudText Typo="Typo.h4" GutterBottom="true">Comments</MudText>
 
-        <MudTextField T="string" Label="CommentThreadId" Text="@ThreadItem.Current.Tag.CommentThreadId" ReadOnly="true" Variant="Variant.Outlined" />
+        <TextFieldCopy Label="CommentThreadId" Text="@ThreadItem.Current.Tag.CommentThreadId" />
 
         @if (ThreadItem.Current.Tag.OriginalStateScreenshotUrl != null)
         {
