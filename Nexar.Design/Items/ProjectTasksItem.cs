@@ -25,7 +25,7 @@ public sealed class ProjectTasksItem : TreeItem2
 
         return res.Data.DesProjectTasks.Nodes
             .OrderBy(x => x.Name, StringComparer.OrdinalIgnoreCase)
-            .Select(x => (TreeItem)new TaskItem(x))
+            .Select(x => (TreeItem)new TaskItem(x, this))
             .ToHashSet();
     }
 }

@@ -5,7 +5,7 @@
 @if (ReleaseItem.Current != null)
 {
     <MudContainer>
-        <MudText Typo="Typo.h4" GutterBottom="true">Release</MudText>
+        <ItemPageHeader Text="Release" Item=@ReleaseItem.Current />
 
         <TextFieldCopy Label="Id" Text="@ReleaseItem.Current.Tag.Id" />
 

@@ -5,7 +5,7 @@
 @if (TaskItem.Current != null)
 {
     <MudContainer>
-        <MudText Typo="Typo.h4" GutterBottom="true">Task</MudText>
+        <ItemPageHeader Text="Task" Item=@TaskItem.Current />
 
         <TextFieldCopy Label="Id" Text="@TaskItem.Current.Tag.Id" />
 

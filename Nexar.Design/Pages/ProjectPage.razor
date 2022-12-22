@@ -6,8 +6,7 @@
 @if (ProjectItem.Current != null)
 {
     <MudContainer>
-        <MudText Typo="Typo.h4">Project</MudText>
-        <MudText Typo="Typo.subtitle1">@Path</MudText>
+        <ItemPageHeader Text="Project" Item=@ProjectItem.Current />
 
         <TextFieldCopy Label="Id" Text="@ProjectItem.Current.Tag.Id" />
 
@@ -52,7 +51,4 @@
     {
         StateHasChanged();
     }
-
-    string Path =>
-        ProjectItem.Current.Parent.Parent.Tag.Name + " / " + ProjectItem.Current.Tag.Name;
 }

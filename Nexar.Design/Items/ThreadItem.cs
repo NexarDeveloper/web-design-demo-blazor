@@ -6,7 +6,7 @@ namespace Nexar.Design;
 
 public sealed class ThreadItem : TreeItem3
 {
-    public ThreadItem(IMyThread tag)
+    public ThreadItem(IMyThread tag, ProjectCommentsItem parent) : base(parent)
     {
         Tag = tag;
         _name = Tag.Comments.Count == 0 ? "<empty>" : Tag.Comments[0].Text.Trim();

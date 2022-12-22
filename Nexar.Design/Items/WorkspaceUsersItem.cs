@@ -25,7 +25,7 @@ public sealed class WorkspaceUsersItem : TreeItem2
 
         return res.Data.DesTeam.Users
             .OrderBy(x => x.UserName, StringComparer.OrdinalIgnoreCase)
-            .Select(x => (TreeItem)new UserItem(x))
+            .Select(x => (TreeItem)new UserItem(x, this))
             .ToHashSet();
     }
 }

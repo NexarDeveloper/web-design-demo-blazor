@@ -5,7 +5,7 @@
 @if (ThreadItem.Current != null)
 {
     <MudContainer>
-        <MudText Typo="Typo.h4" GutterBottom="true">Comments</MudText>
+        <ItemPageHeader Text="Thread" Item=@ThreadItem.Current />
 
         <TextFieldCopy Label="CommentThreadId" Text="@ThreadItem.Current.Tag.CommentThreadId" />
 

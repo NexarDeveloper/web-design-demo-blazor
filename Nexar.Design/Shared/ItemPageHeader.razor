@@ -1,0 +1,11 @@
+﻿
+<MudText Typo="Typo.h4">@Text</MudText>
+<MudText Typo="Typo.subtitle1">@Item.Path</MudText>
+
+@code {
+    [Parameter]
+    public string Text { get; set; }
+
+    [Parameter]
+    public TreeItem Item { get; set; }
+}

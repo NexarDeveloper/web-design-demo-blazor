@@ -5,7 +5,7 @@
 @if (WorkspaceItem.Current != null)
 {
     <MudContainer>
-        <MudText Typo="Typo.h4" GutterBottom="true">Workspace</MudText>
+        <ItemPageHeader Text="Workspace" Item=@WorkspaceItem.Current />
 
         <TextFieldCopy Label="Id" Text="@WorkspaceItem.Current.Tag.Id" />
 

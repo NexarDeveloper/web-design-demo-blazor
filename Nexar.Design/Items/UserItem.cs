@@ -7,7 +7,7 @@ namespace Nexar.Design;
 
 public sealed class UserItem : TreeItem3
 {
-    public UserItem(IMyUser tag)
+    public UserItem(IMyUser tag, WorkspaceUsersItem parent) : base(parent)
     {
         Tag = tag;
     }

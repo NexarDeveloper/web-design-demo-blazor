@@ -5,7 +5,7 @@
 @if (UserItem.Current != null)
 {
     <MudContainer>
-        <MudText Typo="Typo.h4" GutterBottom="true">User</MudText>
+        <ItemPageHeader Text="User" Item=@UserItem.Current />
 
         <TextFieldCopy Label="UserId" Text="@UserItem.Current.Tag.UserId" />
 

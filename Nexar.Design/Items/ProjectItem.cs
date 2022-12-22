@@ -15,7 +15,7 @@ public sealed class ProjectItem : TreeItem2
     }
 
     public IMyProject Tag { get; }
-    public WorkspaceProjectsItem Parent { get; }
+    public new WorkspaceProjectsItem Parent { get; }
     public override string Text => Tag.Name;
     public override string Icon => Icons.Filled.Memory;
 

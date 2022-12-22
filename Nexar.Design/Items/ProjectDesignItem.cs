@@ -10,21 +10,21 @@ public sealed class ProjectDesignItem : TreeItem2
 {
     public ProjectDesignItem(ProjectItem parent) : base(parent)
     {
-        _parent = parent;
+        Parent = parent;
     }
 
-    readonly ProjectItem _parent;
+    public new ProjectItem Parent { get; }
     public override string Text => "Design";
     public override string Icon => Icons.Filled.Memory;
 
     public override async Task<HashSet<TreeItem>> ServerData()
     {
-        var res = await Client.ProjectWipVariants.ExecuteAsync(_parent.Tag.Id);
+        var res = await Client.ProjectWipVariants.ExecuteAsync(Parent.Tag.Id);
         res.EnsureNoErrors();
 
         return res.Data.DesProjectById.Design.WorkInProgress.Variants
             .OrderByDescending(x => x.Name)
-            .Select(x => (TreeItem)new WipVariantItem(x))
+            .Select(x => (TreeItem)new WipVariantItem(x, this))
             .ToHashSet();
     }
 }

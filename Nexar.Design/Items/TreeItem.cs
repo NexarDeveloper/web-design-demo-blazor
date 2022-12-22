@@ -20,6 +20,11 @@ public abstract class TreeItem
     public abstract string Icon { get; }
 
     /// <summary>
+    /// Gets the item path.
+    /// </summary>
+    public abstract string Path { get; }
+
+    /// <summary>
     /// Gets the client for fetching data.
     /// </summary>
     public abstract NexarClient Client { get; }
@@ -36,23 +41,26 @@ public abstract class TreeItem
 }
 
 /// <summary>
-/// Tree item with the parent and ability to expand.
+/// Tree item with ability to expand.
 /// </summary>
 public abstract class TreeItem2 : TreeItem
 {
     public TreeItem2(TreeItem parent)
     {
-        _parent = parent;
+        Parent = parent;
     }
-    readonly TreeItem _parent;
-    public sealed override NexarClient Client => _parent.Client;
+    public TreeItem Parent { get; }
+    public sealed override NexarClient Client => Parent.Client;
+    public sealed override string Path => Parent.Path + " / " + Text;
 }
 
 /// <summary>
-/// Terminal tree item with no children and fetching.
+/// Terminal tree item with no children.
 /// </summary>
-public abstract class TreeItem3 : TreeItem
+public abstract class TreeItem3 : TreeItem2
 {
-    public sealed override NexarClient Client => throw new System.NotImplementedException();
+    public TreeItem3(TreeItem parent) : base(parent)
+    {
+    }
     public sealed override Task<HashSet<TreeItem>> ServerData() => Task.FromResult(new HashSet<TreeItem>());
 }

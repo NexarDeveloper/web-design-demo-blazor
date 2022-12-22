@@ -6,7 +6,7 @@ namespace Nexar.Design;
 
 public sealed class TaskItem : TreeItem3
 {
-    public TaskItem(IMyTask tag)
+    public TaskItem(IMyTask tag, TreeItem2 parent) : base(parent)
     {
         Tag = tag;
     }

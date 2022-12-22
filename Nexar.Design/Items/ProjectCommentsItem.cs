@@ -24,7 +24,7 @@ public sealed class ProjectCommentsItem : TreeItem2
 
         return res.Data.DesCommentThreads
             .OrderByDescending(x => x.ThreadNumber)
-            .Select(x => (TreeItem)new ThreadItem(x))
+            .Select(x => (TreeItem)new ThreadItem(x, this))
             .ToHashSet();
     }
 }

@@ -5,7 +5,7 @@
 @if (WipVariantItem.Current != null)
 {
     <MudContainer>
-        <MudText Typo="Typo.h4" GutterBottom="true">Design Variant</MudText>
+        <ItemPageHeader Text="Variant" Item=@WipVariantItem.Current />
 
         <MudTextField T="string" Label="Name" Text="@WipVariantItem.Current.Tag.Name" ReadOnly="true" Variant="Variant.Outlined" />
 
