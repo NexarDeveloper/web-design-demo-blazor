@@ -9,11 +9,9 @@ public sealed class ReleaseItem : TreeItem3
     public ReleaseItem(IMyRelease tag, ProjectReleasesItem parent) : base(parent)
     {
         Tag = tag;
-        Parent = parent;
     }
 
     public IMyRelease Tag;
-    public new ProjectReleasesItem Parent { get; }
     public override string Text => Tag.CreatedAt.ToString();
     public override string Icon => Icons.Filled.ContentPasteGo;
 

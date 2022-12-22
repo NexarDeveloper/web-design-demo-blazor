@@ -80,7 +80,10 @@ public static class AppData
     public static HashSet<TreeItem> TreeItems { get; private set; }
     public static void SetWorkspaces(IReadOnlyList<IMyWorkspace> source)
     {
-        TreeItems = source.Select(x => (TreeItem)new WorkspaceItem(x)).ToHashSet();
+        TreeItems = new();
+        foreach (var it in source)
+            TreeItems.Add(new WorkspaceItem(it));
+
         OnChange?.Invoke();
     }
 }
