@@ -17,7 +17,7 @@
         <MudTextField T="string" Label="Name" Text="@ProjectItem.Current.Tag.Name" ReadOnly="true" Variant="Variant.Outlined" />
 
         <MudField Label="Preview" Variant="Variant.Outlined">
-            <MudAvatar Square=true Image="@ProjectItem.Current.Tag.PreviewUrl" Style="height:128px; width:128px;" />
+            <MudImage Src=@ProjectItem.Current.Tag.PreviewUrl Width=128 Height=128 />
         </MudField>
 
         <MudTable Items="@ProjectItem.Current.Tag.Parameters">

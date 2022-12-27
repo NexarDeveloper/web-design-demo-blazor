@@ -13,7 +13,7 @@
         {
             <MudField Label="Original screenshot" Variant="Variant.Outlined">
                 <MudLink Href="@ThreadItem.Current.Tag.OriginalStateScreenshotUrl" Target="_blank">
-                    <MudAvatar Square=true Image="@ThreadItem.Current.Tag.OriginalStateScreenshotUrl" Style="height:128px; width:128px;" />
+                    <MudImage Src=@ThreadItem.Current.Tag.OriginalStateScreenshotUrl Width=128 Height=128 />
                 </MudLink>
             </MudField>
         }
