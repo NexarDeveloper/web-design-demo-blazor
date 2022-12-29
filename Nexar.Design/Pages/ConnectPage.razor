@@ -1,23 +1,26 @@
 ﻿@page "/"
 @inherits AbstractPage
 
-<MudContainer>
-    <MudText>Blazor app powered by <MudLink Href="@AppData.ApiEndpoint" Target="_blank">@AppData.ApiEndpoint</MudLink></MudText>
-    @if (AppData.TreeItems == null && !_loading)
-    {
-        <MudCard>
-            <MudCardContent>
-                <MudText Typo="Typo.h4" GutterBottom="true">Connect</MudText>
-                <MudText>Don't have a token? <MudLink Href="@AppData.NexarDotCom" Target="_blank">Sign Up</MudLink></MudText>
-                <MudTextField @bind-Value="@_token" Label="Nexar token" Placeholder="Nexar token" Variant="Variant.Outlined" />
-            </MudCardContent>
-            <MudCardActions>
-                <MudButton Color="Color.Primary" OnClick="@ConnectAsync">Connect</MudButton>
-                @if (_connecting)
-                {
-                    <MudProgressCircular Indeterminate="true" />
-                }
-            </MudCardActions>
-        </MudCard>
-    }
-</MudContainer>
+<MudText>Blazor app powered by <MudLink Href="@AppData.ApiEndpoint" Target="_blank">@AppData.ApiEndpoint</MudLink></MudText>
+@if (AppData.TreeItems is null && !_loading)
+{
+    <MudCard>
+        <MudCardContent>
+            <MudText Typo="Typo.h4" GutterBottom="true">Connect</MudText>
+            <MudText>Don't have a token? <MudLink Href="@AppData.NexarDotCom" Target="_blank">Sign Up</MudLink></MudText>
+            <MudTextField @bind-Value="@_token"
+                      Label="Nexar token"
+                      Variant="Variant.Outlined"
+                      Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Filled.ContentPaste"
+                      OnAdornmentClick="PasteToken" />
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton Color="Color.Primary" OnClick="@ConnectAsync">Connect</MudButton>
+            @if (_connecting)
+            {
+                <MudProgressCircular Indeterminate="true" />
+            }
+        </MudCardActions>
+    </MudCard>
+}

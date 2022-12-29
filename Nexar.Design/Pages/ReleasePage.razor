@@ -4,17 +4,15 @@
 
 @if (ReleaseItem.Current != null)
 {
-    <MudContainer>
-        <ItemPageHeader Text="Release" Item=@ReleaseItem.Current />
+    <ItemPageHeader Text="Release" Item=@ReleaseItem.Current />
 
-        <TextFieldCopy Label="Id" Text="@ReleaseItem.Current.Tag.Id" />
+    <TextFieldCopy Label="Id" Text="@ReleaseItem.Current.Tag.Id" />
 
-        <TextFieldCopy Label="ReleaseId" Text="@ReleaseItem.Current.Tag.ReleaseId" />
+    <TextFieldCopy Label="ReleaseId" Text="@ReleaseItem.Current.Tag.ReleaseId" />
 
-        <MudTextField T="string" Label="Description" Text="@ReleaseItem.Current.Tag.Description" ReadOnly="true" Variant="Variant.Outlined" />
+    <MudTextField T="string" Label="Description" Text="@ReleaseItem.Current.Tag.Description" ReadOnly="true" Variant="Variant.Outlined" />
 
-        <MudTextField T="string" Label="CreatedAt" Text="@ReleaseItem.Current.Tag.CreatedAt.ToString()" ReadOnly="true" Variant="Variant.Outlined" />
-    </MudContainer>
+    <MudTextField T="string" Label="CreatedAt" Text="@ReleaseItem.Current.Tag.CreatedAt.ToString()" ReadOnly="true" Variant="Variant.Outlined" />
 }
 
 @code {

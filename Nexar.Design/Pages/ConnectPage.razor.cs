@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.WebUtilities;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using MudBlazor;
 using Nexar.Client;
 using System;
 using System.Threading.Tasks;
@@ -8,12 +9,34 @@ namespace Nexar.Design.Pages;
 
 public partial class ConnectPage
 {
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "mode")]
+    public string ModeParameter { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "token")]
+    public string TokenParameter { get; set; }
+
     string _token;
     bool _loading;
     bool _connecting;
 
+    static async Task SetTokenAndWorkspaces(string token)
+    {
+        // share token for services
+        NexarClientFactory.AccessToken = token;
+
+        // fetch workspaces
+        var client = NexarClientFactory.GetClient(AppData.ApiEndpoint);
+        var res = await client.Workspaces.ExecuteAsync();
+        EnsureNoErrors(res);
+
+        // share workspaces
+        AppData.SetWorkspaces(res.Data.DesWorkspaces);
+    }
+
     /// <summary>
-    /// Get token from the user input, then go to search.
+    /// Connect with the user input token.
     /// </summary>
     async Task ConnectAsync()
     {
@@ -23,16 +46,8 @@ public partial class ConnectPage
         _connecting = true;
         try
         {
-            // share token for services
-            NexarClientFactory.AccessToken = _token;
-
-            // fetch workspaces
-            var client = NexarClientFactory.GetClient(AppData.ApiEndpoint);
-            var res = await client.Workspaces.ExecuteAsync();
-            EnsureNoErrors(res);
-
-            // share workspaces
-            AppData.SetWorkspaces(res.Data.DesWorkspaces);
+            // set top data
+            await SetTokenAndWorkspaces(_token);
 
             // save "good token"
             try
@@ -55,7 +70,7 @@ public partial class ConnectPage
     }
 
     /// <summary>
-    /// If a token is provided, check its sanity, then go to search.
+    /// If a token parameter is provided, connect right away.
     /// </summary>
     protected override async Task OnInitializedAsync()
     {
@@ -64,34 +79,31 @@ public partial class ConnectPage
         if (!string.IsNullOrEmpty(_token))
             return;
 
-        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
         _loading = true;
         try
         {
-            if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("mode", out var mode))
+            // mode parameter?
+            if (!string.IsNullOrEmpty(ModeParameter))
             {
-                if (Enum.TryParse(mode, true, out AppMode value))
+                if (Enum.TryParse(ModeParameter, true, out AppMode value))
                     AppData.Mode = value;
                 else
-                    throw new Exception($"Invalid mode.");
+                    throw new Exception($"Invalid query parameter `mode`.");
             }
 
-            if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("token", out var token))
+            // token parameter?
+            if (!string.IsNullOrEmpty(TokenParameter))
             {
-                _token = token;
-                NexarClientFactory.AccessToken = token;
+                // set top data
+                _token = TokenParameter;
+                await SetTokenAndWorkspaces(TokenParameter);
 
-                var client = NexarClientFactory.GetClient(AppData.ApiEndpoint);
-                var res = await client.Workspaces.ExecuteAsync();
-                EnsureNoErrors(res);
-
-                AppData.SetWorkspaces(res.Data.DesWorkspaces);
-
-                // just to hide parameters in the address bar
-                NavManager.NavigateTo("");
+                // hide parameters in the address bar
+                Navigation.NavigateTo("");
             }
             else
             {
+                // the token is not provided, get it from the storage
                 try
                 {
                     _token = await JS.InvokeAsync<string>("window.localStorage.getItem", AppData.KeyToken);
@@ -105,11 +117,18 @@ public partial class ConnectPage
         catch (Exception ex)
         {
             await ShowErrorAsync(ex.Message);
-            NavManager.NavigateTo("");
+            Navigation.NavigateTo("");
         }
         finally
         {
             _loading = false;
         }
+    }
+
+    private async Task PasteToken()
+    {
+        var (ok, value) = await JS.InvokeAsyncWithErrorHandling<string>("navigator.clipboard.readText");
+        if (ok)
+            _token = value;
     }
 }

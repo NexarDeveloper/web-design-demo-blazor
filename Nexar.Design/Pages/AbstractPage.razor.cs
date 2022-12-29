@@ -14,12 +14,14 @@ public partial class AbstractPage : ComponentBase
     /// <summary>
     /// Common JS interop.
     /// </summary>
-    [Inject] public IJSRuntime JS { get; init; }
+    [Inject]
+    public IJSRuntime JS { get; init; }
 
     /// <summary>
     /// Common navigation manager.
     /// </summary>
-    [Inject] public NavigationManager NavManager { get; init; }
+    [Inject]
+    public NavigationManager Navigation { get; init; }
 
     /// <summary>
     /// Check the operation result and throw on any errors.
@@ -54,7 +56,7 @@ public partial class AbstractPage : ComponentBase
         await JS.InvokeVoidAsync("alert", message);
 
         AppData.Reset();
-        NavManager.NavigateTo("");
+        Navigation.NavigateTo("");
     }
 
     /// <summary>

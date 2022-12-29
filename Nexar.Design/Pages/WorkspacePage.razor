@@ -4,23 +4,21 @@
 
 @if (WorkspaceItem.Current != null)
 {
-    <MudContainer>
-        <ItemPageHeader Text="Workspace" Item=@WorkspaceItem.Current />
+    <ItemPageHeader Text="Workspace" Item=@WorkspaceItem.Current />
 
-        <TextFieldCopy Label="Id" Text="@WorkspaceItem.Current.Tag.Id" />
+    <TextFieldCopy Label="Id" Text="@WorkspaceItem.Current.Tag.Id" />
 
-        <MudField Label="Url" Variant="Variant.Outlined">
-            <MudLink Href="@WorkspaceItem.Current.Tag.Url" Target="_blank">@WorkspaceItem.Current.Tag.Url</MudLink>
-        </MudField>
+    <MudField Label="Url" Variant="Variant.Outlined">
+        <MudLink Href="@WorkspaceItem.Current.Tag.Url" Target="_blank">@WorkspaceItem.Current.Tag.Url</MudLink>
+    </MudField>
 
-        <MudTextField T="string" Label="Name" Text="@WorkspaceItem.Current.Tag.Name" ReadOnly="true" Variant="Variant.Outlined" />
+    <MudTextField T="string" Label="Name" Text="@WorkspaceItem.Current.Tag.Name" ReadOnly="true" Variant="Variant.Outlined" />
 
-        <MudTextField T="string" Label="Description" Text="@WorkspaceItem.Current.Tag.Description" ReadOnly="true" Variant="Variant.Outlined" />
+    <MudTextField T="string" Label="Description" Text="@WorkspaceItem.Current.Tag.Description" ReadOnly="true" Variant="Variant.Outlined" />
 
-        <MudTextField T="string" Label="Location.Name" Text="@WorkspaceItem.Current.Tag.Location.Name" ReadOnly="true" Variant="Variant.Outlined" />
+    <MudTextField T="string" Label="Location.Name" Text="@WorkspaceItem.Current.Tag.Location.Name" ReadOnly="true" Variant="Variant.Outlined" />
 
-        <MudTextField T="string" Label="Location.ApiServiceUrl" Text="@WorkspaceItem.Current.Tag.Location.ApiServiceUrl" ReadOnly="true" Variant="Variant.Outlined" />
-    </MudContainer>
+    <MudTextField T="string" Label="Location.ApiServiceUrl" Text="@WorkspaceItem.Current.Tag.Location.ApiServiceUrl" ReadOnly="true" Variant="Variant.Outlined" />
 }
 
 @code {

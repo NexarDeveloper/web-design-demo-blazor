@@ -4,30 +4,28 @@
 
 @if (ThreadItem.Current != null)
 {
-    <MudContainer>
-        <ItemPageHeader Text="Thread" Item=@ThreadItem.Current />
+    <ItemPageHeader Text="Thread" Item=@ThreadItem.Current />
 
-        <TextFieldCopy Label="CommentThreadId" Text="@ThreadItem.Current.Tag.CommentThreadId" />
+    <TextFieldCopy Label="CommentThreadId" Text="@ThreadItem.Current.Tag.CommentThreadId" />
 
-        @if (ThreadItem.Current.Tag.OriginalStateScreenshotUrl != null)
-        {
-            <MudField Label="Original screenshot" Variant="Variant.Outlined">
-                <MudLink Href="@ThreadItem.Current.Tag.OriginalStateScreenshotUrl" Target="_blank">
-                    <MudImage Src=@ThreadItem.Current.Tag.OriginalStateScreenshotUrl Width=128 Height=128 />
-                </MudLink>
-            </MudField>
-        }
+    @if (ThreadItem.Current.Tag.OriginalStateScreenshotUrl != null)
+    {
+        <MudField Label="Original screenshot" Variant="Variant.Outlined">
+            <MudLink Href="@ThreadItem.Current.Tag.OriginalStateScreenshotUrl" Target="_blank">
+                <MudImage Src=@ThreadItem.Current.Tag.OriginalStateScreenshotUrl Width=128 Height=128 />
+            </MudLink>
+        </MudField>
+    }
 
-        @foreach (var comment in ThreadItem.Current.Tag.Comments)
-        {
-            <MudCard Outlined="true">
-                <MudCardContent>
-                    <MudText Typo="Typo.body2"><b>From:</b> @comment.CreatedBy.Email</MudText>
-                    <MudTextField T="string" Text="@comment.Text" Lines="@(CountLines(comment.Text))" ReadOnly="true" />
-                </MudCardContent>
-            </MudCard>
-        }
-    </MudContainer>
+    @foreach (var comment in ThreadItem.Current.Tag.Comments)
+    {
+        <MudCard Outlined="true">
+            <MudCardContent>
+                <MudText Typo="Typo.body2"><b>From:</b> @comment.CreatedBy.Email</MudText>
+                <MudTextField T="string" Text="@comment.Text" Lines="@(CountLines(comment.Text))" ReadOnly="true" />
+            </MudCardContent>
+        </MudCard>
+    }
 }
 
 @code {

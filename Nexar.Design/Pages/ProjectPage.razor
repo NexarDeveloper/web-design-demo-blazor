@@ -5,35 +5,33 @@
 
 @if (ProjectItem.Current != null)
 {
-    <MudContainer>
-        <ItemPageHeader Text="Project" Item=@ProjectItem.Current />
+    <ItemPageHeader Text="Project" Item=@ProjectItem.Current />
 
-        <TextFieldCopy Label="Id" Text="@ProjectItem.Current.Tag.Id" />
+    <TextFieldCopy Label="Id" Text="@ProjectItem.Current.Tag.Id" />
 
-        <MudField Label="Url" Variant="Variant.Outlined">
-            <MudLink Href="@ProjectItem.Current.Tag.Url" Target="_blank">@ProjectItem.Current.Tag.Url</MudLink>
-        </MudField>
+    <MudField Label="Url" Variant="Variant.Outlined">
+        <MudLink Href="@ProjectItem.Current.Tag.Url" Target="_blank">@ProjectItem.Current.Tag.Url</MudLink>
+    </MudField>
 
-        <MudTextField T="string" Label="Name" Text="@ProjectItem.Current.Tag.Name" ReadOnly="true" Variant="Variant.Outlined" />
+    <MudTextField T="string" Label="Name" Text="@ProjectItem.Current.Tag.Name" ReadOnly="true" Variant="Variant.Outlined" />
 
-        <MudField Label="Preview" Variant="Variant.Outlined">
-            <MudImage Src=@ProjectItem.Current.Tag.PreviewUrl Width=128 Height=128 />
-        </MudField>
+    <MudField Label="Preview" Variant="Variant.Outlined">
+        <MudImage Src=@ProjectItem.Current.Tag.PreviewUrl Width=128 Height=128 />
+    </MudField>
 
-        <MudTable Items="@ProjectItem.Current.Tag.Parameters">
-            <ToolBarContent>
-                <MudText Typo="Typo.h6">Parameters</MudText>
-            </ToolBarContent>
-            <HeaderContent>
-                <MudTh>Name</MudTh>
-                <MudTh>Value</MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd DataLabel="Name">@context.Name</MudTd>
-                <MudTd DataLabel="Value">@context.Value</MudTd>
-            </RowTemplate>
-        </MudTable>
-    </MudContainer>
+    <MudTable Items="@ProjectItem.Current.Tag.Parameters">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Parameters</MudText>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Name</MudTh>
+            <MudTh>Value</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Name">@context.Name</MudTd>
+            <MudTd DataLabel="Value">@context.Value</MudTd>
+        </RowTemplate>
+    </MudTable>
 }
 
 @code {

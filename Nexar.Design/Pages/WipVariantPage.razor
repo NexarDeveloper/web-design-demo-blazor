@@ -4,13 +4,11 @@
 
 @if (WipVariantItem.Current != null)
 {
-    <MudContainer>
-        <ItemPageHeader Text="Variant" Item=@WipVariantItem.Current />
+    <ItemPageHeader Text="Variant" Item=@WipVariantItem.Current />
 
-        <MudTextField T="string" Label="Name" Text="@WipVariantItem.Current.Tag.Name" ReadOnly="true" Variant="Variant.Outlined" />
+    <MudTextField T="string" Label="Name" Text="@WipVariantItem.Current.Tag.Name" ReadOnly="true" Variant="Variant.Outlined" />
 
-        <TextFieldCopy Label="Bom.Id" Text="@WipVariantItem.Current.Tag.Bom.Id" />
-    </MudContainer>
+    <TextFieldCopy Label="Bom.Id" Text="@WipVariantItem.Current.Tag.Bom.Id" />
 }
 
 @code {
