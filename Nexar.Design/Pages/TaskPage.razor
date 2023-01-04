@@ -17,6 +17,10 @@
     <MudTextField T="string" Label="Status" Text="@TaskItem.Current.Tag.Status.ToString()" ReadOnly="true" Variant="Variant.Outlined" />
 
     <MudTextField T="string" Label="Description" Text="@TaskItem.Current.Tag.Description" Lines="@CountLines(TaskItem.Current.Tag.Description)" ReadOnly="true" Variant="Variant.Outlined" />
+
+    <MudTextField T="string" Label="CreatedAt" Text="@TaskItem.Current.Tag.CreatedAt.ToString()" ReadOnly="true" Variant="Variant.Outlined" />
+
+    <MudTextField T="string" Label="ModifiedAt" Text="@TaskItem.Current.Tag.ModifiedAt.ToString()" ReadOnly="true" Variant="Variant.Outlined" />
 }
 
 @code {

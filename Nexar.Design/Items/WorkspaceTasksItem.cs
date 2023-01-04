@@ -1,6 +1,5 @@
 ﻿using MudBlazor;
 using StrawberryShake;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,7 +15,7 @@ public sealed class WorkspaceTasksItem : TreeItem2
 
     readonly WorkspaceItem _parent;
     public override string Text => "Tasks";
-    public override string Icon => Icons.Filled.Task;
+    public override string Icon => Icons.Material.Filled.Task;
 
     public override async Task<HashSet<TreeItem>> ServerData()
     {
@@ -24,7 +23,7 @@ public sealed class WorkspaceTasksItem : TreeItem2
         res.EnsureNoErrors();
 
         return res.Data.DesWorkspaceTasks.Nodes
-            .OrderBy(x => x.Name, StringComparer.OrdinalIgnoreCase)
+            .OrderByDescending(x => x.ModifiedAt)
             .Select(x => (TreeItem)new TaskItem(x, this))
             .ToHashSet();
     }

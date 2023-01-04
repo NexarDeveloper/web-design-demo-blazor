@@ -14,7 +14,7 @@ public sealed class UserItem : TreeItem3
 
     public IMyUser Tag { get; }
     public override string Text => Tag.UserName;
-    public override string Icon => Icons.Filled.Person;
+    public override string Icon => Icons.Material.Filled.Person;
 
     public string Groups => string.Join(", ", Tag.Groups.Select(x => x.Name));
 

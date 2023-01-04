@@ -13,7 +13,7 @@ public sealed class ReleaseItem : TreeItem3
 
     public IMyRelease Tag;
     public override string Text => Tag.CreatedAt.ToString();
-    public override string Icon => Icons.Filled.ContentPasteGo;
+    public override string Icon => Icons.Material.Filled.ContentPasteGo;
 
     public override string SetCurrent()
     {

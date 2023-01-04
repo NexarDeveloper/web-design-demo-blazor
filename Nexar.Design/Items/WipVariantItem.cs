@@ -13,7 +13,7 @@ public sealed class WipVariantItem : TreeItem3
 
     public IMyWipVariant Tag;
     public override string Text => Tag.Name;
-    public override string Icon => Icons.Filled.Memory;
+    public override string Icon => Icons.Material.Filled.Memory;
 
     public override string SetCurrent()
     {

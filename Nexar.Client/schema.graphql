@@ -114,9 +114,13 @@ type Query {
   datBomParts(items: [DatBomItemInput!]!): [DatBomPartsResult!]!
   datBomPartHistories(partIds: [String!]!): [DatBomPartHistory]!
   datBomAnalyses(items: [DatBomPartItemInput!]!): [DatBomAnalysis!]!
-  datScrJob(jobId: String!): DatScrJob!
-  datScrJobs(jobIds: [String!]): [DatScrJob!]!
-  datScrReport(jobId: String!): DatScrReport!
+  "Get an SCR Job with a specific id"
+  datScrJob("The id of the job" jobId: String!): DatScrJob!
+  "Get a list of SCR jobs."
+  datScrJobs("The list of specific job ids. Use `null` to get all of them." jobIds: [String!]): [DatScrJob!]!
+  "Get link to a downloadable SCR report."
+  datScrReport("ID of the SCR job" jobId: String!): DatScrReport!
+  "Get current metered usage statistics."
   datScrUsage: DatScrUsage!
   datEddiLatestEdition: DatEddiEdition!
 }
@@ -153,6 +157,14 @@ type Mutation {
   desRemoveUsersFromGroup(input: DesRemoveUsersFromGroupInput!): DesRemoveUsersFromGroupPayload!
   desLaunchWorkflow(input: DesLaunchWorkflowInput!): DesLaunchWorkflowPayload!
   desTerminateWorkflows(input: DesTerminateWorkflowsInput!): DesTerminateWorkflowsPayload!
+  "Creates a project task."
+  desCreateProjectTask(input: DesCreateProjectTaskInput!): DesCreateTaskPayload!
+  "Creates a workspace task."
+  desCreateWorkspaceTask(input: DesCreateWorkspaceTaskInput!): DesCreateTaskPayload!
+  "Deletes the task specified by its node ID."
+  desDeleteTask(input: DesDeleteTaskInput!): DesDeleteTaskPayload!
+  "Updates the specified task."
+  desUpdateTask(input: DesUpdateTaskInput!): DesUpdateTaskPayload!
   "Creates a manufacture package."
   desCreateManufacturePackage(input: DesCreateManufacturePackageInput!): DesCreateManufacturePackagePayload!
   manCreateRapidQuoteRequest(qty: Int! meta: ManBoardMetaInput! shipping: ManShippingDetailsInput): ManRapidQuoteResponse
@@ -178,7 +190,9 @@ type Mutation {
   manInsertOrderProcessStartEvent(input: ManOrderProcessStartInput!): ManOrder
   manInsertOrderShippedEvent(input: ManOrderShippedInput!): ManOrder
   manInsertOrderConsignmentDetailsEvent(input: ManOrderConsignmentDetailsInput!): ManOrder
+  "Create a new SCR processing run for a given CSV file."
   datScrCreateJob(input: DatScrCreateJobInput!): DatScrCreateJobPayload!
+  "Delete an SCR job and any corresponding reports."
   datScrDeleteJob(input: DatScrDeleteJobInput!): DatScrDeleteJobPayload!
 }
 
@@ -378,6 +392,12 @@ type DesCreateManufacturePackagePayload {
   errors: [DesPayloadError!]!
 }
 
+type DesCreateTaskPayload {
+  "The created task."
+  task: DesTask!
+  errors: [DesPayloadError!]!
+}
+
 type DesCreateUserGroupPayload {
   id: ID!
 }
@@ -391,6 +411,10 @@ type DesDeleteCommentPayload {
 }
 
 type DesDeleteCommentThreadPayload {
+  errors: [DesPayloadError!]!
+}
+
+type DesDeleteTaskPayload {
   errors: [DesPayloadError!]!
 }
 
@@ -974,13 +998,22 @@ type DesSymbol {
 }
 
 type DesTask implements Node {
-  "The node identifier."
+  "The node ID."
   id: ID!
+  "The task ID shown in Altium 365."
   refId: String!
+  "The task name."
   name: String!
+  "The task description."
   description: String!
+  "The task priority."
   priority: DesTaskPriority!
+  "The task status."
   status: DesTaskStatus!
+  "The creation date."
+  createdAt: DateTime!
+  "The last modification date."
+  modifiedAt: DateTime!
 }
 
 "A connection to a list of items."
@@ -1040,6 +1073,10 @@ type DesUpdateComponentRevisionParametersPayload {
 }
 
 type DesUpdateReuseBlockPayload {
+  errors: [DesPayloadError!]!
+}
+
+type DesUpdateTaskPayload {
   errors: [DesPayloadError!]!
 }
 
@@ -1345,6 +1382,24 @@ input DesCreateManufacturePackageInput {
   callbackUrl: String
 }
 
+input DesCreateProjectTaskInput {
+  "The project node ID."
+  projectId: ID!
+  "The new task data."
+  task: DesCreateTaskInput!
+}
+
+input DesCreateTaskInput {
+  "New task name."
+  name: String!
+  "New task description."
+  description: String!
+  "Optional task priority."
+  priority: DesTaskPriority
+  "Optional task status."
+  status: DesTaskStatus
+}
+
 input DesCreateUserGroupInput {
   workspaceUrl: String!
   name: String!
@@ -1359,6 +1414,13 @@ input DesCreateUserInput {
   email: String!
 }
 
+input DesCreateWorkspaceTaskInput {
+  "The workspace URL."
+  workspaceUrl: String!
+  "The new task data."
+  task: DesCreateTaskInput!
+}
+
 input DesDeleteCommentInput {
   entityId: ID!
   commentThreadId: String!
@@ -1368,6 +1430,11 @@ input DesDeleteCommentInput {
 input DesDeleteCommentThreadInput {
   entityId: ID!
   commentThreadId: String!
+}
+
+input DesDeleteTaskInput {
+  "The task node ID."
+  taskId: ID!
 }
 
 input DesDeleteUserGroupInput {
@@ -1548,6 +1615,19 @@ input DesUpdateReuseBlockInput {
   id: ID!
   name: String
   description: String
+}
+
+input DesUpdateTaskInput {
+  "The task node ID."
+  taskId: ID!
+  "New task name or null to keep old."
+  name: String
+  "New task description or null to keep old."
+  description: String
+  "New task priority or null to keep old."
+  priority: DesTaskPriority
+  "New task status or null to keep old."
+  status: DesTaskStatus
 }
 
 input DesUpdateUserGroupInput {
@@ -3191,6 +3271,12 @@ type AdmUserInvitation {
   accepted: Boolean!
 }
 
+"A generic `dat` domain error."
+interface DatError {
+  "A short description of the error."
+  message: String!
+}
+
 type DatBomAnalysisResult {
   level: DatBomAnalysisResultLevel!
   message: String!
@@ -3290,48 +3376,101 @@ type DatResolvedBomPart {
   manufacturer: DatManufacturer!
 }
 
+"Error indicating that the SCR processing run could not be deleted."
+type DatScrCouldNotDeleteJobError implements DatError {
+  "A short description of the error."
+  message: String!
+}
+
+"Results after attempting to create an SCR job."
 type DatScrCreateJobPayload {
-  jobId: String!
-  job: DatScrJob!
+  "ID of the job created."
+  jobId: String
+  "The job created."
+  job: DatScrJob
+  "A list of errors, which occured while performing the operation."
+  errors: [DatScrCreateJobError!]!
 }
 
+"Results after attempting to delete an SCR job."
 type DatScrDeleteJobPayload {
+  "ID of the job intended for deletion."
   jobId: String!
+  "A list of errors, which occured while performing the operation."
+  errors: [DatScrDeleteJobError!]!
 }
 
+"Contains information about an SCR processing job."
 type DatScrJob {
+  "The ID of the user who owns the job."
   userId: String!
+  "The ID of this job."
   jobId: String!
+  "An optional label to easily identify the job."
   label: String
+  "The date and time of when the job was requested."
   uploadDatetime: DateTime!
+  "The current state of the job."
   jobState: DatScrJobState!
+  "A small message relating to running of the job."
   jobMessage: String
+  "Statistics relating to the running of this job."
   runStats: DatScrRunStats
 }
 
+"Error indicates that the user has exceeded their quota."
+type DatScrQuotaExceededError implements DatError {
+  "The number of distinct parts resolved for the user in the current period."
+  usage: Int!
+  "The number of allowed parts resolved for the current period."
+  quota: Int!
+  "A short description of the error."
+  message: String!
+}
+
+"A supply-chain resiliance report."
 type DatScrReport {
+  "The SCR job that created this report."
   jobId: String!
+  "A URL to download this report."
   downloadUrl: String!
 }
 
+"Statistics relating to the running of a job. Procurability here is with respect to a given threshold."
 type DatScrRunStats {
+  "Total number of parts requested for processing."
   numTotalParts: Int
+  "Total number of parts resolved."
   numResolvedParts: Int
+  "Number of parts with no historical procurability."
   numHpZeroParts: Int
+  "Number of parts with a historical procurability between zero and one."
   numHpIntervalParts: Int
+  "Number of parts with complete historical procurability."
   numHpOneParts: Int
+  "Number of parts that are currently procurable."
   numProcCurrent: Int
+  "Number of parts that were procurable seven days ago."
   numProc7dAgo: Int
+  "Number of parts that were procurable 14 days ago."
   numProc14dAgo: Int
+  "Number of parts that were procurable 21 days ago."
   numProc21dAgo: Int
+  "Number of parts that were procurable 28 days ago."
   numProc28dAgo: Int
+  "Number of parts that were not procurable last week that are now procurable."
   numRestocked: Int
+  "Number of parts that were procurable last week that are now non-procurable."
   numDestocked: Int
 }
 
+"User's metered usage statistics."
 type DatScrUsage {
+  "Total number of distinct resolved parts within the current period."
   countDistinctParts: Int!
+  "The start date of the current period."
   fromDate: String!
+  "Allowed quota of the user within the current period."
   quota: Int!
 }
 
@@ -3348,6 +3487,12 @@ type DatUnresolvedBomItems {
   bomId: String!
   bomItems: [DatUnresolvedBomItem!]!
 }
+
+"An error which occured while creating an SCR processing run."
+union DatScrCreateJobError = DatScrQuotaExceededError
+
+"An error which occured while deleting an SCR processing run."
+union DatScrDeleteJobError = DatScrCouldNotDeleteJobError
 
 input ComparableNullableOfDoubleOperationFilterInput {
   eq: Float
@@ -3432,20 +3577,31 @@ input DatResolvedBomPartInput {
   manufacturer: DatManufacturerInput!
 }
 
+"A mapping to rename column headers in the CSV to known fields"
 input DatScrColumnMapInput {
+  "Name of the CSV column that corresponds to an internal part number"
   pn: String
+  "Name of the CSV column that corresponds to the manufacturer's part number"
   mpn: String
+  "Name of the CSV column that corresponds to the name of the manufacturer"
   manufacturer: String
+  "Name of the CSV column that corresponds to the estimated annual usage"
   threshold: String
 }
 
+"Input data to create an SCR job."
 input DatScrCreateJobInput {
+  "The Nexar file ID which contains the data to process in CSV format."
   fileId: String!
+  "A label to add to the job for easier reference."
   label: String
+  "The name remapping of the CSV columns."
   columnMapping: DatScrColumnMapInput
 }
 
+"Input data to delete an SCR job."
 input DatScrDeleteJobInput {
+  "The ID of the job to delete."
   jobId: String!
 }
 
@@ -3487,10 +3643,15 @@ enum DatBomPartSearchStrategy {
   FUZZY
 }
 
+"Possible states of an SCR processing run."
 enum DatScrJobState {
+  "Job has completed successfully."
   COMPLETED
+  "The job has failed to process the data."
   FAILED
+  "The job is still processing the data."
   RUNNING
+  "Job is in an unknown state."
   UNKNOWN
 }
 

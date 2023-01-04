@@ -16,7 +16,7 @@ public sealed class WorkspaceItem : TreeItem
     public IMyWorkspace Tag { get; }
     public override string Text => Tag.Name;
     public override string Path => Tag.Name;
-    public override string Icon => Icons.Filled.FolderOpen;
+    public override string Icon => Icons.Material.Filled.FolderOpen;
 
     public override NexarClient Client => NexarClientFactory.GetClient(Tag.Location.ApiServiceUrl);
 

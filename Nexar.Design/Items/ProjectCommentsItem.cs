@@ -15,7 +15,7 @@ public sealed class ProjectCommentsItem : TreeItem2
 
     readonly ProjectItem _parent;
     public override string Text => "Comments";
-    public override string Icon => Icons.Filled.ChatBubbleOutline;
+    public override string Icon => Icons.Material.Filled.ChatBubbleOutline;
 
     public override async Task<HashSet<TreeItem>> ServerData()
     {

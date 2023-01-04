@@ -21,4 +21,6 @@ fragment MyTask on DesTask {
   description
   priority
   status
+  createdAt
+  modifiedAt
 }

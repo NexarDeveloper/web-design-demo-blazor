@@ -16,7 +16,7 @@ public sealed class WorkspaceUsersItem : TreeItem2
 
     readonly WorkspaceItem _parent;
     public override string Text => "Users";
-    public override string Icon => Icons.Filled.Person;
+    public override string Icon => Icons.Material.Filled.Person;
 
     public override async Task<HashSet<TreeItem>> ServerData()
     {

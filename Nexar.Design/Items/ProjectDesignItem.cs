@@ -15,7 +15,7 @@ public sealed class ProjectDesignItem : TreeItem2
 
     public new ProjectItem Parent { get; }
     public override string Text => "Design";
-    public override string Icon => Icons.Filled.Memory;
+    public override string Icon => Icons.Material.Filled.Memory;
 
     public override async Task<HashSet<TreeItem>> ServerData()
     {
