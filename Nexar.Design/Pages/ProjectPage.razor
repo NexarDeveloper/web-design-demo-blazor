@@ -37,16 +37,11 @@
 @code {
     protected override void OnInitialized()
     {
-        ProjectItem.OnChange += Update;
+        ProjectItem.OnChange += StateHasChanged;
     }
 
     public void Dispose()
     {
-        ProjectItem.OnChange -= Update;
-    }
-
-    void Update()
-    {
-        StateHasChanged();
+        ProjectItem.OnChange -= StateHasChanged;
     }
 }

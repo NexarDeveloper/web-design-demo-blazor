@@ -21,7 +21,9 @@ fragment MyThread on DesCommentThread {
 
 fragment MyComment on DesComment {
   text
+  commentId
   createdBy {
+    userId
     email
   }
 }

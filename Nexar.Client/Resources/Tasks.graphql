@@ -23,4 +23,8 @@ fragment MyTask on DesTask {
   status
   createdAt
   modifiedAt
+  assignee {
+    userId
+    email
+  }
 }

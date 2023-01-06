@@ -6,36 +6,41 @@
 {
     <ItemPageHeader Text="Task" Item=@TaskItem.Current />
 
-    <TextFieldCopy Label="Id" Text="@TaskItem.Current.Tag.Id" />
+    <TextFieldCopy Label="Id" Text=@TaskItem.Current.Tag.Id />
 
-    <MudTextField T="string" Label="Name" Text="@TaskItem.Current.Tag.Name" ReadOnly="true" Variant="Variant.Outlined" />
+    <MudTextField T=string ReadOnly=true Variant=Variant.Outlined
+              Label="Name" Text=@TaskItem.Current.Tag.Name />
 
-    <MudTextField T="string" Label="RefId" Text="@TaskItem.Current.Tag.RefId" ReadOnly="true" Variant="Variant.Outlined" />
+    <MudTextField T=string ReadOnly=true Variant=Variant.Outlined
+              Label="RefId" Text=@TaskItem.Current.Tag.RefId />
 
-    <MudTextField T="string" Label="Priority" Text="@TaskItem.Current.Tag.Priority.ToString()" ReadOnly="true" Variant="Variant.Outlined" />
+    <MudTextField T=string ReadOnly=true Variant=Variant.Outlined
+              Label="Priority" Text=@TaskItem.Current.Tag.Priority.ToString() />
 
-    <MudTextField T="string" Label="Status" Text="@TaskItem.Current.Tag.Status.ToString()" ReadOnly="true" Variant="Variant.Outlined" />
+    <MudTextField T=string ReadOnly=true Variant=Variant.Outlined
+              Label="Status" Text=@TaskItem.Current.Tag.Status.ToString() />
 
-    <MudTextField T="string" Label="Description" Text="@TaskItem.Current.Tag.Description" Lines="@CountLines(TaskItem.Current.Tag.Description)" ReadOnly="true" Variant="Variant.Outlined" />
+    <MudTextField T=string ReadOnly=true Variant=Variant.Outlined
+              Label="Description" Text=@TaskItem.Current.Tag.Description Lines=@CountLines(TaskItem.Current.Tag.Description) />
 
-    <MudTextField T="string" Label="CreatedAt" Text="@TaskItem.Current.Tag.CreatedAt.ToString()" ReadOnly="true" Variant="Variant.Outlined" />
+    <MudTextField T=string ReadOnly=true Variant=Variant.Outlined
+              Label="CreatedAt" Text=@TaskItem.Current.Tag.CreatedAt.ToString() />
 
-    <MudTextField T="string" Label="ModifiedAt" Text="@TaskItem.Current.Tag.ModifiedAt.ToString()" ReadOnly="true" Variant="Variant.Outlined" />
+    <MudTextField T=string ReadOnly=true Variant=Variant.Outlined
+              Label="ModifiedAt" Text="@TaskItem.Current.Tag.ModifiedAt.ToString()" />
+
+    <MudTextField T=string ReadOnly=true Variant=Variant.Outlined
+              Label="Assignee (UserId / Email)" Text=@(TaskItem.Current.Tag.Assignee.UserId + " / " + TaskItem.Current.Tag.Assignee.Email) />
 }
 
 @code {
     protected override void OnInitialized()
     {
-        TaskItem.OnChange += Update;
+        TaskItem.OnChange += StateHasChanged;
     }
 
     public void Dispose()
     {
-        TaskItem.OnChange -= Update;
-    }
-
-    void Update()
-    {
-        StateHasChanged();
+        TaskItem.OnChange -= StateHasChanged;
     }
 }

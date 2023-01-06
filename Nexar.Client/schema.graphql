@@ -998,6 +998,8 @@ type DesSymbol {
 }
 
 type DesTask implements Node {
+  "The assigned user."
+  assignee: DesUser!
   "The node ID."
   id: ID!
   "The task ID shown in Altium 365."

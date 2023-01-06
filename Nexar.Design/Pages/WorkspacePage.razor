@@ -24,16 +24,11 @@
 @code {
     protected override void OnInitialized()
     {
-        WorkspaceItem.OnChange += Update;
+        WorkspaceItem.OnChange += StateHasChanged;
     }
 
     public void Dispose()
     {
-        WorkspaceItem.OnChange -= Update;
-    }
-
-    void Update()
-    {
-        StateHasChanged();
+        WorkspaceItem.OnChange -= StateHasChanged;
     }
 }

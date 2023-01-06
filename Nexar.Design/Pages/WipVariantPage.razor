@@ -14,16 +14,11 @@
 @code {
     protected override void OnInitialized()
     {
-        WipVariantItem.OnChange += Update;
+        WipVariantItem.OnChange += StateHasChanged;
     }
 
     public void Dispose()
     {
-        WipVariantItem.OnChange -= Update;
-    }
-
-    void Update()
-    {
-        StateHasChanged();
+        WipVariantItem.OnChange -= StateHasChanged;
     }
 }

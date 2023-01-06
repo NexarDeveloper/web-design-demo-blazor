@@ -10,7 +10,7 @@ namespace Nexar.Client;
 /// </summary>
 public static class NexarClientFactory
 {
-    static readonly ConcurrentDictionary<string, NexarClient> _clients = new ConcurrentDictionary<string, NexarClient>();
+    static readonly ConcurrentDictionary<string, NexarClient> _clients = new();
 
     /// <summary>
     /// Nexar access token, must be assigned.

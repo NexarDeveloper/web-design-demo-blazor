@@ -18,16 +18,11 @@
 @code {
     protected override void OnInitialized()
     {
-        ReleaseItem.OnChange += Update;
+        ReleaseItem.OnChange += StateHasChanged;
     }
 
     public void Dispose()
     {
-        ReleaseItem.OnChange -= Update;
-    }
-
-    void Update()
-    {
-        StateHasChanged();
+        ReleaseItem.OnChange -= StateHasChanged;
     }
 }

@@ -22,16 +22,11 @@
 @code {
     protected override void OnInitialized()
     {
-        UserItem.OnChange += Update;
+        UserItem.OnChange += StateHasChanged;
     }
 
     public void Dispose()
     {
-        UserItem.OnChange -= Update;
-    }
-
-    void Update()
-    {
-        StateHasChanged();
+        UserItem.OnChange -= StateHasChanged;
     }
 }
