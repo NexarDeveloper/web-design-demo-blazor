@@ -1000,6 +1000,8 @@ type DesSymbol {
 type DesTask implements Node {
   "The assigned user."
   assignee: DesUser!
+  "The list of task comments."
+  comments: [DesTaskComment!]!
   "The node ID."
   id: ID!
   "The task ID shown in Altium 365."
@@ -1012,6 +1014,17 @@ type DesTask implements Node {
   priority: DesTaskPriority!
   "The task status."
   status: DesTaskStatus!
+  "The creation date."
+  createdAt: DateTime!
+  "The last modification date."
+  modifiedAt: DateTime!
+}
+
+type DesTaskComment {
+  "The comment ID."
+  commentId: String!
+  "The comment text."
+  text: String!
   "The creation date."
   createdAt: DateTime!
   "The last modification date."

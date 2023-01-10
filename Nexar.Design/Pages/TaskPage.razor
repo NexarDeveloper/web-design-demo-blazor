@@ -31,6 +31,24 @@
 
     <MudTextField T=string ReadOnly=true Variant=Variant.Outlined
               Label="Assignee (UserId / Email)" Text=@(TaskItem.Current.Tag.Assignee.UserId + " / " + TaskItem.Current.Tag.Assignee.Email) />
+
+    @if (TaskItem.Current.Comments?.Count > 0)
+    {
+        <MudText Typo="Typo.h4">Comments</MudText>
+
+        foreach (var comment in TaskItem.Current.Comments)
+        {
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField T=string ReadOnly=true Variant=Variant.Outlined
+                      Label="Comment" Text=@comment.Text Lines=@(CountLines(comment.Text)) />
+                    <MudText Typo=Typo.body2>CommentId: @comment.CommentId</MudText>
+                    <MudText Typo=Typo.body2>CreatedAt: @comment.CreatedAt</MudText>
+                    <MudText Typo=Typo.body2>ModifiedAt: @comment.ModifiedAt</MudText>
+                </MudCardContent>
+            </MudCard>
+        }
+    }
 }
 
 @code {

@@ -1,0 +1,18 @@
+query TaskComments($id: ID!) {
+  node(id: $id) {
+    ...MyTaskWithComments
+  }
+}
+
+fragment MyTaskWithComments on DesTask {
+    comments {
+      ...MyTaskComment
+    }
+}
+
+fragment MyTaskComment on DesTaskComment {
+    commentId
+    text
+    createdAt
+    modifiedAt
+}

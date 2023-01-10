@@ -1,11 +1,17 @@
 ﻿using MudBlazor;
 using Nexar.Client;
+using StrawberryShake;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Nexar.Design;
 
 public sealed class TaskItem : TreeItem3
 {
+    public IReadOnlyList<IMyTaskComment> Comments { get; private set; }
+
     public TaskItem(IMyTask tag, TreeItem2 parent) : base(parent)
     {
         Tag = tag;
@@ -17,6 +23,9 @@ public sealed class TaskItem : TreeItem3
 
     public override string SetCurrent()
     {
+        if (Comments is null)
+            _ = FetchComments();
+
         Current = this;
         OnChange?.Invoke();
         return "task";
@@ -24,4 +33,23 @@ public sealed class TaskItem : TreeItem3
 
     public static event Action OnChange;
     public static TaskItem Current { get; private set; }
+
+    async Task FetchComments()
+    {
+        try
+        {
+            var res = await Client.TaskComments.ExecuteAsync(Tag.Id);
+            res.EnsureNoErrors();
+
+            Comments = ((IMyTaskWithComments)res.Data.Node).Comments
+                .OrderByDescending(x => x.CreatedAt)
+                .ToList();
+
+            OnChange?.Invoke();
+        }
+        catch
+        {
+            Comments = Array.Empty<IMyTaskComment>();
+        }
+    }
 }
