@@ -42,7 +42,7 @@ public sealed class TaskItem : TreeItem3
             res.EnsureNoErrors();
 
             Comments = ((IMyTaskWithComments)res.Data.Node).Comments
-                .OrderByDescending(x => x.CreatedAt)
+                .OrderBy(x => x.CreatedAt)
                 .ToList();
 
             OnChange?.Invoke();

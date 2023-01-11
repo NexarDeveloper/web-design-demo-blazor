@@ -38,13 +38,10 @@
 
         foreach (var comment in TaskItem.Current.Comments)
         {
-            <MudCard>
+            <MudCard Outlined="true">
                 <MudCardContent>
-                    <MudTextField T=string ReadOnly=true Variant=Variant.Outlined
-                      Label="Comment" Text=@comment.Text Lines=@(CountLines(comment.Text)) />
-                    <MudText Typo=Typo.body2>CommentId: @comment.CommentId</MudText>
-                    <MudText Typo=Typo.body2>CreatedAt: @comment.CreatedAt</MudText>
-                    <MudText Typo=Typo.body2>ModifiedAt: @comment.ModifiedAt</MudText>
+                    <MudText Typo=Typo.body2><b>CommentId:</b> @comment.CommentId</MudText>
+                    <MudTextField T=string ReadOnly=true Text=@comment.Text Lines=@(CountLines(comment.Text)) />
                 </MudCardContent>
             </MudCard>
         }
