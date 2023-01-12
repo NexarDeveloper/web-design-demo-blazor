@@ -32,7 +32,11 @@
     <MudTextField T=string ReadOnly=true Variant=Variant.Outlined
               Label="Assignee (UserId / Email)" Text=@(TaskItem.Current.Tag.Assignee.UserId + " / " + TaskItem.Current.Tag.Assignee.Email) />
 
-    @if (TaskItem.Current.Comments?.Count > 0)
+    @if (TaskItem.Current.Comments is null)
+    {
+        <MudProgressCircular Indeterminate="true" />
+    }
+    else if (TaskItem.Current.Comments.Count > 0)
     {
         <MudText Typo="Typo.h4">Comments</MudText>
 

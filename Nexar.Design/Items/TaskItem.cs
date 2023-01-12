@@ -23,8 +23,7 @@ public sealed class TaskItem : TreeItem3
 
     public override string SetCurrent()
     {
-        if (Comments is null)
-            _ = FetchComments();
+        _ = FetchComments();
 
         Current = this;
         OnChange?.Invoke();
