@@ -1,6 +1,5 @@
 ﻿@page "/workspace"
 @inherits AbstractPage
-@implements IDisposable
 
 @if (WorkspaceItem.Current != null)
 {
@@ -27,7 +26,7 @@
         WorkspaceItem.OnChange += StateHasChanged;
     }
 
-    public void Dispose()
+    protected override void Disposing()
     {
         WorkspaceItem.OnChange -= StateHasChanged;
     }

@@ -1,6 +1,5 @@
 ﻿@page "/task"
 @inherits AbstractPage
-@implements IDisposable
 
 @if (TaskItem.Current != null)
 {
@@ -38,7 +37,7 @@
     }
     else if (TaskItem.Current.Comments.Count > 0)
     {
-        <MudText Typo="Typo.h4">Comments</MudText>
+        <MudText Typo="Typo.h5">Comments</MudText>
 
         foreach (var comment in TaskItem.Current.Comments)
         {
@@ -58,7 +57,7 @@
         TaskItem.OnChange += StateHasChanged;
     }
 
-    public void Dispose()
+    protected override void Disposing()
     {
         TaskItem.OnChange -= StateHasChanged;
     }

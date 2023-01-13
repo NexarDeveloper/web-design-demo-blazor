@@ -11,11 +11,11 @@ public partial class ConnectPage
 {
     [Parameter]
     [SupplyParameterFromQuery(Name = "mode")]
-    public string ModeParameter { get; set; }
+    public string ModeParameter { get; init; }
 
     [Parameter]
     [SupplyParameterFromQuery(Name = "token")]
-    public string TokenParameter { get; set; }
+    public string TokenParameter { get; init; }
 
     string _token;
     bool _loading;
@@ -61,7 +61,7 @@ public partial class ConnectPage
         }
         catch (Exception ex)
         {
-            await ShowErrorAsync(ex.Message);
+            await ShowErrorAndResetAsync(ex.Message);
         }
         finally
         {
@@ -116,8 +116,7 @@ public partial class ConnectPage
         }
         catch (Exception ex)
         {
-            await ShowErrorAsync(ex.Message);
-            Navigation.NavigateTo("");
+            await ShowErrorAndResetAsync(ex.Message);
         }
         finally
         {

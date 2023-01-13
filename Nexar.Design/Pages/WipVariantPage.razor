@@ -1,6 +1,5 @@
 ﻿@page "/wipVariant"
 @inherits AbstractPage
-@implements IDisposable
 
 @if (WipVariantItem.Current != null)
 {
@@ -17,7 +16,7 @@
         WipVariantItem.OnChange += StateHasChanged;
     }
 
-    public void Dispose()
+    protected override void Disposing()
     {
         WipVariantItem.OnChange -= StateHasChanged;
     }

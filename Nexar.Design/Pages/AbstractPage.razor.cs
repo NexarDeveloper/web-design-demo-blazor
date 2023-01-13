@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using StrawberryShake;
+using MudBlazor;
 using System;
 using System.Threading.Tasks;
 
@@ -9,7 +9,7 @@ namespace Nexar.Design.Pages;
 /// <summary>
 /// Common base page with handy members.
 /// </summary>
-public partial class AbstractPage : ComponentBase
+public class AbstractPage : ComponentBase, IDisposable
 {
     /// <summary>
     /// Common JS interop.
@@ -24,11 +24,17 @@ public partial class AbstractPage : ComponentBase
     public NavigationManager Navigation { get; init; }
 
     /// <summary>
+    /// Message boxes.
+    /// </summary>
+    [Inject]
+    private IDialogService DialogService { get; init; }
+
+    /// <summary>
     /// Show the message, logout, navigate to login page.
     /// </summary>
-    public async Task ShowErrorAsync(string message)
+    public async Task ShowErrorAndResetAsync(string message)
     {
-        await JS.InvokeVoidAsync("alert", message);
+        await DialogService.ShowMessageBox("Error", message);
 
         AppData.Reset();
         Navigation.NavigateTo("");
@@ -44,5 +50,15 @@ public partial class AbstractPage : ComponentBase
             if (c == '\n')
                 ++n;
         return n;
+    }
+
+    public void Dispose()
+    {
+        Disposing();
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Disposing()
+    {
     }
 }

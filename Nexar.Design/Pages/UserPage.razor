@@ -1,6 +1,5 @@
 ﻿@page "/user"
 @inherits AbstractPage
-@implements IDisposable
 
 @if (UserItem.Current != null)
 {
@@ -25,7 +24,7 @@
         UserItem.OnChange += StateHasChanged;
     }
 
-    public void Dispose()
+    protected override void Disposing()
     {
         UserItem.OnChange -= StateHasChanged;
     }

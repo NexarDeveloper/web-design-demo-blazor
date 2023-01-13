@@ -3,7 +3,7 @@ using System;
 using System.Diagnostics;
 using System.Text;
 
-namespace Nexar.Design;
+namespace Nexar.Client;
 
 public static class IOperationResult_AssertNoErrors
 {

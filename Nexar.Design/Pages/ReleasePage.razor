@@ -1,6 +1,5 @@
 ﻿@page "/release"
 @inherits AbstractPage
-@implements IDisposable
 
 @if (ReleaseItem.Current != null)
 {
@@ -21,7 +20,7 @@
         ReleaseItem.OnChange += StateHasChanged;
     }
 
-    public void Dispose()
+    protected override void Disposing()
     {
         ReleaseItem.OnChange -= StateHasChanged;
     }
