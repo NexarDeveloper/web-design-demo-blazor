@@ -20,7 +20,7 @@ public sealed class ProjectReleasesItem : TreeItem2
     public override async Task<HashSet<TreeItem>> ServerData()
     {
         var res = await Client.ProjectReleases.ExecuteAsync(Parent.Tag.Id);
-        res.EnsureNoErrors();
+        res.AssertNoErrors();
 
         return res.Data.DesProjectById.Design.Releases.Nodes
             .OrderByDescending(x => x.CreatedAt)

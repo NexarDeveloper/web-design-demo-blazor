@@ -24,31 +24,6 @@ public partial class AbstractPage : ComponentBase
     public NavigationManager Navigation { get; init; }
 
     /// <summary>
-    /// Check the operation result and throw on any errors.
-    /// </summary>
-    public static void EnsureNoErrors(IOperationResult result)
-    {
-        if (result.Errors.Count == 0)
-            return;
-
-        var sb = new System.Text.StringBuilder();
-        foreach (var error in result.Errors)
-        {
-            sb.AppendLine($"ERROR: {error.Message}");
-            if (error.Code != null)
-                sb.AppendLine($"Code: {error.Code}");
-            if (error.Extensions != null)
-            {
-                foreach (var kv in error.Extensions)
-                    sb.AppendLine($"{kv.Key}: {kv.Value}");
-            }
-        }
-
-        var message = sb.ToString();
-        throw new Exception(message);
-    }
-
-    /// <summary>
     /// Show the message, logout, navigate to login page.
     /// </summary>
     public async Task ShowErrorAsync(string message)

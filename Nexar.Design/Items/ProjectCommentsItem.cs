@@ -20,7 +20,7 @@ public sealed class ProjectCommentsItem : TreeItem2
     public override async Task<HashSet<TreeItem>> ServerData()
     {
         var res = await Client.CommentThreads.ExecuteAsync(_parent.Tag.Id);
-        res.EnsureNoErrors();
+        res.AssertNoErrors();
 
         return res.Data.DesCommentThreads
             .OrderByDescending(x => x.ThreadNumber)

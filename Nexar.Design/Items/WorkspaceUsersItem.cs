@@ -21,7 +21,7 @@ public sealed class WorkspaceUsersItem : TreeItem2
     public override async Task<HashSet<TreeItem>> ServerData()
     {
         var res = await Client.TeamUsers.ExecuteAsync(_parent.Tag.Url);
-        res.EnsureNoErrors();
+        res.AssertNoErrors();
 
         return res.Data.DesTeam.Users
             .OrderBy(x => x.UserName, StringComparer.OrdinalIgnoreCase)

@@ -29,7 +29,7 @@ public partial class ConnectPage
         // fetch workspaces
         var client = NexarClientFactory.GetClient(AppData.ApiEndpoint);
         var res = await client.Workspaces.ExecuteAsync();
-        EnsureNoErrors(res);
+        res.AssertNoErrors();
 
         // share workspaces
         AppData.SetWorkspaces(res.Data.DesWorkspaces);

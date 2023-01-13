@@ -38,7 +38,7 @@ public sealed class TaskItem : TreeItem3
         try
         {
             var res = await Client.TaskComments.ExecuteAsync(Tag.Id);
-            res.EnsureNoErrors();
+            res.AssertNoErrors();
 
             Comments = ((IMyTaskWithComments)res.Data.Node).Comments
                 .OrderBy(x => x.CreatedAt)

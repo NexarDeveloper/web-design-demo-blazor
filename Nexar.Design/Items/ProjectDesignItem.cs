@@ -20,7 +20,7 @@ public sealed class ProjectDesignItem : TreeItem2
     public override async Task<HashSet<TreeItem>> ServerData()
     {
         var res = await Client.ProjectWipVariants.ExecuteAsync(Parent.Tag.Id);
-        res.EnsureNoErrors();
+        res.AssertNoErrors();
 
         return res.Data.DesProjectById.Design.WorkInProgress.Variants
             .OrderByDescending(x => x.Name)

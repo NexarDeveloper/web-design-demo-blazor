@@ -20,7 +20,7 @@ public sealed class WorkspaceTasksItem : TreeItem2
     public override async Task<HashSet<TreeItem>> ServerData()
     {
         var res = await Client.WorkspaceTasks.ExecuteAsync(_parent.Tag.Url);
-        res.EnsureNoErrors();
+        res.AssertNoErrors();
 
         return res.Data.DesWorkspaceTasks.Nodes
             .OrderByDescending(x => x.ModifiedAt)

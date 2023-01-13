@@ -21,7 +21,7 @@ public sealed class WorkspaceProjectsItem : TreeItem2
     public override async Task<HashSet<TreeItem>> ServerData()
     {
         var res = await Client.Projects.ExecuteAsync(Parent.Tag.Url);
-        res.EnsureNoErrors();
+        res.AssertNoErrors();
 
         return res.Data.DesProjects.Nodes
             .OrderBy(x => x.Name, StringComparer.OrdinalIgnoreCase)
