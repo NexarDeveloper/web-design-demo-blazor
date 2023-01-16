@@ -1,17 +1,17 @@
 ﻿@page "/release"
 @inherits AbstractPage
 
-@if (ReleaseItem.Current != null)
+@if (ReleaseItem.Current is not null)
 {
     <ItemPageHeader Text="Release" Item=@ReleaseItem.Current />
 
-    <TextFieldCopy Label="Id" Text="@ReleaseItem.Current.Tag.Id" />
+    <TextFieldCopy Label="Id" Text=@ReleaseItem.Current.Tag.Id />
 
-    <TextFieldCopy Label="ReleaseId" Text="@ReleaseItem.Current.Tag.ReleaseId" />
+    <TextFieldCopy Label="ReleaseId" Text=@ReleaseItem.Current.Tag.ReleaseId />
 
-    <MudTextField T="string" Label="Description" Text="@ReleaseItem.Current.Tag.Description" ReadOnly="true" Variant="Variant.Outlined" />
+    <TextFieldText Label="Description" Text=@ReleaseItem.Current.Tag.Description />
 
-    <MudTextField T="string" Label="CreatedAt" Text="@ReleaseItem.Current.Tag.CreatedAt.ToString()" ReadOnly="true" Variant="Variant.Outlined" />
+    <TextField Label="CreatedAt" Text=@ReleaseItem.Current.Tag.CreatedAt.ToString() />
 }
 
 @code {

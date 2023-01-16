@@ -1,7 +1,7 @@
 ﻿@page "/thread"
 @inherits AbstractPage
 
-@if (ThreadItem.Current != null)
+@if (ThreadItem.Current is not null)
 {
     <ItemPageHeader Text="Thread" Item=@ThreadItem.Current />
 
@@ -9,22 +9,17 @@
 
     @if (ThreadItem.Current.Tag.OriginalStateScreenshotUrl is not null)
     {
-        <MudField Label="Original screenshot" Variant=Variant.Outlined>
-            <MudLink Href=@ThreadItem.Current.Tag.OriginalStateScreenshotUrl Target="_blank">
-                <MudImage Src=@ThreadItem.Current.Tag.OriginalStateScreenshotUrl Width=128 Height=128 />
-            </MudLink>
-        </MudField>
+        <FieldImage Label="Original screenshot" Src=@ThreadItem.Current.Tag.OriginalStateScreenshotUrl />
     }
 
     @foreach (var comment in ThreadItem.Current.Tag.Comments)
     {
-        <MudCard Outlined="true">
-            <MudCardContent>
-                <MudText Typo=Typo.body2><b>CommentId:</b> @comment.CommentId</MudText>
-                <MudText Typo=Typo.body2><b>CreatedBy:</b> @comment.CreatedBy.UserId / @comment.CreatedBy.Email</MudText>
-                <MudTextField T="string" Text=@comment.Text Lines=@(CountLines(comment.Text)) ReadOnly=true />
-            </MudCardContent>
-        </MudCard>
+        <CardComment Text=@comment.Text>
+            <Head>
+                <TextKeyValue Key="CommentId" Value=@comment.CommentId />
+                <TextKeyValue Key="CreatedBy" Value=@(comment.CreatedBy.UserId + " / " + comment.CreatedBy.Email) />
+            </Head>
+        </CardComment>
     }
 }
 

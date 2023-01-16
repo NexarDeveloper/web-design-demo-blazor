@@ -1,20 +1,20 @@
 ﻿@page "/user"
 @inherits AbstractPage
 
-@if (UserItem.Current != null)
+@if (UserItem.Current is not null)
 {
     <ItemPageHeader Text="User" Item=@UserItem.Current />
 
-    <TextFieldCopy Label="UserId" Text="@UserItem.Current.Tag.UserId" />
+    <TextFieldCopy Label="UserId" Text=@UserItem.Current.Tag.UserId />
 
-    <MudTextField T="string" Label="UserName" Text="@UserItem.Current.Tag.UserName" ReadOnly="true" Variant="Variant.Outlined" />
+    <TextField Label="UserName" Text=@UserItem.Current.Tag.UserName />
 
-    <MudTextField T="string" Label="Email" Text="@UserItem.Current.Tag.Email" ReadOnly="true" Variant="Variant.Outlined" />
+    <TextField Label="Email" Text=@UserItem.Current.Tag.Email />
 
-    <MudTextField T="string" Label="Groups" Text="@UserItem.Current.Groups" ReadOnly="true" Variant="Variant.Outlined" />
+    <TextField Label="Groups" Text=@UserItem.Current.Groups />
 
-    <MudField Label="Picture" Variant="Variant.Outlined">
-        <MudAvatar Square=true Image="@UserItem.Current.Tag.PictureUrl" Style="height:128px; width:128px;" />
+    <MudField Label="Picture" Variant=Variant.Outlined>
+        <MudAvatar Square=true Image=@UserItem.Current.Tag.PictureUrl Style="height:128px; width:128px;" />
     </MudField>
 }
 

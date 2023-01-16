@@ -1,0 +1,14 @@
+﻿
+<MudTextField T=string
+              Label=@Label
+              Text=@Text
+              ReadOnly=true
+              Variant=Variant.Outlined />
+
+@code {
+    [Parameter]
+    public string Label { get; init; }
+
+    [Parameter]
+    public string Text { get; init; }
+}

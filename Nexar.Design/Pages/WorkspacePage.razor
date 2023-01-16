@@ -1,23 +1,21 @@
 ﻿@page "/workspace"
 @inherits AbstractPage
 
-@if (WorkspaceItem.Current != null)
+@if (WorkspaceItem.Current is not null)
 {
     <ItemPageHeader Text="Workspace" Item=@WorkspaceItem.Current />
 
-    <TextFieldCopy Label="Id" Text="@WorkspaceItem.Current.Tag.Id" />
+    <TextFieldCopy Label="Id" Text=@WorkspaceItem.Current.Tag.Id />
 
-    <MudField Label="Url" Variant="Variant.Outlined">
-        <MudLink Href="@WorkspaceItem.Current.Tag.Url" Target="_blank">@WorkspaceItem.Current.Tag.Url</MudLink>
-    </MudField>
+    <TextFieldUrl Label="Url" Href=@WorkspaceItem.Current.Tag.Url />
 
-    <MudTextField T="string" Label="Name" Text="@WorkspaceItem.Current.Tag.Name" ReadOnly="true" Variant="Variant.Outlined" />
+    <TextField Label="Name" Text=@WorkspaceItem.Current.Tag.Name />
 
-    <MudTextField T="string" Label="Description" Text="@WorkspaceItem.Current.Tag.Description" ReadOnly="true" Variant="Variant.Outlined" />
+    <TextFieldText Label="Description" Text=@WorkspaceItem.Current.Tag.Description />
 
-    <MudTextField T="string" Label="Location.Name" Text="@WorkspaceItem.Current.Tag.Location.Name" ReadOnly="true" Variant="Variant.Outlined" />
+    <TextField Label="Location.Name" Text=@WorkspaceItem.Current.Tag.Location.Name />
 
-    <MudTextField T="string" Label="Location.ApiServiceUrl" Text="@WorkspaceItem.Current.Tag.Location.ApiServiceUrl" ReadOnly="true" Variant="Variant.Outlined" />
+    <TextField Label="Location.ApiServiceUrl" Text=@WorkspaceItem.Current.Tag.Location.ApiServiceUrl />
 }
 
 @code {

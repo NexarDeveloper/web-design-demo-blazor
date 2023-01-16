@@ -1,0 +1,12 @@
+﻿
+<MudField Label=@Label Variant=Variant.Outlined>
+    <MudImage Src=@Src Width=128 Height=128 />
+</MudField>
+
+@code {
+    [Parameter]
+    public string Label { get; init; }
+
+    [Parameter]
+    public string Src { get; init; }
+}

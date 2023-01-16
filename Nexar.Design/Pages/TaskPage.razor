@@ -1,52 +1,43 @@
 ﻿@page "/task"
 @inherits AbstractPage
 
-@if (TaskItem.Current != null)
+@if (TaskItem.Current is not null)
 {
     <ItemPageHeader Text="Task" Item=@TaskItem.Current />
 
     <TextFieldCopy Label="Id" Text=@TaskItem.Current.Tag.Id />
 
-    <MudTextField T=string ReadOnly=true Variant=Variant.Outlined
-              Label="Name" Text=@TaskItem.Current.Tag.Name />
+    <TextField Label="Name" Text=@TaskItem.Current.Tag.Name />
 
-    <MudTextField T=string ReadOnly=true Variant=Variant.Outlined
-              Label="RefId" Text=@TaskItem.Current.Tag.RefId />
+    <TextField Label="RefId" Text=@TaskItem.Current.Tag.RefId />
 
-    <MudTextField T=string ReadOnly=true Variant=Variant.Outlined
-              Label="Priority" Text=@TaskItem.Current.Tag.Priority.ToString() />
+    <TextField Label="Priority" Text=@TaskItem.Current.Tag.Priority.ToString() />
 
-    <MudTextField T=string ReadOnly=true Variant=Variant.Outlined
-              Label="Status" Text=@TaskItem.Current.Tag.Status.ToString() />
+    <TextField Label="Status" Text=@TaskItem.Current.Tag.Status.ToString() />
 
-    <MudTextField T=string ReadOnly=true Variant=Variant.Outlined
-              Label="Description" Text=@TaskItem.Current.Tag.Description Lines=@CountLines(TaskItem.Current.Tag.Description) />
+    <TextFieldText Label="Description" Text=@TaskItem.Current.Tag.Description />
 
-    <MudTextField T=string ReadOnly=true Variant=Variant.Outlined
-              Label="CreatedAt" Text=@TaskItem.Current.Tag.CreatedAt.ToString() />
+    <TextField Label="CreatedAt" Text=@TaskItem.Current.Tag.CreatedAt.ToString() />
 
-    <MudTextField T=string ReadOnly=true Variant=Variant.Outlined
-              Label="ModifiedAt" Text="@TaskItem.Current.Tag.ModifiedAt.ToString()" />
+    <TextField Label="ModifiedAt" Text="@TaskItem.Current.Tag.ModifiedAt.ToString()" />
 
-    <MudTextField T=string ReadOnly=true Variant=Variant.Outlined
-              Label="Assignee (UserId / Email)" Text=@(TaskItem.Current.Tag.Assignee.UserId + " / " + TaskItem.Current.Tag.Assignee.Email) />
+    <TextField Label="Assignee (UserId / Email)" Text=@(TaskItem.Current.Tag.Assignee.UserId + " / " + TaskItem.Current.Tag.Assignee.Email) />
 
     @if (TaskItem.Current.Comments is null)
     {
-        <MudProgressCircular Indeterminate="true" />
+        <MudProgressCircular Indeterminate=true />
     }
     else if (TaskItem.Current.Comments.Count > 0)
     {
-        <MudText Typo="Typo.h5">Comments</MudText>
+        <MudText Typo=Typo.h5>Comments</MudText>
 
         foreach (var comment in TaskItem.Current.Comments)
         {
-            <MudCard Outlined="true">
-                <MudCardContent>
-                    <MudText Typo=Typo.body2><b>CommentId:</b> @comment.CommentId</MudText>
-                    <MudTextField T=string ReadOnly=true Text=@comment.Text Lines=@(CountLines(comment.Text)) />
-                </MudCardContent>
-            </MudCard>
+            <CardComment Text=@comment.Text>
+                <Head>
+                    <TextKeyValue Key="CommentId" Value=@comment.CommentId />
+                </Head>
+            </CardComment>
         }
     }
 }

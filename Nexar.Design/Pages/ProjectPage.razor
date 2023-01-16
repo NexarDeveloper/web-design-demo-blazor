@@ -1,25 +1,21 @@
 ﻿@page "/project"
 @inherits AbstractPage
 
-@if (ProjectItem.Current != null)
+@if (ProjectItem.Current is not null)
 {
     <ItemPageHeader Text="Project" Item=@ProjectItem.Current />
 
-    <TextFieldCopy Label="Id" Text="@ProjectItem.Current.Tag.Id" />
+    <TextFieldCopy Label="Id" Text=@ProjectItem.Current.Tag.Id />
 
-    <MudField Label="Url" Variant="Variant.Outlined">
-        <MudLink Href="@ProjectItem.Current.Tag.Url" Target="_blank">@ProjectItem.Current.Tag.Url</MudLink>
-    </MudField>
+    <TextFieldUrl Label="Url" Href=@ProjectItem.Current.Tag.Url />
 
-    <MudTextField T="string" Label="Name" Text="@ProjectItem.Current.Tag.Name" ReadOnly="true" Variant="Variant.Outlined" />
+    <TextField Label="Name" Text=@ProjectItem.Current.Tag.Name />
 
-    <MudField Label="Preview" Variant="Variant.Outlined">
-        <MudImage Src=@ProjectItem.Current.Tag.PreviewUrl Width=128 Height=128 />
-    </MudField>
+    <FieldImage Label="Preview" Src=@ProjectItem.Current.Tag.PreviewUrl />
 
-    <MudTable Items="@ProjectItem.Current.Tag.Parameters">
+    <MudTable Items=@ProjectItem.Current.Tag.Parameters>
         <ToolBarContent>
-            <MudText Typo="Typo.h6">Parameters</MudText>
+            <MudText Typo=Typo.h6>Parameters</MudText>
         </ToolBarContent>
         <HeaderContent>
             <MudTh>Name</MudTh>

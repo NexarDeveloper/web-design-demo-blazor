@@ -1,11 +1,11 @@
 ﻿@page "/wipVariant"
 @inherits AbstractPage
 
-@if (WipVariantItem.Current != null)
+@if (WipVariantItem.Current is not null)
 {
     <ItemPageHeader Text="Variant" Item=@WipVariantItem.Current />
 
-    <MudTextField T="string" Label="Name" Text="@WipVariantItem.Current.Tag.Name" ReadOnly="true" Variant="Variant.Outlined" />
+    <TextField Label="Name" Text="@WipVariantItem.Current.Tag.Name" />
 
     <TextFieldCopy Label="Bom.Id" Text="@WipVariantItem.Current.Tag.Bom.Id" />
 }

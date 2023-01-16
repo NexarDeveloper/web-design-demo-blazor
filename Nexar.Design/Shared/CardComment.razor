@@ -1,0 +1,18 @@
+﻿
+<MudCard Outlined=true>
+    <MudCardContent>
+        @Head
+        <MudDivider />
+        <MudText Style="white-space:pre-wrap;">
+            @Text
+        </MudText>
+    </MudCardContent>
+</MudCard>
+
+@code {
+    [Parameter]
+    public RenderFragment Head { get; init; }
+
+    [Parameter]
+    public string Text { get; init; }
+}

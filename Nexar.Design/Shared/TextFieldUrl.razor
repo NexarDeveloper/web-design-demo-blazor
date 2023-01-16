@@ -1,0 +1,12 @@
+﻿
+<MudField Label=@Label Variant=Variant.Outlined>
+    <MudLink Href=@Href Target=_blank>@Href</MudLink>
+</MudField>
+
+@code {
+    [Parameter]
+    public string Label { get; init; }
+
+    [Parameter]
+    public string Href { get; init; }
+}
