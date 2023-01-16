@@ -5,14 +5,18 @@ query TaskComments($id: ID!) {
 }
 
 fragment MyTaskWithComments on DesTask {
-    comments {
-      ...MyTaskComment
-    }
+  comments {
+    ...MyTaskComment
+  }
 }
 
 fragment MyTaskComment on DesTaskComment {
-    commentId
-    text
-    createdAt
-    modifiedAt
+  commentId
+  text
+  createdAt
+  modifiedAt
+  createdBy {
+    userId
+    email
+  }
 }

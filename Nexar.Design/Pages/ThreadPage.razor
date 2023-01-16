@@ -16,8 +16,8 @@
     {
         <CardComment Text=@comment.Text>
             <Head>
-                <TextKeyValue Key="CommentId" Value=@comment.CommentId />
                 <TextKeyValue Key="CreatedBy" Value=@(comment.CreatedBy.UserId + " / " + comment.CreatedBy.Email) />
+                <TextKeyValue Key="CommentId" Value=@comment.CommentId />
             </Head>
         </CardComment>
     }

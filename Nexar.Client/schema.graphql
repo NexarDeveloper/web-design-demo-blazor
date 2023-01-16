@@ -165,6 +165,12 @@ type Mutation {
   desDeleteTask(input: DesDeleteTaskInput!): DesDeleteTaskPayload!
   "Updates the specified task."
   desUpdateTask(input: DesUpdateTaskInput!): DesUpdateTaskPayload!
+  "Creates a new comment for the specified task."
+  desCreateTaskComment(input: DesCreateTaskCommentInput!): DesCreateTaskCommentPayload!
+  "Deletes the specified task comment."
+  desDeleteTaskComment(input: DesDeleteTaskCommentInput!): DesDeleteTaskCommentPayload!
+  "Updates the specified task comment."
+  desUpdateTaskComment(input: DesUpdateTaskCommentInput!): DesUpdateTaskCommentPayload!
   "Creates a manufacture package."
   desCreateManufacturePackage(input: DesCreateManufacturePackageInput!): DesCreateManufacturePackagePayload!
   manCreateRapidQuoteRequest(qty: Int! meta: ManBoardMetaInput! shipping: ManShippingDetailsInput): ManRapidQuoteResponse
@@ -392,6 +398,11 @@ type DesCreateManufacturePackagePayload {
   errors: [DesPayloadError!]!
 }
 
+type DesCreateTaskCommentPayload {
+  comment: DesTaskComment
+  errors: [DesPayloadError!]!
+}
+
 type DesCreateTaskPayload {
   "The created task."
   task: DesTask!
@@ -411,6 +422,10 @@ type DesDeleteCommentPayload {
 }
 
 type DesDeleteCommentThreadPayload {
+  errors: [DesPayloadError!]!
+}
+
+type DesDeleteTaskCommentPayload {
   errors: [DesPayloadError!]!
 }
 
@@ -1000,6 +1015,10 @@ type DesSymbol {
 type DesTask implements Node {
   "The assigned user."
   assignee: DesUser!
+  "The user who created the task."
+  createdBy: DesUser!
+  "The user who modified the task."
+  modifiedBy: DesUser!
   "The list of task comments."
   comments: [DesTaskComment!]!
   "The node ID."
@@ -1021,6 +1040,10 @@ type DesTask implements Node {
 }
 
 type DesTaskComment {
+  "The user who created the comment."
+  createdBy: DesUser!
+  "The user who modified the comment."
+  modifiedBy: DesUser!
   "The comment ID."
   commentId: String!
   "The comment text."
@@ -1088,6 +1111,10 @@ type DesUpdateComponentRevisionParametersPayload {
 }
 
 type DesUpdateReuseBlockPayload {
+  errors: [DesPayloadError!]!
+}
+
+type DesUpdateTaskCommentPayload {
   errors: [DesPayloadError!]!
 }
 
@@ -1404,6 +1431,13 @@ input DesCreateProjectTaskInput {
   task: DesCreateTaskInput!
 }
 
+input DesCreateTaskCommentInput {
+  "The task node ID."
+  taskId: ID!
+  "The comment text."
+  text: String!
+}
+
 input DesCreateTaskInput {
   "New task name."
   name: String!
@@ -1445,6 +1479,13 @@ input DesDeleteCommentInput {
 input DesDeleteCommentThreadInput {
   entityId: ID!
   commentThreadId: String!
+}
+
+input DesDeleteTaskCommentInput {
+  "The task node ID."
+  taskId: ID!
+  "The comment ID."
+  commentId: String!
 }
 
 input DesDeleteTaskInput {
@@ -1630,6 +1671,15 @@ input DesUpdateReuseBlockInput {
   id: ID!
   name: String
   description: String
+}
+
+input DesUpdateTaskCommentInput {
+  "The task node ID."
+  taskId: ID!
+  "The comment ID."
+  commentId: String!
+  "New comment text."
+  text: String!
 }
 
 input DesUpdateTaskInput {

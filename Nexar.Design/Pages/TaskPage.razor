@@ -17,11 +17,13 @@
 
     <TextFieldText Label="Description" Text=@TaskItem.Current.Tag.Description />
 
+    <TextField Label="Assignee (UserId / Email)" Text=@(TaskItem.Current.Tag.Assignee.UserId + " / " + TaskItem.Current.Tag.Assignee.Email) />
+
+    <TextField Label="CreatedBy (UserId / Email)" Text=@(TaskItem.Current.Tag.CreatedBy.UserId + " / " + TaskItem.Current.Tag.CreatedBy.Email) />
+
     <TextField Label="CreatedAt" Text=@TaskItem.Current.Tag.CreatedAt.ToString() />
 
     <TextField Label="ModifiedAt" Text="@TaskItem.Current.Tag.ModifiedAt.ToString()" />
-
-    <TextField Label="Assignee (UserId / Email)" Text=@(TaskItem.Current.Tag.Assignee.UserId + " / " + TaskItem.Current.Tag.Assignee.Email) />
 
     @if (TaskItem.Current.Comments is null)
     {
@@ -35,6 +37,7 @@
         {
             <CardComment Text=@comment.Text>
                 <Head>
+                    <TextKeyValue Key="CreatedBy" Value=@(comment.CreatedBy.UserId + " / " + comment.CreatedBy.Email) />
                     <TextKeyValue Key="CommentId" Value=@comment.CommentId />
                 </Head>
             </CardComment>

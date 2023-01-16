@@ -27,4 +27,8 @@ fragment MyTask on DesTask {
     userId
     email
   }
+  createdBy {
+    userId
+    email
+  }
 }
