@@ -14,6 +14,7 @@ public sealed class WipVariantItem : TreeItem3
     public IMyWipVariant Tag;
     public override string Text => Tag.Name;
     public override string Icon => Icons.Material.Filled.Memory;
+    public override bool CanExpand => false;
 
     public override string SetCurrent()
     {

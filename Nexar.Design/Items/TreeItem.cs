@@ -25,6 +25,11 @@ public abstract class TreeItem
     public abstract string Path { get; }
 
     /// <summary>
+    /// Gets true if the item may have children.
+    /// </summary>
+    public virtual bool CanExpand { get; } = true;
+
+    /// <summary>
     /// Gets the client for fetching data.
     /// </summary>
     public abstract NexarClient Client { get; }

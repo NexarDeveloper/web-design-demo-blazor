@@ -15,7 +15,7 @@ else
                  CanActivate=true
                  ActivatedValueChanged=ActivatedValueChanged>
             <ItemTemplate>
-                <MudTreeViewItem Value=@context Text=@context.Text Icon=@context.Icon />
+                <MudTreeViewItem Value=@context Text=@context.Text Icon=@context.Icon CanExpand=@context.CanExpand />
             </ItemTemplate>
         </MudTreeView>
     </MudContainer>

@@ -14,6 +14,7 @@ public sealed class ReleaseItem : TreeItem3
     public IMyRelease Tag;
     public override string Text => Tag.CreatedAt.ToString();
     public override string Icon => Icons.Material.Filled.ContentPasteGo;
+    public override bool CanExpand => false;
 
     public override string SetCurrent()
     {

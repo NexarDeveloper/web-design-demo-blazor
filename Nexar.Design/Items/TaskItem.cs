@@ -19,6 +19,7 @@ public sealed class TaskItem : TreeItem3
     public IMyTask Tag { get; }
     public override string Text => Tag.Name;
     public override string Icon => Icons.Material.Filled.Task;
+    public override bool CanExpand => false;
 
     public override string SetCurrent()
     {
