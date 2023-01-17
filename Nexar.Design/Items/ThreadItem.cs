@@ -16,7 +16,6 @@ public sealed class ThreadItem : TreeItem3
     public IMyThread Tag { get; }
     public override string Text => _name;
     public override string Icon => Icons.Material.Filled.ChatBubbleOutline;
-    public override bool CanExpand => false;
 
     public override string SetCurrent()
     {

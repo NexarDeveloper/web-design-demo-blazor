@@ -1,4 +1,5 @@
 using Nexar.Client;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -67,5 +68,6 @@ public abstract class TreeItem3 : TreeItem2
     public TreeItem3(TreeItem parent) : base(parent)
     {
     }
-    public sealed override Task<HashSet<TreeItem>> ServerData() => Task.FromResult(new HashSet<TreeItem>());
+    public sealed override bool CanExpand => false;
+    public sealed override Task<HashSet<TreeItem>> ServerData() => throw new NotImplementedException();
 }
