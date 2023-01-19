@@ -1,18 +1,35 @@
-﻿
+﻿@using Nexar.Client
+@using System.Linq
+
 <MudCard Outlined=true>
     <MudCardContent>
-        @Head
-        <MudDivider />
-        <MudText Style="white-space:pre-wrap;">
-            @Text
+        <MudText Style="white-space:pre-wrap">
+            @Comment.Text
         </MudText>
+        <MudExpansionPanels Elevation=0>
+            <MudExpansionPanel>
+                <TitleContent>
+                    <MudText Typo=Typo.subtitle2>@Comment.CreatedBy.Email</MudText>
+                </TitleContent>
+                <ChildContent>
+                    <TextKeyValue Key="CommentId" Value=@Comment.CommentId />
+                    <TextKeyValue Key="CreatedAt" Value=@Comment.CreatedAt.ToString() />
+                    <TextKeyValue Key="CreatedBy.Email" Value=@Comment.CreatedBy.Email />
+                    <TextKeyValue Key="CreatedBy.UserId" Value=@Comment.CreatedBy.UserId />
+                    @if (Comment.Mentions.Count > 0)
+                    {
+                        <TextKeyValue Key="Mentions" Value=@MentionsText />
+                    }
+                </ChildContent>
+            </MudExpansionPanel>
+        </MudExpansionPanels>
     </MudCardContent>
 </MudCard>
 
 @code {
     [Parameter]
-    public RenderFragment Head { get; init; }
+    public IMyComment Comment { get; init; }
 
-    [Parameter]
-    public string Text { get; init; }
+    string MentionsText =>
+        string.Join(", ", Comment.Mentions.Select(x => x.User.Email ?? x.User.UserId));
 }

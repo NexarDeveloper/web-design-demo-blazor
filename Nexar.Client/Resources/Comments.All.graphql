@@ -6,4 +6,10 @@
     userId
     email
   }
+  mentions {
+    user {
+      userId
+      email
+    }
+  }
 }

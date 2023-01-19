@@ -17,9 +17,9 @@
 
     <TextFieldText Label="Description" Text=@TaskItem.Current.Tag.Description />
 
-    <TextField Label="Assignee (UserId / Email)" Text=@(TaskItem.Current.Tag.Assignee.UserId + " / " + TaskItem.Current.Tag.Assignee.Email) />
+    <TextField Label="Assignee (Email / UserId)" Text=@(TaskItem.Current.Tag.Assignee.Email + " / " + TaskItem.Current.Tag.Assignee.UserId) />
 
-    <TextField Label="CreatedBy (UserId / Email)" Text=@(TaskItem.Current.Tag.CreatedBy.UserId + " / " + TaskItem.Current.Tag.CreatedBy.Email) />
+    <TextField Label="CreatedBy (Email / UserId)" Text=@(TaskItem.Current.Tag.CreatedBy.Email + " / " + TaskItem.Current.Tag.CreatedBy.UserId) />
 
     <TextField Label="CreatedAt" Text=@TaskItem.Current.Tag.CreatedAt.ToString() />
 
@@ -35,12 +35,7 @@
 
         foreach (var comment in TaskItem.Current.Comments)
         {
-            <CardComment Text=@comment.Text>
-                <Head>
-                    <TextKeyValue Key="CreatedBy" Value=@(comment.CreatedBy.UserId + " / " + comment.CreatedBy.Email) />
-                    <TextKeyValue Key="CommentId" Value=@comment.CommentId />
-                </Head>
-            </CardComment>
+            <CardComment Comment=@comment />
         }
     }
 }

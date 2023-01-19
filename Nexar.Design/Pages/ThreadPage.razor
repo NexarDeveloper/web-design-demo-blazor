@@ -14,12 +14,7 @@
 
     @foreach (var comment in ThreadItem.Current.Tag.Comments)
     {
-        <CardComment Text=@comment.Text>
-            <Head>
-                <TextKeyValue Key="CreatedBy" Value=@(comment.CreatedBy.UserId + " / " + comment.CreatedBy.Email) />
-                <TextKeyValue Key="CommentId" Value=@comment.CommentId />
-            </Head>
-        </CardComment>
+        <CardComment Comment=@comment />
     }
 }
 
