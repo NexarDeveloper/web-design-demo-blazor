@@ -253,21 +253,21 @@ type DesBomItemInstance {
   isFitted: Boolean!
 }
 
-"A comment is one of a collection of remarks associated with a comment thread."
+"A comment is one of remarks associated with a comment thread or task."
 type DesComment {
-  "The account information for who created this comment."
+  "The user who created the comment."
   createdBy: DesUser!
-  "The account information for who most recently modified this comment."
+  "The user who modified the comment."
   modifiedBy: DesUser!
-  "The account information for those who are referenced for this comment."
+  "The users mentioned by this comment."
   mentions: [DesMention!]!
-  "The reference identifier for this comment (use with desDeleteComment)."
+  "The comment reference ID."
   commentId: String!
-  "The content body of this comment."
+  "The comment text."
   text: String!
-  "The `DateTime` for the creation of this comment."
+  "The creation date."
   createdAt: DateTime!
-  "The `DateTime` for the most recent modification of this comment."
+  "The last modification date."
   modifiedAt: DateTime!
 }
 
@@ -399,7 +399,7 @@ type DesCreateManufacturePackagePayload {
 }
 
 type DesCreateTaskCommentPayload {
-  comment: DesTaskComment
+  comment: DesComment
   errors: [DesPayloadError!]!
 }
 
@@ -618,9 +618,10 @@ type DesManufacturerPart {
   priority: Int!
 }
 
+"A reference to a user in a comment."
 type DesMention {
+  "The mentioned user."
   user: DesUser!
-  type: Int!
 }
 
 type DesModel3D {
@@ -1020,7 +1021,7 @@ type DesTask implements Node {
   "The user who modified the task."
   modifiedBy: DesUser!
   "The list of task comments."
-  comments: [DesTaskComment!]!
+  comments: [DesComment!]!
   "The node ID."
   id: ID!
   "The task ID shown in Altium 365."
@@ -1033,21 +1034,6 @@ type DesTask implements Node {
   priority: DesTaskPriority!
   "The task status."
   status: DesTaskStatus!
-  "The creation date."
-  createdAt: DateTime!
-  "The last modification date."
-  modifiedAt: DateTime!
-}
-
-type DesTaskComment {
-  "The user who created the comment."
-  createdBy: DesUser!
-  "The user who modified the comment."
-  modifiedBy: DesUser!
-  "The comment ID."
-  commentId: String!
-  "The comment text."
-  text: String!
   "The creation date."
   createdAt: DateTime!
   "The last modification date."
@@ -3443,26 +3429,19 @@ type DatResolvedBomPart {
 
 "Error indicating that the SCR processing run could not be deleted."
 type DatScrCouldNotDeleteJobError implements DatError {
-  "A short description of the error."
   message: String!
+  "Job to be deleted."
+  job: DatScrJob!
 }
 
-"Results after attempting to create an SCR job."
 type DatScrCreateJobPayload {
-  "ID of the job created."
-  jobId: String
-  "The job created."
-  job: DatScrJob
-  "A list of errors, which occured while performing the operation."
-  errors: [DatScrCreateJobError!]!
+  datScrJob: DatScrJob
+  errors: [DatScrCreateJobError!]
 }
 
-"Results after attempting to delete an SCR job."
 type DatScrDeleteJobPayload {
-  "ID of the job intended for deletion."
-  jobId: String!
-  "A list of errors, which occured while performing the operation."
-  errors: [DatScrDeleteJobError!]!
+  datScrJob: DatScrJob
+  errors: [DatScrDeleteJobError!]
 }
 
 "Contains information about an SCR processing job."
@@ -3485,15 +3464,14 @@ type DatScrJob {
 
 "Error indicates that the user has exceeded their quota."
 type DatScrQuotaExceededError implements DatError {
+  message: String!
   "The number of distinct parts resolved for the user in the current period."
   usage: Int!
   "The number of allowed parts resolved for the current period."
   quota: Int!
-  "A short description of the error."
-  message: String!
 }
 
-"A supply-chain resiliance report."
+"A supply-chain resilience report."
 type DatScrReport {
   "The SCR job that created this report."
   jobId: String!
@@ -3553,10 +3531,8 @@ type DatUnresolvedBomItems {
   bomItems: [DatUnresolvedBomItem!]!
 }
 
-"An error which occured while creating an SCR processing run."
 union DatScrCreateJobError = DatScrQuotaExceededError
 
-"An error which occured while deleting an SCR processing run."
 union DatScrDeleteJobError = DatScrCouldNotDeleteJobError
 
 input ComparableNullableOfDoubleOperationFilterInput {

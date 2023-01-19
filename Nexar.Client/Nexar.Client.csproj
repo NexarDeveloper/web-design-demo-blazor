@@ -3,6 +3,9 @@
     <TargetFramework>net7.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Resources\Comments.All.graphql" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="StrawberryShake.CodeGeneration.CSharp.Analyzers" Version="12.16.0" />
     <PackageReference Include="StrawberryShake.Transport.Http" Version="12.16.0" />
   </ItemGroup>

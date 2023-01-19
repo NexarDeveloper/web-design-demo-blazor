@@ -15,7 +15,7 @@ public sealed class ProjectReleasesItem : TreeItem2
 
     public new ProjectItem Parent { get; }
     public override string Text => "Releases";
-    public override string Icon => Icons.Material.Filled.ContentPasteGo;
+    public override string Icon => Icons.Material.Filled.Launch;
 
     public override async Task<HashSet<TreeItem>> ServerData()
     {

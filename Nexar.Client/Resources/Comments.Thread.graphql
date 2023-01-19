@@ -18,12 +18,3 @@ fragment MyThread on DesCommentThread {
     ...MyComment
   }
 }
-
-fragment MyComment on DesComment {
-  text
-  commentId
-  createdBy {
-    userId
-    email
-  }
-}

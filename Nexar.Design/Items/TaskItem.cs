@@ -9,7 +9,7 @@ namespace Nexar.Design;
 
 public sealed class TaskItem : TreeItem3
 {
-    public IReadOnlyList<IMyTaskComment> Comments { get; private set; }
+    public IReadOnlyList<IMyComment> Comments { get; private set; }
 
     public TaskItem(IMyTask tag, TreeItem2 parent) : base(parent)
     {
@@ -47,7 +47,7 @@ public sealed class TaskItem : TreeItem3
         }
         catch
         {
-            Comments = Array.Empty<IMyTaskComment>();
+            Comments = Array.Empty<IMyComment>();
         }
     }
 }
