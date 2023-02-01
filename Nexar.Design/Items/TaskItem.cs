@@ -22,7 +22,7 @@ public sealed class TaskItem : TreeItem3
 
     public override string SetCurrent()
     {
-        _ = FetchComments();
+        _ = Fetch();
 
         Current = this;
         OnChange?.Invoke();
@@ -32,7 +32,7 @@ public sealed class TaskItem : TreeItem3
     public static event Action OnChange;
     public static TaskItem Current { get; private set; }
 
-    async Task FetchComments()
+    async Task Fetch()
     {
         try
         {

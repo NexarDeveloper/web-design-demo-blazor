@@ -8,6 +8,9 @@ namespace Nexar.Design;
 
 public sealed class ProjectItem : TreeItem2
 {
+    public IMyProjectRevision Revision { get; private set; }
+    public IReadOnlyList<IMyProjectParameter> Parameters { get; private set; }
+
     public ProjectItem(IMyProject tag, WorkspaceProjectsItem parent) : base(parent)
     {
         Tag = tag;
@@ -31,6 +34,8 @@ public sealed class ProjectItem : TreeItem2
 
     public override string SetCurrent()
     {
+        _ = Fetch();
+
         Current = this;
         OnChange?.Invoke();
         return "project";
@@ -38,4 +43,24 @@ public sealed class ProjectItem : TreeItem2
 
     public static event Action OnChange;
     public static ProjectItem Current { get; private set; }
+
+    async Task Fetch()
+    {
+        try
+        {
+            var res = await Client.ProjectExtras.ExecuteAsync(Tag.Id);
+            res.AssertNoErrors();
+
+            Revision = res.Data.DesProjectById.LatestRevision;
+
+            Parameters = res.Data.DesProjectById.Parameters;
+
+            OnChange?.Invoke();
+        }
+        catch
+        {
+            Revision = null;
+            Parameters = Array.Empty<IMyProjectParameter>();
+        }
+    }
 }

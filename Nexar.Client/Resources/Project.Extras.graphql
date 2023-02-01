@@ -1,0 +1,22 @@
+﻿query ProjectExtras($id: ID!) {
+  desProjectById(id: $id) {
+    latestRevision {
+      ... MyProjectRevision
+    }
+    parameters {
+      ... MyProjectParameter
+    }
+  }
+}
+
+fragment MyProjectRevision on DesVcsRevision {
+  revisionId
+  createdAt
+  author
+  message
+}
+
+fragment MyProjectParameter on DesProjectParameter {
+  name
+  value
+}

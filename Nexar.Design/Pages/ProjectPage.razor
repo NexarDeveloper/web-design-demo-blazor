@@ -11,23 +11,36 @@
 
     <TextField Label="Name" Text=@ProjectItem.Current.Tag.Name />
 
-    <TextField Label="LatestRevision (CreatedAt / Author / Message / RevisionId)" Text=@Revision(ProjectItem.Current) />
-
     <FieldImage Label="Preview" Src=@ProjectItem.Current.Tag.PreviewUrl />
 
-    <MudTable Items=@ProjectItem.Current.Tag.Parameters>
-        <ToolBarContent>
-            <MudText Typo=Typo.h6>Parameters</MudText>
-        </ToolBarContent>
-        <HeaderContent>
-            <MudTh>Name</MudTh>
-            <MudTh>Value</MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd DataLabel="Name">@context.Name</MudTd>
-            <MudTd DataLabel="Value">@context.Value</MudTd>
-        </RowTemplate>
-    </MudTable>
+    @if (ProjectItem.Current.Revision is null && ProjectItem.Current.Parameters is null)
+    {
+        <MudProgressCircular Indeterminate=true />
+    }
+    else
+    {
+        @if (ProjectItem.Current.Revision is not null)
+        {
+            <TextField Label="LatestRevision (CreatedAt / Author / Message / RevisionId)" Text=@Revision(ProjectItem.Current) />
+        }
+
+        @if (ProjectItem.Current.Parameters is not null)
+        {
+            <MudTable Items=@ProjectItem.Current.Parameters>
+                <ToolBarContent>
+                    <MudText Typo=Typo.h6>Parameters</MudText>
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh>Name</MudTh>
+                    <MudTh>Value</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Name">@context.Name</MudTd>
+                    <MudTd DataLabel="Value">@context.Value</MudTd>
+                </RowTemplate>
+            </MudTable>
+        }
+    }
 }
 
 @code {
@@ -43,7 +56,7 @@
 
     string Revision(ProjectItem item)
     {
-        var rev = item.Tag.LatestRevision;
+        var rev = item.Revision;
         return $"{rev.CreatedAt.ToString("yyyy-MM-dd")} / {rev.Author} / {rev.Message} / {rev.RevisionId}";
     }
 }
