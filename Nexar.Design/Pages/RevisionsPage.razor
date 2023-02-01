@@ -1,0 +1,41 @@
+﻿@page "/revisions"
+@inherits AbstractPage
+
+@if (ProjectRevisionsItem.Current is not null)
+{
+    <ItemPageHeader Text="Revisions" Item=@ProjectRevisionsItem.Current />
+
+    @if (ProjectRevisionsItem.Current.Revisions is null)
+    {
+        <MudProgressCircular Indeterminate=true />
+    }
+    else if (ProjectRevisionsItem.Current.Revisions.Count > 0)
+    {
+        <MudTable Items=@ProjectRevisionsItem.Current.Revisions>
+            <HeaderContent>
+                <MudTh>CreatedAt</MudTh>
+                <MudTh>Author</MudTh>
+                <MudTh>Message</MudTh>
+                <MudTh>RevisionId</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="CreatedAt">@context.CreatedAt</MudTd>
+                <MudTd DataLabel="Author">@context.Author</MudTd>
+                <MudTd DataLabel="Message">@context.Message</MudTd>
+                <MudTd DataLabel="RevisionId">@context.RevisionId</MudTd>
+            </RowTemplate>
+        </MudTable>
+    }
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        ProjectRevisionsItem.OnChange += StateHasChanged;
+    }
+
+    protected override void Disposing()
+    {
+        ProjectRevisionsItem.OnChange -= StateHasChanged;
+    }
+}

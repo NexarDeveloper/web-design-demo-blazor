@@ -25,6 +25,7 @@ public sealed class ProjectItem : TreeItem2
             new ProjectReleasesItem(this),
             new ProjectCommentsItem(this),
             new ProjectTasksItem(this),
+            new ProjectRevisionsItem(this),
         });
     }
 

@@ -11,6 +11,12 @@ fragment MyProject on DesProject {
   url
   name
   previewUrl
+  latestRevision {
+    revisionId
+    createdAt
+    author
+    message
+  }
   parameters {
     ... MyProjectParameter
   }

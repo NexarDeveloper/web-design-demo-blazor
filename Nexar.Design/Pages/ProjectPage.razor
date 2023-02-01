@@ -11,6 +11,8 @@
 
     <TextField Label="Name" Text=@ProjectItem.Current.Tag.Name />
 
+    <TextField Label="LatestRevision (CreatedAt / Author / Message / RevisionId)" Text=@Revision(ProjectItem.Current) />
+
     <FieldImage Label="Preview" Src=@ProjectItem.Current.Tag.PreviewUrl />
 
     <MudTable Items=@ProjectItem.Current.Tag.Parameters>
@@ -37,5 +39,11 @@
     protected override void Disposing()
     {
         ProjectItem.OnChange -= StateHasChanged;
+    }
+
+    string Revision(ProjectItem item)
+    {
+        var rev = item.Tag.LatestRevision;
+        return $"{rev.CreatedAt.ToString("yyyy-MM-dd")} / {rev.Author} / {rev.Message} / {rev.RevisionId}";
     }
 }

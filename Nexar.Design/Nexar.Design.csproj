@@ -9,7 +9,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.2" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
-    <PackageReference Include="MudBlazor" Version="6.1.7" />
+    <PackageReference Include="MudBlazor" Version="6.1.8" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Nexar.Client\Nexar.Client.csproj" />

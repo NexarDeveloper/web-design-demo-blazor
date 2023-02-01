@@ -65,6 +65,10 @@ type Query {
   desProjectTasks(projectId: ID! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesTaskConnection
   "The list of workspace tasks."
   desWorkspaceTasks(workspaceUrl: String! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesTaskConnection
+  "*** PROTOTYPE, SUBJECT TO CHANGE ***"
+  desProjectCollaborationSimulationRevisions(projectId: ID! domainName: String! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesCollaborationSimulationRevisionConnection
+  "*** PROTOTYPE, SUBJECT TO CHANGE ***"
+  desProjectCollaborationSimulationLatestRevision(projectId: ID! domainName: String! projectTypeName: String!): DesCollaborationSimulationRevision!
   desSharedWithMe: DesSharedWithMe!
   supOctopartIdFromCiivaId(workspaceUrl: String! ciivaId: String!): String @deprecated(reason: "Use `supPartIdFromCiivaId`.")
   "Nexar infrastructure, subject to change."
@@ -104,6 +108,7 @@ type Query {
   manAltimadeLogin(gsid: ID): String
   manBomResolution(projectId: ID! quoteRequestId: ID!): ManBomResolution
   manOrderEventById(id: ID!): ManOrderEvent
+  manProjectFeatures(input: ManProjectFeatureInput!): ManFeatures
   "Get details about the organization(s) the current user belongs to."
   admOrganizations: [AdmOrganization!]!
   "Gets a single application by its unique identifier."
@@ -137,6 +142,8 @@ type Mutation {
   desUpdateComponentRevisionParameters(input: DesUpdateComponentRevisionParametersInput!): DesUpdateComponentRevisionParametersPayload!
   "Uploads the project zip file."
   desUploadProject(input: DesUploadProjectInput!): DesUploadProjectPayload!
+  "*** PROTOTYPE, SUBJECT TO CHANGE ***"
+  desUploadCollaborationSimulation(input: DesUploadCollaborationSimulationInput!): DesUploadCollaborationSimulationPayload!
   "Updates a specific result block."
   desUpdateReuseBlock(input: DesUpdateReuseBlockInput!): DesUpdateReuseBlockPayload!
   "Creates a user."
@@ -183,7 +190,7 @@ type Mutation {
   manUpdateOrderQty(orderId: ID! qty: Int!): ManOrder
   manUpdateOrderShipping(orderId: ID! shipping: ManShippingDetailsInput!): ManOrder
   "accept quote, confirm order as placed. "
-  manAcceptOrderQuote(orderId: ID! quoteId: ID!): ManOrder
+  manAcceptOrderQuote(orderId: ID! quoteId: ID! paymentOptions: ManPaymentSelectionInput): ManOrder
   manInsertOrderEvent(id: ID! event: ManOrderEventType attributes: String): ManOrder
   manInsertOrderEmsAcceptEvent(input: ManOrderEmsAcceptInput!): ManOrder
   manInsertOrderShipUpdateEvent(input: ManOrderShipEstimateInput!): ManOrder
@@ -251,6 +258,39 @@ type DesBomItemInstance {
   designator: String!
   "The variant use status for this item."
   isFitted: Boolean!
+}
+
+"*** PROTOTYPE, SUBJECT TO CHANGE ***"
+type DesCollaborationSimulationFile {
+  fileTypeName: String!
+  downloadUrl: String!
+}
+
+"*** PROTOTYPE, SUBJECT TO CHANGE ***"
+type DesCollaborationSimulationRevision {
+  files: [DesCollaborationSimulationFile!]!
+  createdBy: DesUser!
+  metadata: String!
+  createdAt: DateTime!
+}
+
+"A connection to a list of items."
+type DesCollaborationSimulationRevisionConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [DesCollaborationSimulationRevisionEdge!]
+  "A flattened list of the nodes."
+  nodes: [DesCollaborationSimulationRevision!]
+  totalCount: Int!
+}
+
+"An edge in a connection."
+type DesCollaborationSimulationRevisionEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: DesCollaborationSimulationRevision!
 }
 
 "A comment is one of remarks associated with a comment thread or task."
@@ -754,6 +794,10 @@ type DesProject implements Node {
   previewUrl: String!
   "The list of workflows associated with this project."
   workflows("An option to search workflows that have been completed." isClosed: Boolean! = false "An option to search workflows that have been modified after a specific `DateTime`." modifiedAfter: DateTime where: DesWorkflowFilterInput): [DesWorkflow!]
+  "The latest VCS revision."
+  latestRevision: DesVcsRevision!
+  "The list of VCS revisions."
+  revisions("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesVcsRevisionConnection
   "The Altium 365 web address."
   url: String!
   "The Altium 365 workspace URL."
@@ -1116,6 +1160,10 @@ type DesUpdateUserPayload {
   errors: [DesPayloadError!]!
 }
 
+type DesUploadCollaborationSimulationPayload {
+  errors: [DesPayloadError!]!
+}
+
 type DesUploadProjectPayload {
   "The project ID."
   projectId: ID!
@@ -1146,6 +1194,40 @@ type DesUserGroup implements Node {
   id: ID!
   "The group name."
   name: String!
+}
+
+"VCS revision\/commit information."
+type DesVcsRevision {
+  revisionId: String!
+  message: String!
+  author: String!
+  createdAt: DateTime!
+  files: [DesVcsRevisionFileChange!]!
+}
+
+"A connection to a list of items."
+type DesVcsRevisionConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [DesVcsRevisionEdge!]
+  "A flattened list of the nodes."
+  nodes: [DesVcsRevision!]
+  totalCount: Int!
+}
+
+"An edge in a connection."
+type DesVcsRevisionEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: DesVcsRevision!
+}
+
+"Describes the file affected by a VCS revision."
+type DesVcsRevisionFileChange {
+  kind: DesVcsChangeKind!
+  path: String!
 }
 
 type DesVia {
@@ -1362,6 +1444,12 @@ input DesAddUsersToGroupInput {
   id: ID!
   "User IDs."
   userIds: [String!]!
+}
+
+input DesCollaborationSimulationFileInput {
+  fileId: String!
+  fileType: String!
+  fileName: String!
 }
 
 "A component contains the parametric details of a PCB part."
@@ -1695,6 +1783,15 @@ input DesUpdateUserInput {
   lastName: String
 }
 
+input DesUploadCollaborationSimulationInput {
+  projectId: ID!
+  domain: String!
+  projectType: String!
+  revision: String!
+  comment: String!
+  files: [DesCollaborationSimulationFileInput!]!
+}
+
 input DesUploadProjectInput {
   "The workspace URL."
   workspaceUrl: String!
@@ -1969,6 +2066,14 @@ enum DesUserPictureSize {
   SIZE70X70
   SIZE128X128
   ORIGINAL
+}
+
+"Describes VCS item change kind."
+enum DesVcsChangeKind {
+  NONE
+  ADDED
+  DELETED
+  MODIFIED
 }
 
 enum SupPartLifeCycle {
@@ -2595,6 +2700,10 @@ type ManCreateOrderResponse {
   order: ManOrder
 }
 
+type ManFeatures {
+  availablePaymentOptions: [ManPaymentMethod!]!
+}
+
 type ManLayer {
   type: ManLayerType
   thickness: ManLength
@@ -2640,6 +2749,7 @@ type ManOrderAcceptedEvent implements ManOrderEvent {
   order: ManOrder!
   eventType: ManOrderEventType!
   timestamp: Int!
+  paymentSelection: ManPaymentSelection!
 }
 
 type ManOrderBatchedEvent implements ManOrderEvent {
@@ -2801,6 +2911,11 @@ type ManPathSegment {
   startAngle: ManAngle
   endAngle: ManAngle
   radius: ManLength
+}
+
+type ManPaymentSelection {
+  method: ManPaymentMethod!
+  purchaseOrderReference: String
 }
 
 type ManPlacement {
@@ -3033,6 +3148,11 @@ input ManPathSegmentInput {
   radius: Int
 }
 
+input ManPaymentSelectionInput {
+  method: ManPaymentMethod!
+  purchaseOrderReference: String
+}
+
 input ManPlacementInput {
   "schematic refdes"
   refdes: String
@@ -3051,6 +3171,10 @@ input ManPoint2DInput {
 
 input ManPriceInput {
   amount: Decimal
+}
+
+input ManProjectFeatureInput {
+  projectId: ID!
 }
 
 input ManPurchaseOptionInput {
@@ -3175,6 +3299,11 @@ enum ManPartStatus {
 enum ManPathType {
   ARC
   VERTEX
+}
+
+enum ManPaymentMethod {
+  CREDIT_CARD
+  DIRECT_APPROVAL
 }
 
 enum ManQuoteCategory {
@@ -3479,7 +3608,7 @@ type DatScrReport {
   downloadUrl: String!
 }
 
-"Statistics relating to the running of a job. Procurability here is with respect to a given threshold."
+"Statistics relating to the running of a job. Procurability here is with respect to a given EAU (estimated annual usage)."
 type DatScrRunStats {
   "Total number of parts requested for processing."
   numTotalParts: Int
@@ -3627,7 +3756,7 @@ input DatScrColumnMapInput {
   "Name of the CSV column that corresponds to the name of the manufacturer"
   manufacturer: String
   "Name of the CSV column that corresponds to the estimated annual usage"
-  threshold: String
+  eau: String
 }
 
 "Input data to create an SCR job."
