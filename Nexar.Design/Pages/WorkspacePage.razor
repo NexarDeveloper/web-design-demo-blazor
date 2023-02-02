@@ -13,9 +13,7 @@
 
     <TextFieldText Label="Description" Text=@WorkspaceItem.Current.Tag.Description />
 
-    <TextField Label="Location.Name" Text=@WorkspaceItem.Current.Tag.Location.Name />
-
-    <TextField Label="Location.ApiServiceUrl" Text=@WorkspaceItem.Current.Tag.Location.ApiServiceUrl />
+    <TextField Label="Location (Name / ApiServiceUrl)" Text=@Location />
 }
 
 @code {
@@ -28,4 +26,7 @@
     {
         WorkspaceItem.OnChange -= StateHasChanged;
     }
+
+    string Location =>
+        $"{WorkspaceItem.Current.Tag.Location.Name} / {WorkspaceItem.Current.Tag.Location.ApiServiceUrl}";
 }
