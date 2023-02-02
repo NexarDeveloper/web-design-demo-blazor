@@ -22,10 +22,12 @@ public sealed class TaskItem : TreeItem3
 
     public override string SetCurrent()
     {
-        _ = Fetch();
-
-        Current = this;
-        OnChange?.Invoke();
+        if (Current != this)
+        {
+            _ = Fetch();
+            Current = this;
+            OnChange?.Invoke();
+        }
         return "task";
     }
 
