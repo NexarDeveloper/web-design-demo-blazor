@@ -26,6 +26,7 @@ public sealed class WorkspaceItem : TreeItem
         return Task.FromResult(new HashSet<TreeItem>
         {
             new WorkspaceProjectsItem(this),
+            new WorkspaceLibraryItem(this),
             new WorkspaceTasksItem(this),
             new WorkspaceUsersItem(this),
         });

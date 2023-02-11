@@ -23,6 +23,8 @@ Altium 365 data tree:
         - Comments
         - Tasks
         - Revisions
+    - Library
+        - Component Templates
     - Tasks
     - Users
 

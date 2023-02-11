@@ -8,6 +8,8 @@ scalar Map
 
 scalar Time
 
+scalar Any
+
 type Query {
   "Fetches an object given its ID."
   node("ID of the object." id: ID!): Node
@@ -47,6 +49,7 @@ type Query {
   desLibrary(workspaceUrl: String!): DesLibrary!
   desComponentById(id: ID!): DesComponent
   desRevisionDetailsById(id: ID!): DesRevisionDetails
+  desComponentTemplateById(id: ID!): DesComponentTemplate
   "Search for comment threads associated with a project."
   desCommentThreads("The node identifier for a project (This is the project field named \"id\")." projectId: ID!): [DesCommentThread!]!
   "Search for a specific comment thread associated with a project."
@@ -113,8 +116,6 @@ type Query {
   admOrganizations: [AdmOrganization!]!
   "Gets a single application by its unique identifier."
   admApplicationById(id: String!): AdmApplication
-  datResolvedBomItems(input: DatUnresolvedBomItemsInput!): DatResolvedBomItemsPayload!
-  datBomAnalysis(input: DatBomAnalysisItemsInput!): DatBomAnalysisPayload!
   datBomPart(item: DatBomItemInput!): DatBomPartsResult!
   datBomParts(items: [DatBomItemInput!]!): [DatBomPartsResult!]!
   datBomPartHistories(partIds: [String!]!): [DatBomPartHistory]!
@@ -203,6 +204,8 @@ type Mutation {
   manInsertOrderProcessStartEvent(input: ManOrderProcessStartInput!): ManOrder
   manInsertOrderShippedEvent(input: ManOrderShippedInput!): ManOrder
   manInsertOrderConsignmentDetailsEvent(input: ManOrderConsignmentDetailsInput!): ManOrder
+  "Send a message to another application."
+  admEvtSendAppNotification(input: AdmEvtSendAppNotificationInput!): AdmEvtSendAppNotificationPayload!
   "Create a new SCR processing run for a given CSV file."
   datScrCreateJob(input: DatScrCreateJobInput!): DatScrCreateJobPayload!
   "Delete an SCR job and any corresponding reports."
@@ -422,6 +425,33 @@ type DesComponentParameter {
   value: String!
 }
 
+type DesComponentTemplate implements Node {
+  "The node ID (used by `desComponentTemplateById`)."
+  id: ID!
+  name: String!
+  description: String!
+  folder: DesFolder
+}
+
+"A connection to a list of items."
+type DesComponentTemplateConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [DesComponentTemplateEdge!]
+  "A flattened list of the nodes."
+  nodes: [DesComponentTemplate!]
+  totalCount: Int!
+}
+
+"An edge in a connection."
+type DesComponentTemplateEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: DesComponentTemplate!
+}
+
 type DesCreateCommentPayload {
   commentId: String!
   errors: [DesPayloadError!]!
@@ -614,6 +644,8 @@ type DesLayerProperty {
 type DesLibrary {
   "Gets library components."
   components("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesComponentFilterInput): DesComponentConnection
+  "Gets library component templates."
+  componentTemplates("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesComponentTemplateConnection
   "Gets library reuse blocks."
   reuseBlocks("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesReuseBlockConnection
 }
@@ -665,7 +697,7 @@ type DesMention {
 }
 
 type DesModel3D {
-  parasolidFile: DesDownloadableFile!
+  parasolidFile: DesDownloadableFile
 }
 
 type DesNcDrill {
@@ -3401,6 +3433,33 @@ type AdmApplicationSecurity {
   clientSecret: String!
 }
 
+"An `AdmEvtCustomEvent` is an entity representing a message generaged from the API."
+type AdmEvtCustomEvent {
+  "The unique Identifier for this message."
+  id: String!
+  "Identifier of the application which generated the event (null if system generated)."
+  senderApplicationId: String
+  "Identifier of the application to receive the event."
+  destinationApplicationId: String!
+  "Identifier of object which the event was generated for (project, workspace, part, etc)."
+  subject: String
+  "Unique global identifier of the user generating the event (null if client credentials are used)."
+  userId: String
+  "Time of event creation."
+  createdAt: DateTime!
+  type: AdmEventType!
+  "`customData` is extra user specified data attached to the a Custom Event."
+  customData: String
+}
+
+"An `AdmEvtSendAppNotificationPayload` is the return value for the `admEvtSendAppNotification` mutation."
+type AdmEvtSendAppNotificationPayload {
+  "`event` is the underlying sent event if available."
+  event: AdmEvtCustomEvent
+  "`errors` found during execution."
+  errors: [AdmRequestError!]
+}
+
 "An Organization is an entity representing a partner, company or individual engaging with Nexar."
 type AdmOrganization {
   "The users belonging to this organization."
@@ -3417,6 +3476,11 @@ type AdmOrganization {
   createdDate: DateTime!
   "A unique identifier for the organization."
   id: String!
+}
+
+type AdmRequestError {
+  message: String!
+  code: String!
 }
 
 "Supply count information for supply applications."
@@ -3451,41 +3515,30 @@ type AdmUserInvitation {
   accepted: Boolean!
 }
 
+"An `AdmEvtSendAppNotificationInput` the input object for the `admEvtSendAppNotification` mutation."
+input AdmEvtSendAppNotificationInput {
+  "Identifier of application to send notification event."
+  destinationApplicationId: String!
+  "Identifier of object the event is generate for (project, workspace, part, etc)."
+  subject: String
+  "customData is destination application specified extra data."
+  customData: Any
+}
+
+enum AdmEventType {
+  API_CUSTOM_EVENT
+}
+
 "A generic `dat` domain error."
 interface DatError {
   "A short description of the error."
   message: String!
 }
 
-type DatBomAnalysisResult {
-  level: DatBomAnalysisResultLevel!
-  message: String!
-  summary: String
-  bomItemIds: [String!]!
-}
-
 type DatBomAnalysis {
   items: [DatBomPartItem!]!
   level: DatBomAnalysisLevel!
   message: String!
-}
-
-type DatBomAnalysisBomItem {
-  bomItemId: String!
-  partId: String
-  quantity: Int!
-}
-
-type DatBomAnalysisItems {
-  version: Int!
-  bomId: String!
-  bomItems: [DatBomAnalysisBomItem!]!
-}
-
-type DatBomAnalysisPayload {
-  version: Int!
-  bomId: String!
-  analysisResults: [DatBomAnalysisResult!]!
 }
 
 type DatBomPart {
@@ -3531,29 +3584,6 @@ type DatEddiTimeSeries {
   children(where: DatEddiTimeSeriesFilterInput): [DatEddiTimeSeries!]
   indices(where: DatEddiIndexFilterInput): [DatEddiIndex!]!
   category: DatEddiCategory
-}
-
-type DatManufacturer {
-  id: String!
-  name: String!
-}
-
-type DatResolvedBomItem {
-  bomItemId: String!
-  manufacturerParts: [DatResolvedBomPart!]!
-}
-
-type DatResolvedBomItemsPayload {
-  version: Int!
-  bomId: String!
-  bomItems: [DatResolvedBomItem!]!
-}
-
-type DatResolvedBomPart {
-  mpn: String!
-  partId: String!
-  confidence: Float!
-  manufacturer: DatManufacturer!
 }
 
 "Error indicating that the SCR processing run could not be deleted."
@@ -3646,20 +3676,6 @@ type DatScrUsage {
   quota: Int!
 }
 
-type DatUnresolvedBomItem {
-  bomItemId: String!
-  manufacturerName: String!
-  mpn: String!
-  ipn: String
-  description: String
-}
-
-type DatUnresolvedBomItems {
-  version: Int!
-  bomId: String!
-  bomItems: [DatUnresolvedBomItem!]!
-}
-
 union DatScrCreateJobError = DatScrQuotaExceededError
 
 union DatScrDeleteJobError = DatScrCouldNotDeleteJobError
@@ -3677,18 +3693,6 @@ input ComparableNullableOfDoubleOperationFilterInput {
   nlt: Float
   lte: Float
   nlte: Float
-}
-
-input DatBomAnalysisBomItemInput {
-  bomItemId: String!
-  partId: String
-  quantity: Int!
-}
-
-input DatBomAnalysisItemsInput {
-  version: Int!
-  bomId: String!
-  bomItems: [DatBomAnalysisBomItemInput!]!
 }
 
 input DatBomItemInput {
@@ -3724,29 +3728,6 @@ input DatEddiTimeSeriesFilterInput {
   category: DatEddiCategoryFilterInput
 }
 
-input DatManufacturerInput {
-  id: String!
-  name: String!
-}
-
-input DatResolvedBomItemInput {
-  bomItemId: String!
-  manufacturerParts: [DatResolvedBomPartInput!]!
-}
-
-input DatResolvedBomItemsPayloadInput {
-  version: Int!
-  bomId: String!
-  bomItems: [DatResolvedBomItemInput!]!
-}
-
-input DatResolvedBomPartInput {
-  mpn: String!
-  partId: String!
-  confidence: Float!
-  manufacturer: DatManufacturerInput!
-}
-
 "A mapping to rename column headers in the CSV to known fields"
 input DatScrColumnMapInput {
   "Name of the CSV column that corresponds to an internal part number"
@@ -3775,33 +3756,7 @@ input DatScrDeleteJobInput {
   jobId: String!
 }
 
-input DatUnresolvedBomFileInput {
-  version: Int!
-  bomId: String!
-  fileId: String!
-}
-
-input DatUnresolvedBomItemInput {
-  bomItemId: String!
-  manufacturerName: String!
-  mpn: String!
-  ipn: String
-  description: String
-}
-
-input DatUnresolvedBomItemsInput {
-  version: Int!
-  bomId: String!
-  bomItems: [DatUnresolvedBomItemInput!]!
-}
-
 enum DatBomAnalysisLevel {
-  ERROR
-  WARNING
-  SUGGESTION
-}
-
-enum DatBomAnalysisResultLevel {
   ERROR
   WARNING
   SUGGESTION

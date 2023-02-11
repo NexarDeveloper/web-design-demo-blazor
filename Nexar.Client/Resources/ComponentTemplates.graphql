@@ -1,0 +1,18 @@
+query ComponentTemplates($workspaceUrl: String!) {
+  desLibrary(workspaceUrl: $workspaceUrl) {
+    componentTemplates(first: 9999) {
+      totalCount
+      nodes {
+        ...MyComponentTemplate
+      }
+    }
+  }
+}
+
+fragment MyComponentTemplate on DesComponentTemplate {
+  name
+  description
+  folder {
+    name
+  }
+}

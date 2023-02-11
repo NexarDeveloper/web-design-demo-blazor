@@ -1,0 +1,40 @@
+﻿@page "/component-templates"
+@inherits AbstractPage
+
+@if (ComponentTemplatesItem.Current is not null)
+{
+    <ItemPageHeader Text="Component Templates" Item=@ComponentTemplatesItem.Current />
+
+    @if (ComponentTemplatesItem.Current.Templates is null)
+    {
+        <MudProgressCircular Indeterminate=true />
+    }
+    else
+    {
+        <br />
+        <MudTable Items=@ComponentTemplatesItem.Current.Templates>
+            <HeaderContent>
+                <MudTh>Name</MudTh>
+                <MudTh>Folder</MudTh>
+                <MudTh>Description</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Name">@context.Name</MudTd>
+                <MudTd DataLabel="Value">@context.Folder.Name</MudTd>
+                <MudTd DataLabel="Value">@context.Description</MudTd>
+            </RowTemplate>
+        </MudTable>
+    }
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        ComponentTemplatesItem.OnChange += StateHasChanged;
+    }
+
+    protected override void Disposing()
+    {
+        ComponentTemplatesItem.OnChange -= StateHasChanged;
+    }
+}
