@@ -44,12 +44,12 @@ public sealed class TaskItem : TreeItem3
             Comments = ((IMyTaskWithComments)res.Data.Node).Comments
                 .OrderBy(x => x.CreatedAt)
                 .ToList();
-
-            OnChange?.Invoke();
         }
         catch
         {
             Comments = Array.Empty<IMyComment>();
         }
+
+        OnChange?.Invoke();
     }
 }

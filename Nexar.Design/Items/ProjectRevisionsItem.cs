@@ -41,12 +41,12 @@ public sealed class ProjectRevisionsItem : TreeItem3
             res.AssertNoErrors();
 
             Revisions = res.Data.DesProjectById.Revisions.Nodes;
-
-            OnChange?.Invoke();
         }
         catch
         {
             Revisions = Array.Empty<IMyRevision>();
         }
+
+        OnChange?.Invoke();
     }
 }

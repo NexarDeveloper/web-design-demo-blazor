@@ -42,13 +42,12 @@ public sealed class ComponentTemplatesItem : TreeItem3
             res.AssertNoErrors();
 
             Templates = res.Data.DesLibrary.ComponentTemplates.Nodes;
-
-            OnChange?.Invoke();
         }
         catch
         {
+            Templates = Array.Empty<IMyComponentTemplate>();
         }
 
-        await Task.CompletedTask;
+        OnChange?.Invoke();
     }
 }

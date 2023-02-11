@@ -56,13 +56,13 @@ public sealed class ProjectItem : TreeItem2
             Revision = res.Data.DesProjectById.LatestRevision;
 
             Parameters = res.Data.DesProjectById.Parameters;
-
-            OnChange?.Invoke();
         }
         catch
         {
             Revision = null;
             Parameters = Array.Empty<IMyProjectParameter>();
         }
+
+        OnChange?.Invoke();
     }
 }
