@@ -431,6 +431,7 @@ type DesComponentTemplate implements Node {
   name: String!
   description: String!
   folder: DesFolder
+  latestRevision: DesComponentTemplateRevision!
 }
 
 "A connection to a list of items."
@@ -450,6 +451,14 @@ type DesComponentTemplateEdge {
   cursor: String!
   "The item at the end of the edge."
   node: DesComponentTemplate!
+}
+
+type DesComponentTemplateRevision {
+  name: String!
+  createdAt: DateTime!
+  comment: String!
+  description: String!
+  downloadableFile: DesDownloadableFile!
 }
 
 type DesCreateCommentPayload {

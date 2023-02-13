@@ -15,4 +15,9 @@ fragment MyComponentTemplate on DesComponentTemplate {
   folder {
     name
   }
+  latestRevision {
+    downloadableFile {
+      downloadUrl
+    }
+  }
 }

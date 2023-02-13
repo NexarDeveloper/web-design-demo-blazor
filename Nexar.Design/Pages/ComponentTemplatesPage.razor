@@ -11,23 +11,36 @@
     }
     else
     {
-        <br />
-        <MudTable Items=@ComponentTemplatesItem.Current.Templates>
+        <MudTable Items=@ComponentTemplatesItem.Current.Templates Filter="FilterElement">
+            <ToolBarContent>
+                <MudSpacer />
+                <MudTextField @bind-Value="_filterString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search"></MudTextField>
+            </ToolBarContent>
             <HeaderContent>
+                <MudTh Style="width:1%"></MudTh>
                 <MudTh>Name</MudTh>
                 <MudTh>Folder</MudTh>
                 <MudTh>Description</MudTh>
             </HeaderContent>
             <RowTemplate>
+                <MudIconButton Target="_blank"
+                       Icon=@Icons.Material.Outlined.Download
+                       Title="Download the latest revision"
+                       Href=@context.LatestRevision.DownloadableFile.DownloadUrl />
                 <MudTd DataLabel="Name">@context.Name</MudTd>
                 <MudTd DataLabel="Value">@context.Folder.Name</MudTd>
                 <MudTd DataLabel="Value">@context.Description</MudTd>
             </RowTemplate>
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
         </MudTable>
     }
 }
 
 @code {
+    string _filterString = string.Empty;
+
     protected override void OnInitialized()
     {
         ComponentTemplatesItem.OnChange += StateHasChanged;
@@ -36,5 +49,13 @@
     protected override void Disposing()
     {
         ComponentTemplatesItem.OnChange -= StateHasChanged;
+    }
+
+    bool FilterElement(Nexar.Client.IMyComponentTemplate element)
+    {
+        return
+            string.IsNullOrWhiteSpace(_filterString) ||
+            element.Name.Contains(_filterString, StringComparison.OrdinalIgnoreCase) ||
+            element.Description.Contains(_filterString, StringComparison.OrdinalIgnoreCase);
     }
 }
