@@ -10,6 +10,7 @@ query ComponentTemplates($workspaceUrl: String!) {
 }
 
 fragment MyComponentTemplate on DesComponentTemplate {
+  id
   name
   description
   folder {

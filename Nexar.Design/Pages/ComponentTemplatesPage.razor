@@ -11,7 +11,7 @@
     }
     else
     {
-        <MudTable Items=@ComponentTemplatesItem.Current.Templates Filter="FilterElement">
+        <MudTable Items=@ComponentTemplatesItem.Current.Templates Filter="FilterElement" Dense=true>
             <ToolBarContent>
                 <MudSpacer />
                 <MudTextField @bind-Value="_filterString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search"></MudTextField>
@@ -23,10 +23,17 @@
                 <MudTh>Description</MudTh>
             </HeaderContent>
             <RowTemplate>
-                <MudIconButton Target="_blank"
-                       Icon=@Icons.Material.Outlined.Download
-                       Title="Download the latest revision"
-                       Href=@context.LatestRevision.DownloadableFile.DownloadUrl />
+                <MudTd>
+                    <MudButtonGroup>
+                        <MudIconButton Icon=@Icons.Material.Outlined.Download
+                               Target="_blank"
+                               Title="Download the latest revision"
+                               Href=@context.LatestRevision.DownloadableFile.DownloadUrl />
+                        <MudIconButton Icon=@Icons.Material.Filled.ContentCopy
+                               Title="Copy template node ID"
+                               OnClick=@(() => JS.InvokeVoidAsyncWithErrorHandling("navigator.clipboard.writeText", context.Id)) />
+                    </MudButtonGroup>
+                </MudTd>
                 <MudTd DataLabel="Name">@context.Name</MudTd>
                 <MudTd DataLabel="Value">@context.Folder.Name</MudTd>
                 <MudTd DataLabel="Value">@context.Description</MudTd>

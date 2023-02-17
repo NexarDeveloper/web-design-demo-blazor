@@ -139,6 +139,8 @@ type Mutation {
   desDeleteCommentThread(input: DesDeleteCommentThreadInput!): DesDeleteCommentThreadPayload!
   "Releases the specified component."
   desReleaseComponent(input: DesReleaseComponentInput!): DesReleaseComponentPayload!
+  "Creates and releases the specified component template."
+  desReleaseComponentTemplate(input: DesReleaseComponentTemplateInput!): DesReleaseComponentTemplatePayload!
   "Updates parameters for the specified component (creates a new revision)."
   desUpdateComponentRevisionParameters(input: DesUpdateComponentRevisionParametersInput!): DesUpdateComponentRevisionParametersPayload!
   "Uploads the project zip file."
@@ -769,6 +771,8 @@ type DesPcb {
   commentThreads: [DesCommentThread!]!
   "The reference identifier for this PCB."
   documentId: String!
+  "The document file name."
+  documentName: String!
   "The dimensions of the PCB outline."
   size: DesSize2D!
   "The total area contained by the PCB outline."
@@ -911,6 +915,11 @@ type DesReleaseComponentPayload {
   errors: [DesPayloadError!]!
 }
 
+type DesReleaseComponentTemplatePayload {
+  componentTemplateId: ID!
+  errors: [DesPayloadError!]!
+}
+
 "A connection to a list of items."
 type DesReleaseConnection {
   "Information to aid in pagination."
@@ -1024,6 +1033,8 @@ type DesSchematic {
   commentThreads: [DesCommentThread!]!
   "The reference identifier for this schematic."
   documentId: String!
+  "The document file name."
+  documentName: String!
   parentIds: [String!]!
   units: Int!
 }
@@ -1516,8 +1527,12 @@ input DesCreateCommentInput {
 input DesCreateCommentThreadInput {
   entityId: ID!
   documentId: String!
+  documentName: String
+  documentType: DesDocumentType!
   text: String!
-  objectId: String
+  commentContextType: DesCommentContextType!
+  itemAsDesignItemId: ID
+  itemAsInternalObjectId: String
   area: DesRectangleInput
   releaseId: String
 }
@@ -1701,6 +1716,28 @@ input DesReleaseComponentInput {
   footprintLifeCycleDefinitionId: String
 }
 
+"Input parameters for `desReleaseComponentTemplate`."
+input DesReleaseComponentTemplateInput {
+  "The target workspace URL."
+  workspaceUrl: String!
+  "The target folder path, existing or to be created."
+  folder: String!
+  "The component template name."
+  name: String!
+  "The component template content (CMPT format JSON string)."
+  contentAsText: String!
+  "Optional naming scheme ID."
+  revisionNamingSchemeId: String
+  "Optional life cycle ID."
+  lifeCycleDefinitionId: String
+  "Optional comment."
+  comment: String
+  "Optional description."
+  description: String
+  "Optional parameters."
+  parameters: [DesRevisionParameterInput!]
+}
+
 "A release is a published version of a design with additional generated files for manufacturing."
 input DesReleaseFilterInput {
   and: [DesReleaseFilterInput!]
@@ -1751,6 +1788,8 @@ input DesSchematicFilterInput {
   or: [DesSchematicFilterInput!]
   "The reference identifier for this schematic."
   documentId: StringOperationFilterInput
+  "The document file name."
+  documentName: StringOperationFilterInput
   parentIds: ListStringOperationFilterInput
   units: ComparableInt32OperationFilterInput
 }
@@ -1962,6 +2001,14 @@ input StringOperationFilterInput {
   nendsWith: String
 }
 
+enum DesCommentContextType {
+  NONE
+  COMPONENT
+  TRACK
+  VIA
+  AREA
+}
+
 enum DesContentTypeKind {
   COMPONENT
   EMBEDDED_DESIGN
@@ -2010,6 +2057,11 @@ enum DesContentTypeKind {
   DXP_SDK
   DXP_PLUGIN
   BMS_AUTO_GENERATED_COMPONENTS
+}
+
+enum DesDocumentType {
+  SCHEMATIC
+  PCB
 }
 
 enum DesJobStatus {
@@ -2833,6 +2885,15 @@ type ManOrderEmsAcceptedEvent implements ManOrderEvent {
   timestamp: Int!
 }
 
+type ManOrderInvoicedEvent implements ManOrderEvent {
+  id: ID!
+  order: ManOrder!
+  eventType: ManOrderEventType!
+  timestamp: Int!
+  invoiceId: String!
+  poReference: String!
+}
+
 type ManOrderPaidEvent implements ManOrderEvent {
   id: ID!
   order: ManOrder!
@@ -3297,6 +3358,7 @@ enum ManOrderEventType {
   ACCEPTED
   EMS_ACCEPTED
   PAID
+  INVOICED
   CONSIGNMENT_DETAILS
   TIME_ESTIMATION
   REVIEWED
