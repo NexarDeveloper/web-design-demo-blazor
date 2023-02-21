@@ -12,11 +12,12 @@ query ComponentTemplates($workspaceUrl: String!) {
 fragment MyComponentTemplate on DesComponentTemplate {
   id
   name
-  description
   folder {
     name
   }
   latestRevision {
+    comment
+    description
     downloadableFile {
       downloadUrl
     }

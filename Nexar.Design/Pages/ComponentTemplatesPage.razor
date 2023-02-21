@@ -20,6 +20,7 @@
                 <MudTh Style="width:1%"></MudTh>
                 <MudTh>Name</MudTh>
                 <MudTh>Folder</MudTh>
+                <MudTh>Comment</MudTh>
                 <MudTh>Description</MudTh>
             </HeaderContent>
             <RowTemplate>
@@ -30,13 +31,14 @@
                                Title="Download the latest revision"
                                Href=@context.LatestRevision.DownloadableFile.DownloadUrl />
                         <MudIconButton Icon=@Icons.Material.Filled.ContentCopy
-                               Title="Copy template node ID"
+                               Title="Copy component template ID"
                                OnClick=@(() => JS.InvokeVoidAsyncWithErrorHandling("navigator.clipboard.writeText", context.Id)) />
                     </MudButtonGroup>
                 </MudTd>
                 <MudTd DataLabel="Name">@context.Name</MudTd>
                 <MudTd DataLabel="Value">@context.Folder.Name</MudTd>
-                <MudTd DataLabel="Value">@context.Description</MudTd>
+                <MudTd DataLabel="Value">@context.LatestRevision.Comment</MudTd>
+                <MudTd DataLabel="Value">@context.LatestRevision.Description</MudTd>
             </RowTemplate>
             <PagerContent>
                 <MudTablePager />
@@ -62,7 +64,6 @@
     {
         return
             string.IsNullOrWhiteSpace(_filterString) ||
-            element.Name.Contains(_filterString, StringComparison.OrdinalIgnoreCase) ||
-            element.Description.Contains(_filterString, StringComparison.OrdinalIgnoreCase);
+            element.Name.Contains(_filterString, StringComparison.OrdinalIgnoreCase);
     }
 }
