@@ -12,7 +12,7 @@ fragment MyUser on DesUser {
   email
   firstName
   lastName
-  pictureUrl
+  pictureUrl(size: SIZE128X128)
   groups {
     name
   }
