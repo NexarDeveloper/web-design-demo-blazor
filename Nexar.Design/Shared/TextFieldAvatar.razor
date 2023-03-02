@@ -1,0 +1,18 @@
+﻿
+<MudField Label=@Label Variant=Variant.Outlined>
+    <MudStack Row=true>
+        <MudAvatar Image=@Url />
+        <MudText>@Text</MudText>
+    </MudStack>
+</MudField>
+
+@code {
+    [Parameter]
+    public string Label { get; init; }
+
+    [Parameter]
+    public string Text { get; init; }
+
+    [Parameter]
+    public string Url { get; init; }
+}

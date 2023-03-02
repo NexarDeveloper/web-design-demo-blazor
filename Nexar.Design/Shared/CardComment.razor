@@ -9,7 +9,10 @@
         <MudExpansionPanels Elevation=0>
             <MudExpansionPanel>
                 <TitleContent>
-                    <MudText Typo=Typo.subtitle2>@Comment.CreatedBy.Email</MudText>
+                    <MudStack Row=true>
+                        <MudAvatar Image=@Comment.CreatedBy.PictureUrl />
+                        <MudText Typo=Typo.subtitle2>@Comment.CreatedBy.Email</MudText>
+                    </MudStack>
                 </TitleContent>
                 <ChildContent>
                     <TextKeyValue Key="CommentId" Value=@Comment.CommentId />

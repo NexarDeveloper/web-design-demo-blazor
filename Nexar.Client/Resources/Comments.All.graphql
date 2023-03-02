@@ -5,6 +5,7 @@
   createdBy {
     userId
     email
+    pictureUrl(size: SIZE48X48)
   }
   mentions {
     user {

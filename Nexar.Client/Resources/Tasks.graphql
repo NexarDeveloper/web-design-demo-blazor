@@ -26,9 +26,11 @@ fragment MyTask on DesTask {
   assignee {
     userId
     email
+    pictureUrl(size: SIZE48X48)
   }
   createdBy {
     userId
     email
+    pictureUrl(size: SIZE48X48)
   }
 }

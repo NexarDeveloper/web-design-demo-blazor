@@ -17,9 +17,13 @@
 
     <TextFieldText Label="Description" Text=@TaskItem.Current.Tag.Description />
 
-    <TextField Label="Assignee (Email / UserId)" Text=@(TaskItem.Current.Tag.Assignee.Email + " / " + TaskItem.Current.Tag.Assignee.UserId) />
+    <TextFieldAvatar Label="Assignee (Email / UserId)"
+            Url=@TaskItem.Current.Tag.Assignee.PictureUrl
+            Text=@(TaskItem.Current.Tag.Assignee.Email + " / " + TaskItem.Current.Tag.Assignee.UserId) />
 
-    <TextField Label="CreatedBy (Email / UserId)" Text=@(TaskItem.Current.Tag.CreatedBy.Email + " / " + TaskItem.Current.Tag.CreatedBy.UserId) />
+    <TextFieldAvatar Label="CreatedBy (Email / UserId)"
+            Url=@TaskItem.Current.Tag.CreatedBy.PictureUrl
+            Text=@(TaskItem.Current.Tag.CreatedBy.Email + " / " + TaskItem.Current.Tag.CreatedBy.UserId) />
 
     <TextField Label="CreatedAt" Text=@TaskItem.Current.Tag.CreatedAt.ToString() />
 
