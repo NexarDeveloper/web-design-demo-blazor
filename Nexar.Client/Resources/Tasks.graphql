@@ -1,3 +1,4 @@
+# Gets the specified workspace tasks.
 query WorkspaceTasks($workspaceUrl: String!) {
   desWorkspaceTasks(workspaceUrl: $workspaceUrl, first: 1000) {
     nodes {
@@ -6,6 +7,7 @@ query WorkspaceTasks($workspaceUrl: String!) {
   }
 }
 
+# Gets the specified project tasks.
 query ProjectTasks($projectId: ID!) {
   desProjectTasks(projectId: $projectId, first: 1000) {
     nodes {
@@ -14,6 +16,8 @@ query ProjectTasks($projectId: ID!) {
   }
 }
 
+# Used by workspace and project task queries.
+# This fragment becomes IMyTask in C#.
 fragment MyTask on DesTask {
   id
   name

@@ -1,15 +1,11 @@
+# Gets the specified project comment threads.
 query CommentThreads($projectId: ID!) {
   desCommentThreads(projectId: $projectId) {
     ...MyThread
   }
 }
 
-query CommentThread($projectId: ID!, $threadId: String!) {
-  desCommentThread(projectId: $projectId, threadId: $threadId) {
-    ...MyThread
-  }
-}
-
+# This fragment becomes IMyThread in C#.
 fragment MyThread on DesCommentThread {
   threadNumber
   commentThreadId

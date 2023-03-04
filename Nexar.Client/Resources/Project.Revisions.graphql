@@ -1,4 +1,5 @@
-﻿query ProjectRevisions($projectId: ID!) {
+﻿# Gets the specified project revisions.
+query ProjectRevisions($projectId: ID!) {
   desProjectById(id: $projectId) {
     revisions(first: 1000) {
       nodes {
@@ -8,6 +9,7 @@
   }
 }
 
+# This fragment becomes IMyRevision in C#.
 fragment MyRevision on DesVcsRevision {
   revisionId
   createdAt

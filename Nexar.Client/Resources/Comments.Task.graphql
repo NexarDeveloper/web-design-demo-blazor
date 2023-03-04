@@ -1,10 +1,12 @@
+# Gets the specified task comments.
 query TaskComments($taskId: ID!) {
   node(id: $taskId) {
-    ...MyTaskWithComments
+    ...MyTaskComments
   }
 }
 
-fragment MyTaskWithComments on DesTask {
+# This fragment becomes IMyTaskComments in C#.
+fragment MyTaskComments on DesTask {
   comments {
     ...MyComment
   }

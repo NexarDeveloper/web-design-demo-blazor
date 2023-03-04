@@ -1,3 +1,4 @@
+# Gets the specified workspace component templates.
 query ComponentTemplates($workspaceUrl: String!) {
   desLibrary(workspaceUrl: $workspaceUrl) {
     componentTemplates(first: 1000) {
@@ -9,6 +10,7 @@ query ComponentTemplates($workspaceUrl: String!) {
   }
 }
 
+# This fragment becomes IMyComponentTemplate in C#.
 fragment MyComponentTemplate on DesComponentTemplate {
   id
   name

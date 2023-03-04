@@ -1,3 +1,4 @@
+# Gets the specified workspace users.
 query TeamUsers($workspaceUrl: String!) {
   desTeam(workspaceUrl: $workspaceUrl) {
     users {
@@ -6,6 +7,7 @@ query TeamUsers($workspaceUrl: String!) {
   }
 }
 
+# This fragment becomes IMyUser in C#.
 fragment MyUser on DesUser {
   userId
   userName

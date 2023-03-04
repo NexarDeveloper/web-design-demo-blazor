@@ -41,7 +41,7 @@ public sealed class TaskItem : TreeItem3
             var res = await Client.TaskComments.ExecuteAsync(Tag.Id);
             res.AssertNoErrors();
 
-            Comments = ((IMyTaskWithComments)res.Data.Node).Comments
+            Comments = ((IMyTaskComments)res.Data.Node).Comments
                 .OrderBy(x => x.CreatedAt)
                 .ToList();
         }

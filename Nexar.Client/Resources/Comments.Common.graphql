@@ -1,4 +1,6 @@
-﻿fragment MyComment on DesComment {
+﻿# Used by task and project comment queries.
+# This fragment becomes IMyComment in C#.
+fragment MyComment on DesComment {
   commentId
   text
   createdAt

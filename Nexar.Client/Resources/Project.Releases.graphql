@@ -1,4 +1,5 @@
-﻿query ProjectReleases($projectId: ID!) {
+﻿# Gets the specified project releases.
+query ProjectReleases($projectId: ID!) {
   desProjectById(id: $projectId) {
     design {
       releases(first: 1000) {
@@ -10,6 +11,7 @@
   }
 }
 
+# This fragment becomes IMyRelease in C#.
 fragment MyRelease on DesRelease {
   id
   releaseId

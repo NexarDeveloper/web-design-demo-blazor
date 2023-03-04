@@ -1,9 +1,11 @@
-﻿query Workspaces {
+﻿# Gets all available Altium workspaces.
+query Workspaces {
   desWorkspaces {
     ...MyWorkspace
   }
 }
 
+# This fragment becomes IMyWorkspace in C#.
 fragment MyWorkspace on DesWorkspace {
   id
   url

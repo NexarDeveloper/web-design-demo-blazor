@@ -12,8 +12,9 @@
         }
         <MudImage Src="/brand.png" Width=32 Height=32 />
         <MudSpacer />
-        <MudIconButton Icon="@Icons.Material.Filled.Home" Color="Color.Inherit" Title="Nexar home page" Link="@AppData.NexarDotCom" Target="_blank" />
-        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Title="Source code" Link="https://github.com/NexarDeveloper/web-design-demo-blazor" Target="_blank" />
+        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Title="Source code" Href="https://github.com/NexarDeveloper/web-design-demo-blazor" Target="_blank" />
+        <MudIconButton Icon="@Icons.Material.Filled.AccountTree" Color="Color.Inherit" Title="Nexar API" Href="https://api.nexar.com/ui/voyager" Target="_blank" />
+        <MudIconButton Icon="@Icons.Material.Filled.Home" Color="Color.Inherit" Title="Nexar home page" Href=@AppData.NexarDotCom Target="_blank" />
     </MudAppBar>
     <MudDrawer Width="500px" @bind-Open="_drawerOpen" Elevation="1">
         <MudDrawerHeader>

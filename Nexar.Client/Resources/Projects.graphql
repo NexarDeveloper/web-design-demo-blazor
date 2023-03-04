@@ -1,4 +1,5 @@
-﻿query Projects($workspaceUrl: String!) {
+﻿# Gets the specified workspace projects.
+query Projects($workspaceUrl: String!) {
   desProjects(workspaceUrl: $workspaceUrl, first: 1000) {
     nodes {
       ...MyProject
@@ -6,6 +7,7 @@
   }
 }
 
+# This fragment becomes IMyProject in C#.
 fragment MyProject on DesProject {
   id
   url
