@@ -14,6 +14,9 @@
     <TextFieldText Label="Description" Text=@WorkspaceItem.Current.Tag.Description />
 
     <TextField Label="Location (Name / ApiServiceUrl)" Text=@Location />
+
+    <br />
+    <AlertGraphQL Files="Workspaces.graphql" />
 }
 
 @code {

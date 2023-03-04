@@ -1,7 +1,7 @@
 ﻿query Projects($workspaceUrl: String!) {
-  desProjects(workspaceUrl: $workspaceUrl first: 1000) {
+  desProjects(workspaceUrl: $workspaceUrl, first: 1000) {
     nodes {
-      ... MyProject
+      ...MyProject
     }
   }
 }

@@ -1,6 +1,6 @@
 ﻿query Workspaces {
   desWorkspaces {
-    ... MyWorkspace
+    ...MyWorkspace
   }
 }
 

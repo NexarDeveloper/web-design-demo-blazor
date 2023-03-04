@@ -1,10 +1,10 @@
-﻿query ProjectExtras($id: ID!) {
-  desProjectById(id: $id) {
+﻿query ProjectExtras($projectId: ID!) {
+  desProjectById(id: $projectId) {
     latestRevision {
-      ... MyProjectRevision
+      ...MyProjectRevision
     }
     parameters {
-      ... MyProjectParameter
+      ...MyProjectParameter
     }
   }
 }

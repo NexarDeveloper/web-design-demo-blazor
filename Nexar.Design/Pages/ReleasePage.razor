@@ -12,6 +12,9 @@
     <TextFieldText Label="Description" Text=@ReleaseItem.Current.Tag.Description />
 
     <TextField Label="CreatedAt" Text=@ReleaseItem.Current.Tag.CreatedAt.ToString() />
+
+    <br />
+    <AlertGraphQL Files="Project.Releases.graphql" />
 }
 
 @code {

@@ -27,7 +27,7 @@
         @if (ProjectItem.Current.Parameters is not null)
         {
             <br />
-            <MudTable Items=@ProjectItem.Current.Parameters>
+            <MudTable Items=@ProjectItem.Current.Parameters Dense=true>
                 <ToolBarContent>
                     <MudText Typo=Typo.h6>Parameters</MudText>
                 </ToolBarContent>
@@ -41,6 +41,9 @@
                 </RowTemplate>
             </MudTable>
         }
+
+        <br />
+        <AlertGraphQL Files="Projects.graphql Project.Extras.graphql" />
     }
 }
 

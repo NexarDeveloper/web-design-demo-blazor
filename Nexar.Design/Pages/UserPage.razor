@@ -16,6 +16,9 @@
     <MudField Label="Picture" Variant=Variant.Outlined>
         <MudAvatar Square=true Image=@UserItem.Current.Tag.PictureUrl Style="height:128px; width:128px;" />
     </MudField>
+
+    <br />
+    <AlertGraphQL Files="Users.graphql" />
 }
 
 @code {

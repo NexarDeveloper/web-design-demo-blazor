@@ -1,6 +1,6 @@
-﻿query ProjectRevisions($id: ID!) {
-  desProjectById(id: $id) {
-    revisions(first: 10000) {
+﻿query ProjectRevisions($projectId: ID!) {
+  desProjectById(id: $projectId) {
+    revisions(first: 1000) {
       nodes {
         ...MyRevision
       }

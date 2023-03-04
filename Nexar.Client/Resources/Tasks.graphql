@@ -1,5 +1,5 @@
 query WorkspaceTasks($workspaceUrl: String!) {
-  desWorkspaceTasks(workspaceUrl: $workspaceUrl, first: 10000) {
+  desWorkspaceTasks(workspaceUrl: $workspaceUrl, first: 1000) {
     nodes {
       ...MyTask
     }
@@ -7,7 +7,7 @@ query WorkspaceTasks($workspaceUrl: String!) {
 }
 
 query ProjectTasks($projectId: ID!) {
-  desProjectTasks(projectId: $projectId, first: 10000) {
+  desProjectTasks(projectId: $projectId, first: 1000) {
     nodes {
       ...MyTask
     }

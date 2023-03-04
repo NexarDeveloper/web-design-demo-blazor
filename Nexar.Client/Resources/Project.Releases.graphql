@@ -1,7 +1,7 @@
-﻿query ProjectReleases($id: ID!) {
-  desProjectById(id: $id) {
+﻿query ProjectReleases($projectId: ID!) {
+  desProjectById(id: $projectId) {
     design {
-      releases(first: 10000) {
+      releases(first: 1000) {
         nodes {
           ...MyRelease
         }

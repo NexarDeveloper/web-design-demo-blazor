@@ -1,6 +1,6 @@
 query ComponentTemplates($workspaceUrl: String!) {
   desLibrary(workspaceUrl: $workspaceUrl) {
-    componentTemplates(first: 9999) {
+    componentTemplates(first: 1000) {
       totalCount
       nodes {
         ...MyComponentTemplate

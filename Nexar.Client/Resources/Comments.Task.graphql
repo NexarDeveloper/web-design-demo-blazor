@@ -1,5 +1,5 @@
-query TaskComments($id: ID!) {
-  node(id: $id) {
+query TaskComments($taskId: ID!) {
+  node(id: $taskId) {
     ...MyTaskWithComments
   }
 }

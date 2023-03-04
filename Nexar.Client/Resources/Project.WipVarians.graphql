@@ -1,5 +1,5 @@
-﻿query ProjectWipVariants($id: ID!) {
-  desProjectById(id: $id) {
+﻿query ProjectWipVariants($projectId: ID!) {
+  desProjectById(id: $projectId) {
     design {
       workInProgress {
         variants {

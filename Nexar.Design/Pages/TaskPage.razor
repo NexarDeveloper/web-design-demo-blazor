@@ -33,14 +33,21 @@
     {
         <MudProgressCircular Indeterminate=true />
     }
-    else if (TaskItem.Current.Comments.Count > 0)
+    else
     {
-        <MudText Typo=Typo.h5>Comments</MudText>
-
-        foreach (var comment in TaskItem.Current.Comments)
+        if (TaskItem.Current.Comments.Count > 0)
         {
-            <CardComment Comment=@comment />
+            <br />
+            <MudText Typo=Typo.h5>Comments</MudText>
+
+            foreach (var comment in TaskItem.Current.Comments)
+            {
+                <CardComment Comment=@comment />
+            }
         }
+
+        <br />
+        <AlertGraphQL Files="Tasks.graphql Comments.Task.graphql Comments.All.graphql" />
     }
 }
 

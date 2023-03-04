@@ -1,0 +1,13 @@
+﻿
+<MudAlert Severity="Severity.Info">
+    GraphQL
+    @foreach(var file in Files.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+    {
+        <MudText><MudLink Href=@("https://github.com/NexarDeveloper/web-design-demo-blazor/blob/main/Nexar.Client/Resources/" + file) Target="_black">@file</MudLink></MudText>
+    }
+</MudAlert>
+
+@code {
+    [Parameter]
+    public string Files { get; init; }
+}
