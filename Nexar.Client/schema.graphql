@@ -19,6 +19,8 @@ type Query {
   desWorkspaces(where: DesWorkspaceFilterInput): [DesWorkspace!]!
   "Search a specific workspace by its unique identifier."
   desWorkspaceById("The node identifier for a workspace." id: ID!): DesWorkspace
+  "Search a specific workspace by its URL."
+  desWorkspaceByUrl(workspaceUrl: String!): DesWorkspace
   "Get a list of workspace locations."
   desWorkspaceLocations: [DesWorkspaceLocation!]!
   "Gets the specified settings."
@@ -129,6 +131,7 @@ type Query {
   "Get current metered usage statistics."
   datScrUsage: DatScrUsage!
   datEddiLatestEdition: DatEddiEdition!
+  datEddiEditions(where: DatEddiEditionFilterInput): [DatEddiEdition!]!
 }
 
 type Mutation {
@@ -141,6 +144,8 @@ type Mutation {
   desReleaseComponent(input: DesReleaseComponentInput!): DesReleaseComponentPayload!
   "Creates and releases the specified component template."
   desReleaseComponentTemplate(input: DesReleaseComponentTemplateInput!): DesReleaseComponentTemplatePayload!
+  "Updates the specified component template."
+  desUpdateComponentTemplate(input: DesUpdateComponentTemplateInput!): DesUpdateComponentTemplatePayload!
   "Updates parameters for the specified component (creates a new revision)."
   desUpdateComponentRevisionParameters(input: DesUpdateComponentRevisionParametersInput!): DesUpdateComponentRevisionParametersPayload!
   "Uploads the project zip file."
@@ -287,6 +292,7 @@ type DesCollaborationSimulationRevisionConnection {
   edges: [DesCollaborationSimulationRevisionEdge!]
   "A flattened list of the nodes."
   nodes: [DesCollaborationSimulationRevision!]
+  "Identifies the total count of items in the connection."
   totalCount: Int!
 }
 
@@ -401,16 +407,19 @@ type DesComponentConnection {
   edges: [DesComponentEdge!]
   "A flattened list of the nodes."
   nodes: [DesComponent!]
+  "Identifies the total count of items in the connection."
   totalCount: Int!
 }
 
 type DesComponentDetails {
   "The list of the parameters describing this component."
   parameters: [DesComponentParameter!]!
-  "The list of the symbols used for this component."
+  "The list of the symbols for this component."
   symbols: [DesSymbol!]!
-  "The list of the footprints used this component."
+  "The list of the footprints for this component."
   footprints: [DesFootprint!]!
+  "The list of the simuation models for this component."
+  simulations: [DesSimulation!]!
 }
 
 "An edge in a connection."
@@ -444,6 +453,7 @@ type DesComponentTemplateConnection {
   edges: [DesComponentTemplateEdge!]
   "A flattened list of the nodes."
   nodes: [DesComponentTemplate!]
+  "Identifies the total count of items in the connection."
   totalCount: Int!
 }
 
@@ -574,6 +584,7 @@ type DesDesignItemConnection {
   edges: [DesDesignItemEdge!]
   "A flattened list of the nodes."
   nodes: [DesDesignItem!]
+  "Identifies the total count of items in the connection."
   totalCount: Int!
 }
 
@@ -871,6 +882,7 @@ type DesProjectConnection {
   edges: [DesProjectEdge!]
   "A flattened list of the nodes."
   nodes: [DesProject!]
+  "Identifies the total count of items in the connection."
   totalCount: Int!
 }
 
@@ -928,6 +940,7 @@ type DesReleaseConnection {
   edges: [DesReleaseEdge!]
   "A flattened list of the nodes."
   nodes: [DesRelease!]
+  "Identifies the total count of items in the connection."
   totalCount: Int!
 }
 
@@ -976,6 +989,7 @@ type DesReuseBlockConnection {
   edges: [DesReuseBlockEdge!]
   "A flattened list of the nodes."
   nodes: [DesReuseBlock!]
+  "Identifies the total count of items in the connection."
   totalCount: Int!
 }
 
@@ -1043,6 +1057,15 @@ type DesSharedWithMe {
   projects: [DesProject!]!
   manufacturePackages: [DesManufacturePackage!]!
   commentThreads: [DesCommentThread!]!
+}
+
+type DesSimulation {
+  dataDownloadUrl: String!
+  folder: DesFolder
+  guid: String!
+  name: String!
+  comment: String!
+  description: String!
 }
 
 type DesSize {
@@ -1144,6 +1167,7 @@ type DesTaskConnection {
   edges: [DesTaskEdge!]
   "A flattened list of the nodes."
   nodes: [DesTask!]
+  "Identifies the total count of items in the connection."
   totalCount: Int!
 }
 
@@ -1189,6 +1213,10 @@ type DesUpdateCommentPayload {
 
 type DesUpdateComponentRevisionParametersPayload {
   componentId: ID!
+  errors: [DesPayloadError!]!
+}
+
+type DesUpdateComponentTemplatePayload {
   errors: [DesPayloadError!]!
 }
 
@@ -1265,6 +1293,7 @@ type DesVcsRevisionConnection {
   edges: [DesVcsRevisionEdge!]
   "A flattened list of the nodes."
   nodes: [DesVcsRevision!]
+  "Identifies the total count of items in the connection."
   totalCount: Int!
 }
 
@@ -1446,37 +1475,7 @@ input BooleanOperationFilterInput {
   neq: Boolean
 }
 
-input ComparableDateTimeOperationFilterInput {
-  eq: DateTime
-  neq: DateTime
-  in: [DateTime!]
-  nin: [DateTime!]
-  gt: DateTime
-  ngt: DateTime
-  gte: DateTime
-  ngte: DateTime
-  lt: DateTime
-  nlt: DateTime
-  lte: DateTime
-  nlte: DateTime
-}
-
-input ComparableInt32OperationFilterInput {
-  eq: Int
-  neq: Int
-  in: [Int!]
-  nin: [Int!]
-  gt: Int
-  ngt: Int
-  gte: Int
-  ngte: Int
-  lt: Int
-  nlt: Int
-  lte: Int
-  nlte: Int
-}
-
-input ComparableNullableOfDateTimeOperationFilterInput {
+input DateTimeOperationFilterInput {
   eq: DateTime
   neq: DateTime
   in: [DateTime]
@@ -1674,9 +1673,9 @@ input DesProjectFilterInput {
   "The summary of this project content or purpose."
   description: StringOperationFilterInput
   "The `DateTime` when this project was created."
-  createdAt: ComparableNullableOfDateTimeOperationFilterInput
+  createdAt: DateTimeOperationFilterInput
   "The `DateTime` when this project was last modified."
-  updatedAt: ComparableNullableOfDateTimeOperationFilterInput
+  updatedAt: DateTimeOperationFilterInput
 }
 
 input DesRectangleInput {
@@ -1745,7 +1744,7 @@ input DesReleaseFilterInput {
   "The node identifier for this release (used by `desReleaseById`)."
   id: StringOperationFilterInput
   "The `DateTime` when this release was created."
-  createdAt: ComparableDateTimeOperationFilterInput
+  createdAt: DateTimeOperationFilterInput
   "The summary of this release content or purpose."
   description: StringOperationFilterInput
   "The reference identifier for this release."
@@ -1791,7 +1790,7 @@ input DesSchematicFilterInput {
   "The document file name."
   documentName: StringOperationFilterInput
   parentIds: ListStringOperationFilterInput
-  units: ComparableInt32OperationFilterInput
+  units: IntOperationFilterInput
 }
 
 input DesTerminateWorkflowsInput {
@@ -1819,6 +1818,18 @@ input DesUpdateComponentRevisionParametersInput {
   "Tells to replace all existing parameters. By default parameters are added to existing."
   replaceExisting: Boolean
   parameters: [DesRevisionParameterInput!]!
+}
+
+"Input parameters for `desUpdateComponentTemplate`."
+input DesUpdateComponentTemplateInput {
+  "The node ID."
+  componentTemplateId: ID!
+  "The component template content (CMPT format JSON string)."
+  contentAsText: String!
+  "Optional comment."
+  comment: String
+  "Optional description."
+  description: String
 }
 
 input DesUpdateReuseBlockInput {
@@ -1913,7 +1924,7 @@ input DesWorkflowDefinitionFilterInput {
   "The account information for who created this workflow definition."
   createdBy: StringOperationFilterInput
   "The `DateTime` for the creation of this workflow definition."
-  createdAt: ComparableDateTimeOperationFilterInput
+  createdAt: DateTimeOperationFilterInput
 }
 
 "A workflow manages the execution of a logical sequence of tasks."
@@ -1929,9 +1940,9 @@ input DesWorkflowFilterInput {
   "The account information for who created this workflow."
   createdBy: StringOperationFilterInput
   "The `DateTime` for the creation of this workflow."
-  createdAt: ComparableDateTimeOperationFilterInput
+  createdAt: DateTimeOperationFilterInput
   "The `DateTime` for the completion of this workflow."
-  endedAt: ComparableNullableOfDateTimeOperationFilterInput
+  endedAt: DateTimeOperationFilterInput
   "The label for this workflow."
   name: StringOperationFilterInput
   "The reference identifier for definition of this workflow."
@@ -1970,6 +1981,21 @@ input IdOperationFilterInput {
   neq: ID
   in: [ID]
   nin: [ID]
+}
+
+input IntOperationFilterInput {
+  eq: Int
+  neq: Int
+  in: [Int]
+  nin: [Int]
+  gt: Int
+  ngt: Int
+  gte: Int
+  ngte: Int
+  lt: Int
+  nlt: Int
+  lte: Int
+  nlte: Int
 }
 
 input ListFilterInputTypeOfDesSchematicFilterInput {
@@ -3751,6 +3777,36 @@ union DatScrCreateJobError = DatScrQuotaExceededError
 
 union DatScrDeleteJobError = DatScrCouldNotDeleteJobError
 
+input ComparableDateTimeOperationFilterInput {
+  eq: DateTime
+  neq: DateTime
+  in: [DateTime!]
+  nin: [DateTime!]
+  gt: DateTime
+  ngt: DateTime
+  gte: DateTime
+  ngte: DateTime
+  lt: DateTime
+  nlt: DateTime
+  lte: DateTime
+  nlte: DateTime
+}
+
+input ComparableInt32OperationFilterInput {
+  eq: Int
+  neq: Int
+  in: [Int!]
+  nin: [Int!]
+  gt: Int
+  ngt: Int
+  gte: Int
+  ngte: Int
+  lt: Int
+  nlt: Int
+  lte: Int
+  nlte: Int
+}
+
 input ComparableNullableOfDoubleOperationFilterInput {
   eq: Float
   neq: Float
@@ -3783,6 +3839,14 @@ input DatEddiCategoryFilterInput {
   or: [DatEddiCategoryFilterInput!]
   id: ComparableInt32OperationFilterInput
   name: StringOperationFilterInput
+}
+
+input DatEddiEditionFilterInput {
+  and: [DatEddiEditionFilterInput!]
+  or: [DatEddiEditionFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  title: StringOperationFilterInput
+  releaseDate: ComparableDateTimeOperationFilterInput
 }
 
 input DatEddiIndexFilterInput {
@@ -3854,10 +3918,8 @@ enum DatScrJobState {
 enum ApplyPolicy {
   BEFORE_RESOLVER
   AFTER_RESOLVER
+  VALIDATION
 }
-
-"The name scalar represents a valid GraphQL name as specified in the spec and can be used to refer to fields or types."
-scalar Name
 
 "The built-in `Decimal` scalar type."
 scalar Decimal
@@ -3868,17 +3930,13 @@ scalar DateTime
 "The multiplier path scalar represents a valid GraphQL multiplier path string."
 scalar MultiplierPath
 
-directive @authorize("The name of the authorization policy that determines access to the annotated resource." policy: String "Roles that are allowed to access the annotated resource." roles: [String!] "Defines when when the resolver shall be executed.By default the resolver is executed after the policy has determined that the current user is allowed to access the field." apply: ApplyPolicy! = BEFORE_RESOLVER) repeatable on SCHEMA | OBJECT | FIELD_DEFINITION
-
-directive @partId on FIELD_DEFINITION
-
 "Delegates a resolver to a remote schema."
-directive @delegate("The path to the field on the remote schema." path: String "The name of the schema to which this field shall be delegated to." schema: Name!) on FIELD_DEFINITION
+directive @delegate("The path to the field on the remote schema." path: String "The name of the schema to which this field shall be delegated to." schema: String!) on FIELD_DEFINITION
 
-directive @computed("Specifies the fields on which a computed field is dependent on." dependantOn: [Name!]) on FIELD_DEFINITION
+directive @computed("Specifies the fields on which a computed field is dependent on." dependantOn: [String!]) on FIELD_DEFINITION
 
 "Annotates the original name of a type."
-directive @source("The original name of the annotated type." name: Name! "The name of the schema to which this type belongs to." schema: Name!) repeatable on ENUM | OBJECT | INTERFACE | UNION | INPUT_OBJECT | FIELD_DEFINITION | INPUT_FIELD_DEFINITION | ARGUMENT_DEFINITION | ENUM_VALUE
+directive @source("The original name of the annotated type." name: String! "The name of the schema to which this type belongs to." schema: String!) repeatable on OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
 
 directive @BlockAll(roles: [SupRole!]!) on FIELD_DEFINITION
 

@@ -12,6 +12,11 @@ public static class AppData
     /// <summary>
     /// The Nexar GraphQL API endpoint.
     /// </summary>
+    public static AppMode Mode { get; private set; }
+
+    /// <summary>
+    /// The Nexar GraphQL API endpoint.
+    /// </summary>
     public static string ApiEndpoint { get; private set; }
 
     /// <summary>
@@ -30,31 +35,16 @@ public static class AppData
     public static string KeyToken { get; private set; }
 
     /// <summary>
-    /// The application mode.
+    /// Sets the application mode and optional custom service.
     /// </summary>
-    public static AppMode Mode
+    public static void Initialize(AppMode mode, string apiEndpoint)
     {
-        get => _mode;
-        set
-        {
-            _mode = value;
-            Init();
-        }
-    }
-
-    static AppMode _mode;
-
-    static AppData()
-    {
-        Init();
-    }
-
-    static void Init()
-    {
-        switch (_mode)
+        Mode = mode;
+        ApiEndpoint = apiEndpoint;
+        switch (Mode)
         {
             case AppMode.Prod:
-                ApiEndpoint = "https://api.nexar.com/graphql";
+                ApiEndpoint ??= "https://api.nexar.com/graphql";
                 Authority = "https://identity.nexar.com";
                 NexarDotCom = "https://nexar.com";
                 KeyToken = "_210528_p1";

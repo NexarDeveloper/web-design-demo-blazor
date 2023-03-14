@@ -1,7 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Concurrent;
-using System.Net.Http.Headers;
 
 namespace Nexar.Client;
 
@@ -26,7 +25,7 @@ public static class NexarClientFactory
             throw new ArgumentNullException(nameof(endpoint));
 
         if (string.IsNullOrEmpty(AccessToken))
-            throw new ArgumentNullException(nameof(AccessToken));
+            throw new InvalidOperationException(nameof(AccessToken));
 
         var endpointUri = new Uri(endpoint);
         return _clients.GetOrAdd(endpointUri.AbsoluteUri, _ => CreateClient(endpointUri));
@@ -37,10 +36,10 @@ public static class NexarClientFactory
         var serviceCollection = new ServiceCollection();
         serviceCollection
             .AddNexarClient()
-            .ConfigureHttpClient(c =>
+            .ConfigureHttpClient(client =>
             {
-                c.BaseAddress = endpoint;
-                c.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
+                client.BaseAddress = endpoint;
+                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {AccessToken}");
             });
 
         var services = serviceCollection.BuildServiceProvider();

@@ -10,6 +10,10 @@ namespace Nexar.Design.Pages;
 public partial class ConnectPage
 {
     [Parameter]
+    [SupplyParameterFromQuery(Name = "api")]
+    public string ApiParameter { get; init; }
+
+    [Parameter]
     [SupplyParameterFromQuery(Name = "mode")]
     public string ModeParameter { get; init; }
 
@@ -82,14 +86,20 @@ public partial class ConnectPage
         _loading = true;
         try
         {
+            // default mode
+            AppMode mode = AppMode.Prod;
+
             // mode parameter?
             if (!string.IsNullOrEmpty(ModeParameter))
             {
                 if (Enum.TryParse(ModeParameter, true, out AppMode value))
-                    AppData.Mode = value;
+                    mode = value;
                 else
                     throw new Exception($"Invalid query parameter `mode`.");
             }
+
+            // configure
+            AppData.Initialize(mode, ApiParameter);
 
             // token parameter?
             if (!string.IsNullOrEmpty(TokenParameter))

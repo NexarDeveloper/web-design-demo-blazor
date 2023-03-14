@@ -1,8 +1,18 @@
 {
   "profiles": {
-    "Nexar.Design": {
+    "DesignDemo": {
       "commandName": "Project",
       "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:52913;http://localhost:52914",
+      "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}"
+    },
+    "DesignDemo8000": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "https://localhost:52913/?api=http://localhost:8000/graphql",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
