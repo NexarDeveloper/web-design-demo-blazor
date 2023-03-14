@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nexar.Design", "Nexar.Design\Nexar.Design.csproj", "{D2DFB576-4395-4B09-B27C-B394F5DA4918}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nexar.Demo", "Nexar.Demo\Nexar.Demo.csproj", "{D2DFB576-4395-4B09-B27C-B394F5DA4918}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nexar.Client", "Nexar.Client\Nexar.Client.csproj", "{7D6B0087-3C21-4C6F-9B37-13D0EAAF3163}"
 EndProject
