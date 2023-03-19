@@ -1,26 +1,31 @@
 ﻿@page "/"
 @inherits AbstractPage
 
-<MudText>Blazor app powered by <MudLink Href="@AppData.ApiEndpoint" Target="_blank">@AppData.ApiEndpoint</MudLink></MudText>
+<br />
 @if (AppData.TreeItems is null && !_loading)
 {
     <MudCard>
         <MudCardContent>
-            <MudText Typo="Typo.h4" GutterBottom="true">Connect</MudText>
-            <MudText>Don't have a token? <MudLink Href="@AppData.NexarDotCom" Target="_blank">Sign Up</MudLink></MudText>
-            <MudTextField @bind-Value="@_token"
+            <MudText Typo=Typo.h4 GutterBottom=true>Connect</MudText>
+            <MudText>Don't have a token? <MudLink Href=@AppData.NexarDotCom Target="_blank">Sign Up</MudLink></MudText>
+            <MudTextField @bind-Value=@_token
                       Label="Nexar token"
-                      Variant="Variant.Outlined"
-                      Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Filled.ContentPaste"
+                      Variant=Variant.Outlined
+                      Adornment=Adornment.Start
+                      AdornmentIcon=@Icons.Material.Filled.ContentPaste
                       OnAdornmentClick="PasteToken" />
         </MudCardContent>
         <MudCardActions>
-            <MudButton Color="Color.Primary" OnClick="@ConnectAsync">Connect</MudButton>
+            <MudButton Color=Color.Primary OnClick=@ConnectAsync>Connect</MudButton>
             @if (_connecting)
             {
-                <MudProgressCircular Indeterminate="true" />
+                <MudProgressCircular Indeterminate=true />
             }
         </MudCardActions>
     </MudCard>
+}
+
+@if (_loading)
+{
+    <MudProgressCircular Indeterminate=true />
 }

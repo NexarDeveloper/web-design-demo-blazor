@@ -40,7 +40,10 @@ public static class AppData
     public static void Initialize(AppMode mode, string apiEndpoint)
     {
         Mode = mode;
-        ApiEndpoint = apiEndpoint;
+
+        if (!string.IsNullOrEmpty(apiEndpoint))
+            ApiEndpoint = apiEndpoint;
+
         switch (Mode)
         {
             case AppMode.Prod:

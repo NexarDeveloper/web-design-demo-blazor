@@ -34,7 +34,7 @@ public partial class NavMenu : IDisposable
         return null;
     }
 
-    void ActivatedValueChanged(TreeItem node)
+    void SelectedValueChanged(TreeItem node)
     {
         if (node is null)
             return;

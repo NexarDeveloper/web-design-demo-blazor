@@ -5,29 +5,31 @@
 <MudSnackbarProvider />
 
 <MudLayout>
-    <MudAppBar Elevation="0">
+    <MudAppBar Elevation=0>
         @if (!_drawerOpen)
         {
-            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@(e => DrawerToggle())" />
+            <MudIconButton Icon=@Icons.Material.Filled.Menu Color=Color.Inherit Edge=Edge.Start OnClick=@(e => DrawerToggle()) />
         }
-        <MudImage Src="/brand.png" Width=32 Height=32 />
+        <MudHidden Breakpoint=Breakpoint.Xs>
+            <MudLink Href=@AppData.ApiEndpoint Color=Color.Inherit Target="_blank">@AppData.ApiEndpoint</MudLink>
+        </MudHidden>
         <MudSpacer />
-        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Title="Source code" Href="https://github.com/NexarDeveloper/web-design-demo-blazor" Target="_blank" />
-        <MudIconButton Icon="@Icons.Material.Filled.AccountTree" Color="Color.Inherit" Title="Nexar API" Href="https://api.nexar.com/ui/voyager" Target="_blank" />
-        <MudIconButton Icon="@Icons.Material.Filled.Home" Color="Color.Inherit" Title="Nexar home page" Href=@AppData.NexarDotCom Target="_blank" />
+        <MudIconButton Icon=@Icons.Custom.Brands.GitHub Color=Color.Inherit Title="Source code" Href="https://github.com/NexarDeveloper/web-design-demo-blazor" Target="_blank" />
+        <MudIconButton Icon=@Icons.Material.Filled.AccountTree Color=Color.Inherit Title="Nexar API" Href="https://api.nexar.com/ui/voyager" Target="_blank" />
+        <MudIconButton Icon=@Icons.Material.Filled.Home Color=Color.Inherit Title="Nexar home page" Href=@AppData.NexarDotCom Target="_blank" />
     </MudAppBar>
-    <MudDrawer Width="500px" @bind-Open="_drawerOpen" Elevation="1">
+    <MudDrawer Width=500px @bind-Open=@_drawerOpen Elevation=1>
         <MudDrawerHeader>
             @if (_drawerOpen)
             {
-                <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@(e => DrawerToggle())" />
+                <MudIconButton Icon=@Icons.Material.Filled.Menu Color=Color.Inherit Edge=Edge.Start OnClick=@(e => DrawerToggle()) />
             }
-            <MudText Typo="Typo.h6">Nexar.Design Demo</MudText>
+            <MudText Typo=Typo.h6>Nexar.Design Demo</MudText>
         </MudDrawerHeader>
         <NavMenu />
     </MudDrawer>
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.Large">
+        <MudContainer MaxWidth=MaxWidth.Large>
             @Body
             <br />
         </MudContainer>
