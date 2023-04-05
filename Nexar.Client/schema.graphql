@@ -122,6 +122,7 @@ type Query {
   datBomParts(items: [DatBomItemInput!]!): [DatBomPartsResult!]!
   datBomPartHistories(partIds: [String!]!): [DatBomPartHistory]!
   datBomAnalyses(items: [DatBomPartItemInput!]!): [DatBomAnalysis!]!
+  datBomCategoryIdsByDesignator(designators: [String!]!): [DatBomCategory]!
   "Get an SCR Job with a specific id"
   datScrJob("The id of the job" jobId: String!): DatScrJob!
   "Get a list of SCR jobs."
@@ -257,7 +258,7 @@ type DesBomItem {
   "The detailed component information for this BOM item."
   component: DesComponent
   "The total number of times this item is used."
-  quantity: Decimal!
+  quantity: Int!
   "The list of each instance of this BOM item."
   bomItemInstances: [DesBomItemInstance!]!
 }
@@ -551,6 +552,8 @@ type DesDesignItem implements Node {
   id: ID!
   "The detailed component information for this design item."
   component: DesComponent
+  "*** PROTOTYPE, SUBJECT TO CHANGE ***"
+  mesh3D: DesMesh3D
   "The list of all comment threads related to this design item."
   commentThreads: [DesCommentThread!]
   "The unique label for this design item."
@@ -716,6 +719,10 @@ type DesManufacturerPart {
 type DesMention {
   "The mentioned user."
   user: DesUser!
+}
+
+type DesMesh3D {
+  glbFile: DesDownloadableFile
 }
 
 type DesModel3D {
@@ -3638,6 +3645,10 @@ type DatBomAnalysis {
   message: String!
 }
 
+type DatBomCategory {
+  categoryID: Int!
+}
+
 type DatBomPart {
   partId: String!
   confidence: Float!
@@ -3651,6 +3662,7 @@ type DatBomPartHistory {
 type DatBomPartItem {
   itemRefId: String
   partId: String!
+  alternateCandidatePartIds: [String!]
   quantity: Int!
 }
 
@@ -3826,11 +3838,14 @@ input DatBomItemInput {
   itemRefId: String
   manufacturerName: String
   mpn: String
+  description: String
+  designator: String
 }
 
 input DatBomPartItemInput {
   itemRefId: String
   partId: String!
+  alternateCandidatePartIds: [String!]
   quantity: Int!
 }
 
