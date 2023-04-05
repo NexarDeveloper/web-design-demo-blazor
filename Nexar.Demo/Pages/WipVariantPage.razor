@@ -10,6 +10,24 @@
     <TextFieldCopy Label="Bom.Id" Text="@WipVariantItem.Current.Tag.Bom.Id" />
 
     <br />
+    <MudTable Items=@WipVariantItem.Current.Tag.Bom.BomItems Dense=true>
+        <ToolBarContent>
+            <MudText Typo=Typo.h6>BOM Items</MudText>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Component.Name</MudTh>
+            <MudTh>Quantity</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Value">@context.Component?.Name</MudTd>
+            <MudTd DataLabel="Name">@context.Quantity</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+
+    <br />
     <AlertGraphQL Files="Project.WipVarians.graphql" />
 }
 

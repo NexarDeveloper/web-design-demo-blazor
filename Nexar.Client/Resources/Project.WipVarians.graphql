@@ -16,5 +16,11 @@ fragment MyWipVariant on DesWipVariant {
   name
   bom {
     id
+    bomItems {
+      quantity
+      component {
+        name
+      }
+    }
   }
 }
