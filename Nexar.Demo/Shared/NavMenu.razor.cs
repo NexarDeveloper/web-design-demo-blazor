@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -7,7 +8,11 @@ namespace Nexar.Demo.Shared;
 
 public partial class NavMenu : IDisposable
 {
-    [Inject] NavigationManager NavManager { get; init; }
+    [Inject]
+    NavigationManager NavManager { get; init; }
+
+    [Inject]
+    private IDialogService DialogService { get; init; }
 
     protected override void OnInitialized()
     {
@@ -20,7 +25,7 @@ public partial class NavMenu : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    static async Task<HashSet<TreeItem>> ServerData(TreeItem node)
+    async Task<HashSet<TreeItem>> ServerData(TreeItem node)
     {
         try
         {
@@ -30,6 +35,7 @@ public partial class NavMenu : IDisposable
         catch (Exception ex)
         {
             Console.WriteLine(ex);
+            await DialogService.ShowMessageBox("Error", ex.Message);
         }
         return null;
     }
