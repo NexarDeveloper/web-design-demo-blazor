@@ -50,6 +50,7 @@ type Query {
   desDesignItemById(id: ID!): DesDesignItem
   desLibrary(workspaceUrl: String!): DesLibrary!
   desComponentById(id: ID!): DesComponent
+  desComponentsByIds(ids: [ID!]!): [DesUnionPayload!]!
   desRevisionDetailsById(id: ID!): DesRevisionDetails
   desComponentTemplateById(id: ID!): DesComponentTemplate
   "Search for comment threads associated with a project."
@@ -605,9 +606,16 @@ type DesDownloadableFile {
   downloadUrl: String!
 }
 
-type DesFolder {
+type DesErrorPayload {
+  message: String!
+}
+
+type DesFolder implements Node {
+  id: ID!
   name: String!
+  path: String!
   description: String!
+  parent: DesFolder
 }
 
 type DesFootprint {
@@ -667,6 +675,8 @@ type DesLayerProperty {
 }
 
 type DesLibrary {
+  "Gets library folders."
+  folders: [DesFolder!]!
   "Gets library components."
   components("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesComponentFilterInput): DesComponentConnection
   "Gets library component templates."
@@ -1476,6 +1486,8 @@ type SupPartExtrasTechnicalDetail {
   name: String!
   value: String!
 }
+
+union DesUnionPayload = DesComponent | DesErrorPayload
 
 input BooleanOperationFilterInput {
   eq: Boolean

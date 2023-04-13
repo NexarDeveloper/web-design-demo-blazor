@@ -1,0 +1,19 @@
+﻿# Gets library folders. The app builds the folder tree locally.
+query Folders($workspaceUrl: String!) {
+  desLibrary(workspaceUrl: $workspaceUrl) {
+    folders {
+      ...MyFolder
+    }
+  }
+}
+
+# This fragment becomes IMyFolder in C#.
+fragment MyFolder on DesFolder {
+  id
+  name
+  path
+  description
+  parent {
+    id
+  }
+}

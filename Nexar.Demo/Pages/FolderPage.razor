@@ -1,0 +1,30 @@
+﻿@page "/folder"
+@inherits AbstractPage
+
+@if (FolderItem.Current is not null)
+{
+    <ItemPageHeader Text="Folder" Item=@FolderItem.Current />
+
+    <TextFieldCopy Label="Id" Text=@FolderItem.Current.Tag.Id />
+
+    <TextField Label="Name" Text=@FolderItem.Current.Tag.Name />
+
+    <TextField Label="Path" Text=@FolderItem.Current.Tag.Path />
+
+    <TextFieldText Label="Description" Text=@FolderItem.Current.Tag.Description />
+
+    <br />
+    <AlertGraphQL Files="Folders.graphql" />
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        FolderItem.OnChange += StateHasChanged;
+    }
+
+    protected override void Disposing()
+    {
+        FolderItem.OnChange -= StateHasChanged;
+    }
+}

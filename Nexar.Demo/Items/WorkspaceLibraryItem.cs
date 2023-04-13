@@ -12,7 +12,7 @@ public sealed class WorkspaceLibraryItem : TreeItem2
     }
 
     public new WorkspaceItem Parent => (WorkspaceItem)base.Parent;
-    public IMyWorkspace Tag { get; }
+    public IMyWorkspace Tag => Parent.Tag;
     public override string Text => "Library";
     public override string Icon => Icons.Material.Filled.FolderOpen;
 
@@ -20,6 +20,7 @@ public sealed class WorkspaceLibraryItem : TreeItem2
     {
         return Task.FromResult(new HashSet<TreeItem>
         {
+            new FoldersItem(this),
             new ComponentTemplatesItem(this),
         });
     }
