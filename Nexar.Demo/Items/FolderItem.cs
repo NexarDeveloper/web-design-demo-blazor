@@ -9,9 +9,9 @@ namespace Nexar.Demo;
 
 public sealed class FolderItem : TreeItem2
 {
-    readonly FoldersItem.FolderTreeNode _node;
+    readonly FolderTreeNode _node;
 
-    public FolderItem(TreeItem2 parent, FoldersItem.FolderTreeNode node) : base(parent)
+    public FolderItem(TreeItem2 parent, FolderTreeNode node) : base(parent)
     {
         _node = node;
     }

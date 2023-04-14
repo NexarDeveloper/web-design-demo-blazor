@@ -22,24 +22,10 @@ public sealed class FoldersItem : TreeItem2
         var res = await Client.Folders.ExecuteAsync(Parent.Tag.Url);
         res.AssertNoErrors();
 
-        var folders = res.Data.DesLibrary.Folders;
-        var roots = folders
-            .Where(x => x.Parent is null)
-            .Select(x => new FolderTreeNode(x, GetFolderNodes(x, folders)))
-            .ToList();
+        var roots = FolderTreeNode.GetRootNodes(res.Data.DesLibrary.Folders);
 
         return roots
             .Select(x => (TreeItem)new FolderItem(this, x))
             .ToHashSet();
-    }
-
-    public record FolderTreeNode(IMyFolder Folder, List<FolderTreeNode> Nodes);
-
-    private static List<FolderTreeNode> GetFolderNodes(IMyFolder folder, IEnumerable<IMyFolder> folders)
-    {
-        return folders
-            .Where(x => x.Parent?.Id == folder.Id)
-            .Select(x => new FolderTreeNode(x, GetFolderNodes(x, folders)))
-            .ToList();
     }
 }
