@@ -1,0 +1,57 @@
+﻿@page "/layerStack"
+@inherits AbstractPage
+@using Nexar.Client
+
+@if (LayerStackItem.Current?.Tag is not null)
+{
+    <ItemPageHeader Text="Layer Stack" Item=@LayerStackItem.Current />
+
+    <TextField Label="StackupType" Text=@LayerStackItem.Current.Tag.StackupType />
+
+    <TextField Label="RoughnessType" Text=@LayerStackItem.Current.Tag.RoughnessType />
+
+    <TextField Label="RoughnessFactorSR" Text=@LayerStackItem.Current.Tag.RoughnessFactorSR />
+
+    <TextField Label="RoughnessFactorRF" Text=@LayerStackItem.Current.Tag.RoughnessFactorRF />
+
+    @foreach (var stack in Stacks)
+    {
+        <br />
+        <MudTable Items=@stack.Layers Dense=true>
+            <ToolBarContent>
+                <MudText Typo=Typo.h6>@(stack.Name ?? "Layers")</MudText>
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh>Name</MudTh>
+                    <MudTh>LayerType</MudTh>
+                    <MudTh>Material</MudTh>
+                    <MudTh>Thickness</MudTh>
+                    <MudTh>CopperRatio</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Name">@context.Name</MudTd>
+                    <MudTd DataLabel="LayerType">@context.LayerType</MudTd>
+                    <MudTd DataLabel="Material">@context.Material</MudTd>
+                    <MudTd DataLabel="Thickness">@context.Thickness?.X</MudTd>
+                    <MudTd DataLabel="CopperRatio">@context.CopperRatio</MudTd>
+                </RowTemplate>
+            </MudTable>
+    }
+
+    <br />
+    <AlertGraphQL Files="LayerStack.graphql" />
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        LayerStackItem.OnChange += StateHasChanged;
+    }
+
+    protected override void Disposing()
+    {
+        LayerStackItem.OnChange -= StateHasChanged;
+    }
+
+    IEnumerable<IMyStack> Stacks => LayerStackItem.Current.Tag.Stacks.Cast<IMyStack>();
+}

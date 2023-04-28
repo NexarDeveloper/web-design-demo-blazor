@@ -1,0 +1,39 @@
+﻿# Gets the project design variant layer stack information.
+query LayerStack($projectId: ID!, $variantName: String!) {
+  desProjectById(id: $projectId) {
+    design {
+      workInProgress {
+        variants(where: {name: {eq: $variantName}}) {
+          pcb {
+            layerStack {
+              ...MyStackup
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+# This fragment becomes IMyStackup in C#.
+fragment MyStackup on DesStackup {
+  stackupType
+  roughnessType
+  roughnessFactorSR
+  roughnessFactorRF
+  stacks {
+    ...MyStack
+  }
+}
+
+# This fragment becomes IMyStack in C#.
+fragment MyStack on DesStack {
+  name
+  layers {
+    name
+    layerType
+    material
+    thickness { x }
+    copperRatio
+  }
+}
