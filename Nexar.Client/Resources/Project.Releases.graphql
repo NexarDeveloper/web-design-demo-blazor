@@ -1,4 +1,4 @@
-﻿# Gets the specified project releases.
+﻿# Gets the specified project releases with brief details.
 query ProjectReleases($projectId: ID!) {
   desProjectById(id: $projectId) {
     design {

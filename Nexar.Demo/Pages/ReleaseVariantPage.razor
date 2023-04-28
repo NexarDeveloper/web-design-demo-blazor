@@ -1,0 +1,56 @@
+﻿@page "/releaseVariant"
+@inherits AbstractPage
+
+@if (ReleaseVariantItem.Current is not null)
+{
+    <ItemPageHeader Text="Release Variant" Item=@ReleaseVariantItem.Current />
+
+    <TextField Label="Name" Text=@ReleaseVariantItem.Current.Tag.Name />
+
+    <br />
+    <MudTable Items=@Downloads() Dense=true>
+        <ToolBarContent>
+            <MudText Typo=Typo.h6>PCB Fabrication</MudText>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Package</MudTh>
+            <MudTh>Download</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Package">@context.Item1</MudTd>
+            <MudTd DataLabel="Download">
+                <MudLink Href=@context.Item3>@context.Item2</MudLink>
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+
+    <br />
+    <AlertGraphQL Files="Project.Releases.graphql Project.ReleaseById.graphql" />
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        ReleaseVariantItem.OnChange += StateHasChanged;
+    }
+
+    protected override void Disposing()
+    {
+        ReleaseVariantItem.OnChange -= StateHasChanged;
+    }
+
+    (string, string, string)[] Downloads()
+    {
+        var fabrication = ReleaseVariantItem.Current.Tag.PcbFabrication;
+        return new (string, string, string)[]
+        {
+            ("Full", fabrication.PackageName, fabrication.DownloadUrl),
+            ("ODB", fabrication.Odb.PackageName, fabrication.Odb.DownloadUrl),
+            ("IPC2581", fabrication.Ipc2581.PackageName, fabrication.Ipc2581.DownloadUrl),
+            ("Gerber", fabrication.Gerber.PackageName, fabrication.Gerber.DownloadUrl),
+            ("GerberX2", fabrication.GerberX2.PackageName, fabrication.GerberX2.DownloadUrl),
+            ("NC Drill", fabrication.NcDrill.PackageName, fabrication.NcDrill.DownloadUrl),
+            ("Test Points", fabrication.TestPoints.PackageName, fabrication.TestPoints.DownloadUrl),
+        };
+    }
+}

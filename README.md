@@ -14,16 +14,20 @@ It is:
 - Example of using various Nexar queries in .NET applications.
 - Example of using workspace region specific endpoints.
 
-Altium 365 data tree:
+Covered Altium 365 data tree:
 
 - Workspaces
     - Projects
         - Design
+            - Variants
         - Releases
+            - Variants
         - Comments
         - Tasks
         - Revisions
     - Library
+        - Folders
+            - Folders...
         - Component Templates
     - Tasks
     - Users

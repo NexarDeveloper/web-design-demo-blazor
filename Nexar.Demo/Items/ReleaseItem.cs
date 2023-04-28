@@ -1,10 +1,13 @@
 ﻿using MudBlazor;
 using Nexar.Client;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class ReleaseItem : TreeItem3
+public sealed class ReleaseItem : TreeItem2
 {
     public ReleaseItem(IMyRelease tag, ProjectReleasesItem parent) : base(parent)
     {
@@ -24,4 +27,21 @@ public sealed class ReleaseItem : TreeItem3
 
     public static event Action OnChange;
     public static ReleaseItem Current { get; private set; }
+
+    public override async Task<HashSet<TreeItem>> ServerData()
+    {
+        try
+        {
+            var res = await Client.ProjectReleaseById.ExecuteAsync(Tag.Id);
+            res.AssertNoErrors();
+
+            return res.Data.DesReleaseById.Variants
+                .Select(x => (TreeItem)new ReleaseVariantItem(x, this))
+                .ToHashSet();
+        }
+        catch
+        {
+            return new HashSet<TreeItem>();
+        }
+    }
 }

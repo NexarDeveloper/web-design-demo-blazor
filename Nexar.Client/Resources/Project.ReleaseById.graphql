@@ -1,0 +1,41 @@
+﻿# Gets the specified project release with more details.
+query ProjectReleaseById($id: ID!) {
+  desReleaseById(id: $id) {
+    variants {
+      ...MyReleaseVariant
+    }
+  }
+}
+
+# This fragment becomes IMyReleaseVariant in C#.
+fragment MyReleaseVariant on DesReleaseVariant {
+  name
+  pcbFabrication {
+    packageName
+    downloadUrl
+    odb {
+      packageName
+      downloadUrl
+    }
+    ipc2581 {
+      packageName
+      downloadUrl
+    }
+    gerber {
+      packageName
+      downloadUrl
+    }
+    gerberX2 {
+      packageName
+      downloadUrl
+    }
+    ncDrill {
+      packageName
+      downloadUrl
+    }
+    testPoints {
+      packageName
+      downloadUrl
+    }
+  }
+}
