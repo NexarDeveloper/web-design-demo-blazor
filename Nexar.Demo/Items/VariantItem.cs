@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class WipVariantItem : TreeItem2
+public sealed class VariantItem : TreeItem2
 {
-    public WipVariantItem(IMyWipVariant tag, ProjectDesignItem parent) : base(parent)
+    public VariantItem(IMyWipVariant tag, ProjectDesignItem parent) : base(parent)
     {
         Tag = tag;
     }
@@ -22,17 +22,17 @@ public sealed class WipVariantItem : TreeItem2
     {
         Current = this;
         OnChange?.Invoke();
-        return "wipVariant";
+        return "Variant";
     }
 
     public static event Action OnChange;
-    public static WipVariantItem Current { get; private set; }
+    public static VariantItem Current { get; private set; }
 
     public override Task<HashSet<TreeItem>> ServerData()
     {
         return Task.FromResult(new HashSet<TreeItem>
         {
-            new LayerStackItem(this),
+            new VariantLayerStackItem(this),
         });
     }
 }

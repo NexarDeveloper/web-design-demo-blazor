@@ -27,7 +27,7 @@ public sealed class ProjectRevisionsItem : TreeItem3
             Current = this;
             OnChange?.Invoke();
         }
-        return "revisions";
+        return "Revisions";
     }
 
     public static event Action OnChange;

@@ -28,7 +28,7 @@ public sealed class ComponentTemplatesItem : TreeItem3
             Current = this;
             OnChange?.Invoke();
         }
-        return "component-templates";
+        return "ComponentTemplates";
     }
 
     public static event Action OnChange;

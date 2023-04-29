@@ -10,7 +10,9 @@
             <MudExpansionPanel>
                 <TitleContent>
                     <MudStack Row=true>
-                        <MudAvatar Image=@Comment.CreatedBy.PictureUrl />
+                        <MudAvatar>
+                            <MudImage Src=@Comment.CreatedBy.PictureUrl />
+                        </MudAvatar>
                         <MudText Typo=Typo.subtitle2>@Comment.CreatedBy.Email</MudText>
                     </MudStack>
                 </TitleContent>

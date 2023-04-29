@@ -1,7 +1,9 @@
 ﻿
 <MudField Label=@Label Variant=Variant.Outlined>
     <MudStack Row=true>
-        <MudAvatar Image=@Url />
+        <MudAvatar>
+            <MudImage Src=@Url />
+        </MudAvatar>
         <MudText>@Text</MudText>
     </MudStack>
 </MudField>

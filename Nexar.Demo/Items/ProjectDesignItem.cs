@@ -23,8 +23,7 @@ public sealed class ProjectDesignItem : TreeItem2
         res.AssertNoErrors();
 
         return res.Data.DesProjectById.Design.WorkInProgress.Variants
-            .OrderByDescending(x => x.Name)
-            .Select(x => (TreeItem)new WipVariantItem(x, this))
+            .Select(x => (TreeItem)new VariantItem(x, this))
             .ToHashSet();
     }
 }

@@ -40,7 +40,7 @@ public sealed class ProjectItem : TreeItem2
             Current = this;
             OnChange?.Invoke();
         }
-        return "project";
+        return "Project";
     }
 
     public static event Action OnChange;

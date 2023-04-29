@@ -1,16 +1,16 @@
-﻿@page "/wipVariant"
+﻿@page "/Variant"
 @inherits AbstractPage
 
-@if (WipVariantItem.Current is not null)
+@if (VariantItem.Current is not null)
 {
-    <ItemPageHeader Text="Variant" Item=@WipVariantItem.Current />
+    <ItemPageHeader Text="Variant" Item=@VariantItem.Current />
 
-    <TextField Label="Name" Text="@WipVariantItem.Current.Tag.Name" />
+    <TextField Label="Name" Text="@VariantItem.Current.Tag.Name" />
 
-    <TextFieldCopy Label="Bom.Id" Text="@WipVariantItem.Current.Tag.Bom.Id" />
+    <TextFieldCopy Label="Bom.Id" Text="@VariantItem.Current.Tag.Bom.Id" />
 
     <br />
-    <MudTable Items=@WipVariantItem.Current.Tag.Bom.BomItems Dense=true>
+    <MudTable Items=@VariantItem.Current.Tag.Bom.BomItems Dense=true>
         <ToolBarContent>
             <MudText Typo=Typo.h6>BOM Items</MudText>
         </ToolBarContent>
@@ -34,11 +34,11 @@
 @code {
     protected override void OnInitialized()
     {
-        WipVariantItem.OnChange += StateHasChanged;
+        VariantItem.OnChange += StateHasChanged;
     }
 
     protected override void Disposing()
     {
-        WipVariantItem.OnChange -= StateHasChanged;
+        VariantItem.OnChange -= StateHasChanged;
     }
 }

@@ -858,9 +858,9 @@ type DesProject implements Node {
   "The node identifier for this project (used by `desProjectById`)."
   id: ID!
   "The account information for who created this project."
-  createdBy: DesUser
+  createdBy: DesUser!
   "The account information for who last modified this project."
-  updatedBy: DesUser
+  updatedBy: DesUser!
   "The list of the parameters describing this project."
   parameters("An optional list of parameter names to search." names: [String!]): [DesProjectParameter!]!
   "The web address to download a preview image for this project."
@@ -882,9 +882,9 @@ type DesProject implements Node {
   "The summary of this project content or purpose."
   description: String
   "The `DateTime` when this project was created."
-  createdAt: DateTime
+  createdAt: DateTime!
   "The `DateTime` when this project was last modified."
-  updatedAt: DateTime
+  updatedAt: DateTime!
   "The detailed design information for this project."
   design: DesDesign!
   "The list of project tasks. For a particular project consider using the more effective query `desProjectTasks`."
@@ -1119,9 +1119,9 @@ type DesSupplierPart {
   companyName: String!
   "The part number (SKU)."
   partNumber: String!
-  "Available for library components."
+  "Use `prices` and `stocks` with library components only, e.g. `desLibrary\/components`, `desComponentById`."
   prices: [DesSupplierPrice!]
-  "Available for library components."
+  "Use `prices` and `stocks` with library components only, e.g. `desLibrary\/components`, `desComponentById`."
   stocks: [DesSupplierStock!]
 }
 

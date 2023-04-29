@@ -5,16 +5,16 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class LayerStackItem : TreeItem3
+public sealed class VariantLayerStackItem : TreeItem3
 {
-    public LayerStackItem(WipVariantItem parent) : base(parent)
+    public VariantLayerStackItem(VariantItem parent) : base(parent)
     {
     }
 
     public IMyStackup Tag { get; private set; }
     public override string Text => "Layer Stack";
     public override string Icon => Icons.Material.Outlined.Layers;
-    public new WipVariantItem Parent => (WipVariantItem)base.Parent;
+    public new VariantItem Parent => (VariantItem)base.Parent;
 
     public override string SetCurrent()
     {
@@ -24,17 +24,17 @@ public sealed class LayerStackItem : TreeItem3
             Current = this;
             OnChange?.Invoke();
         }
-        return "layerStack";
+        return "VariantLayerStack";
     }
 
     public static event Action OnChange;
-    public static LayerStackItem Current { get; private set; }
+    public static VariantLayerStackItem Current { get; private set; }
 
     async Task Fetch()
     {
         try
         {
-            var res = await Client.LayerStack.ExecuteAsync(Parent.Parent.Parent.Tag.Id, Parent.Tag.Name);
+            var res = await Client.VariantLayerStack.ExecuteAsync(Parent.Parent.Parent.Tag.Id, Parent.Tag.Name);
             res.AssertNoErrors();
 
             Tag = res.Data.DesProjectById.Design.WorkInProgress.Variants[0].Pcb.LayerStack;

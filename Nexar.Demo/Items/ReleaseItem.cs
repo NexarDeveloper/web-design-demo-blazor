@@ -22,7 +22,7 @@ public sealed class ReleaseItem : TreeItem2
     {
         Current = this;
         OnChange?.Invoke();
-        return "release";
+        return "Release";
     }
 
     public static event Action OnChange;

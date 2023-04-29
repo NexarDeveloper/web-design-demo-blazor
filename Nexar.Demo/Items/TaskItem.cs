@@ -28,7 +28,7 @@ public sealed class TaskItem : TreeItem3
             Current = this;
             OnChange?.Invoke();
         }
-        return "task";
+        return "Task";
     }
 
     public static event Action OnChange;

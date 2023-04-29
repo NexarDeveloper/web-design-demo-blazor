@@ -35,7 +35,7 @@ public sealed class FolderItem : TreeItem2
     {
         Current = this;
         OnChange?.Invoke();
-        return "folder";
+        return "Folder";
     }
 
     public static event Action OnChange;

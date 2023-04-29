@@ -22,7 +22,7 @@ public sealed class UserItem : TreeItem3
     {
         Current = this;
         OnChange?.Invoke();
-        return "user";
+        return "User";
     }
 
     public static event Action OnChange;

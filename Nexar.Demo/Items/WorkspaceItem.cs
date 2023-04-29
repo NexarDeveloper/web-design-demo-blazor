@@ -36,7 +36,7 @@ public sealed class WorkspaceItem : TreeItem
     {
         Current = this;
         OnChange?.Invoke();
-        return "workspace";
+        return "Workspace";
     }
 
     public static event Action OnChange;

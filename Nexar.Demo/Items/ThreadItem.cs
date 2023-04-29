@@ -21,7 +21,7 @@ public sealed class ThreadItem : TreeItem3
     {
         Current = this;
         OnChange?.Invoke();
-        return "thread";
+        return "Thread";
     }
 
     public static event Action OnChange;

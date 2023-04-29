@@ -19,7 +19,7 @@ public sealed class ReleaseVariantItem : TreeItem3
     {
         Current = this;
         OnChange?.Invoke();
-        return "releaseVariant";
+        return "ReleaseVariant";
     }
 
     public static event Action OnChange;
