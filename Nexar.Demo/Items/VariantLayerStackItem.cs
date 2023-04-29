@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class VariantLayerStackItem : TreeItem3
+public sealed class VariantLayerStackItem : LeafTreeItem
 {
     public VariantLayerStackItem(VariantItem parent) : base(parent)
     {

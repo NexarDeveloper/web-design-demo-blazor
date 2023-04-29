@@ -4,14 +4,14 @@ using System;
 
 namespace Nexar.Demo;
 
-public sealed class ReleaseVariantItem : TreeItem3
+public sealed class ReleaseVariantItem : LeafTreeItem
 {
     public ReleaseVariantItem(IMyReleaseVariant tag, ReleaseItem parent) : base(parent)
     {
         Tag = tag;
     }
 
-    public IMyReleaseVariant Tag;
+    public IMyReleaseVariant Tag { get; }
     public override string Text => Tag.Name;
     public override string Icon => Icons.Material.Filled.Launch;
 

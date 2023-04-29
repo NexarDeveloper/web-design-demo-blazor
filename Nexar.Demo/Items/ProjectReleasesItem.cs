@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class ProjectReleasesItem : TreeItem2
+public sealed class ProjectReleasesItem : NodeTreeItem
 {
     public ProjectReleasesItem(ProjectItem parent) : base(parent)
     {

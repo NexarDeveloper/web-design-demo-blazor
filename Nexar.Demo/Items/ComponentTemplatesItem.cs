@@ -2,23 +2,20 @@
 using Nexar.Client;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace Nexar.Demo;
 
-public sealed class ComponentTemplatesItem : TreeItem3
+public sealed class ComponentTemplatesItem : LeafTreeItem
 {
-    public IReadOnlyList<IMyComponentTemplate> Templates { get; private set; }
-
     public ComponentTemplatesItem(WorkspaceLibraryItem parent) : base(parent)
     {
     }
 
-    public new WorkspaceLibraryItem Parent => (WorkspaceLibraryItem)base.Parent;
+    public IReadOnlyList<IMyComponentTemplate> Templates { get; private set; }
     public override string Text => "Component Templates";
     public override string Icon => Icons.Material.Filled.CopyAll;
+    public new WorkspaceLibraryItem Parent => (WorkspaceLibraryItem)base.Parent;
 
     public override string SetCurrent()
     {

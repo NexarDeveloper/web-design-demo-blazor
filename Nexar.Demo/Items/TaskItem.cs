@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class TaskItem : TreeItem3
+public sealed class TaskItem : LeafTreeItem
 {
     public IReadOnlyList<IMyComment> Comments { get; private set; }
 
-    public TaskItem(IMyTask tag, TreeItem2 parent) : base(parent)
+    public TaskItem(IMyTask tag, NodeTreeItem parent) : base(parent)
     {
         Tag = tag;
     }

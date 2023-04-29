@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class FolderItem : TreeItem2
+public sealed class FolderItem : NodeTreeItem
 {
     readonly FolderTreeNode _node;
 
-    public FolderItem(TreeItem2 parent, FolderTreeNode node) : base(parent)
+    public FolderItem(NodeTreeItem parent, FolderTreeNode node) : base(parent)
     {
         _node = node;
     }

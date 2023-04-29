@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class ProjectRevisionsItem : TreeItem3
+public sealed class ProjectRevisionsItem : LeafTreeItem
 {
     public IReadOnlyList<IMyRevision> Revisions { get; private set; }
 

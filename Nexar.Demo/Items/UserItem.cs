@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Nexar.Demo;
 
-public sealed class UserItem : TreeItem3
+public sealed class UserItem : LeafTreeItem
 {
     public UserItem(IMyUser tag, WorkspaceUsersItem parent) : base(parent)
     {

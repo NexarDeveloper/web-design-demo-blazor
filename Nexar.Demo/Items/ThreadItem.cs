@@ -4,7 +4,7 @@ using System;
 
 namespace Nexar.Demo;
 
-public sealed class ThreadItem : TreeItem3
+public sealed class ThreadItem : LeafTreeItem
 {
     public ThreadItem(IMyThread tag, ProjectCommentsItem parent) : base(parent)
     {

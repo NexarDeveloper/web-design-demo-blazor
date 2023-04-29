@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class FoldersItem : TreeItem2
+public sealed class FoldersItem : NodeTreeItem
 {
     public FoldersItem(WorkspaceLibraryItem parent) : base(parent)
     {

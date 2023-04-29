@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class WorkspaceTasksItem : TreeItem2
+public sealed class WorkspaceTasksItem : NodeTreeItem
 {
     public WorkspaceTasksItem(WorkspaceItem parent) : base(parent)
     {

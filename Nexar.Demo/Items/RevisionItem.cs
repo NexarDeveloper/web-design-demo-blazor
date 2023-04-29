@@ -4,14 +4,14 @@ using System;
 
 namespace Nexar.Demo;
 
-public sealed class RevisionItem : TreeItem3
+public sealed class RevisionItem : LeafTreeItem
 {
     public RevisionItem(IMyRelease tag, ProjectRevisionsItem parent) : base(parent)
     {
         Tag = tag;
     }
 
-    public IMyRelease Tag;
+    public IMyRelease Tag { get; }
     public override string Text => Tag.CreatedAt.ToString();
     public override string Icon => Icons.Material.Filled.Launch;
 

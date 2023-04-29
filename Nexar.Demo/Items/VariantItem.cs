@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class VariantItem : TreeItem2
+public sealed class VariantItem : NodeTreeItem
 {
     public VariantItem(IMyWipVariant tag, ProjectDesignItem parent) : base(parent)
     {
         Tag = tag;
     }
 
-    public IMyWipVariant Tag;
+    public IMyWipVariant Tag { get; }
     public override string Text => Tag.Name;
     public override string Icon => Icons.Material.Filled.Memory;
     public new ProjectDesignItem Parent => (ProjectDesignItem)base.Parent;

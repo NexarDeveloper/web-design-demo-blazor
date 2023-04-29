@@ -47,11 +47,11 @@ public abstract class TreeItem
 }
 
 /// <summary>
-/// Tree item with ability to expand.
+/// Tree item with children.
 /// </summary>
-public abstract class TreeItem2 : TreeItem
+public abstract class NodeTreeItem : TreeItem
 {
-    public TreeItem2(TreeItem parent)
+    public NodeTreeItem(TreeItem parent)
     {
         Parent = parent;
     }
@@ -61,11 +61,11 @@ public abstract class TreeItem2 : TreeItem
 }
 
 /// <summary>
-/// Terminal tree item with no children.
+/// Tree item with no children.
 /// </summary>
-public abstract class TreeItem3 : TreeItem2
+public abstract class LeafTreeItem : NodeTreeItem
 {
-    public TreeItem3(TreeItem parent) : base(parent)
+    public LeafTreeItem(TreeItem parent) : base(parent)
     {
     }
     public sealed override bool CanExpand => false;
