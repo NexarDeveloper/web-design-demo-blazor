@@ -1,5 +1,5 @@
 ﻿# Gets the specified project design variants.
-query ProjectWipVariants($projectId: ID!) {
+query ProjectVariants($projectId: ID!) {
   desProjectById(id: $projectId) {
     design {
       workInProgress {
@@ -14,13 +14,4 @@ query ProjectWipVariants($projectId: ID!) {
 # This fragment becomes IMyWipVariant in C#.
 fragment MyWipVariant on DesWipVariant {
   name
-  bom {
-    id
-    bomItems {
-      quantity
-      component {
-        name
-      }
-    }
-  }
 }

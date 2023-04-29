@@ -1,16 +1,14 @@
-﻿@page "/Variant"
+﻿@page "/VariantBom"
 @inherits AbstractPage
 
-@if (VariantItem.Current is not null)
+@if (VariantBomItem.Current?.Tag is not null)
 {
-    <ItemPageHeader Text="Variant" Item=@VariantItem.Current />
+    <ItemPageHeader Text="BOM" Item=@VariantBomItem.Current />
 
-    <TextField Label="Name" Text="@VariantItem.Current.Tag.Name" />
-
-    <TextFieldCopy Label="Bom.Id" Text="@VariantItem.Current.Tag.Bom.Id" />
+    <TextFieldCopy Label="Id" Text="@VariantBomItem.Current.Tag.Id" />
 
     <br />
-    <MudTable Items=@VariantItem.Current.Tag.Bom.BomItems Dense=true>
+    <MudTable Items=@VariantBomItem.Current.Tag.BomItems Dense=true>
         <ToolBarContent>
             <MudText Typo=Typo.h6>BOM Items</MudText>
         </ToolBarContent>
@@ -28,17 +26,21 @@
     </MudTable>
 
     <br />
-    <AlertGraphQL Files="Project.WipVarians.graphql" />
+    <AlertGraphQL Files="Project.Variants.graphql Variant.Bom.graphql" />
+}
+else
+{
+    <MudProgressCircular Indeterminate=true />
 }
 
 @code {
     protected override void OnInitialized()
     {
-        VariantItem.OnChange += StateHasChanged;
+        VariantBomItem.OnChange += StateHasChanged;
     }
 
     protected override void Disposing()
     {
-        VariantItem.OnChange -= StateHasChanged;
+        VariantBomItem.OnChange -= StateHasChanged;
     }
 }

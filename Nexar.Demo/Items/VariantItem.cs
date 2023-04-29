@@ -1,6 +1,5 @@
 ﻿using MudBlazor;
 using Nexar.Client;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -18,20 +17,11 @@ public sealed class VariantItem : TreeItem2
     public override string Icon => Icons.Material.Filled.Memory;
     public new ProjectDesignItem Parent => (ProjectDesignItem)base.Parent;
 
-    public override string SetCurrent()
-    {
-        Current = this;
-        OnChange?.Invoke();
-        return "Variant";
-    }
-
-    public static event Action OnChange;
-    public static VariantItem Current { get; private set; }
-
     public override Task<HashSet<TreeItem>> ServerData()
     {
         return Task.FromResult(new HashSet<TreeItem>
         {
+            new VariantBomItem(this),
             new VariantLayerStackItem(this),
         });
     }
