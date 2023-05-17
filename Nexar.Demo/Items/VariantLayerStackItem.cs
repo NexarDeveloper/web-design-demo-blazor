@@ -37,7 +37,7 @@ public sealed class VariantLayerStackItem : LeafTreeItem
             var res = await Client.VariantLayerStack.ExecuteAsync(Parent.Parent.Parent.Tag.Id, Parent.Tag.Name);
             res.AssertNoErrors();
 
-            Tag = res.Data.DesProjectById.Design.WorkInProgress.Variants[0].Pcb.LayerStack;
+            Tag = res.Data.DesProjectById.Design.Variants[0].Pcb.LayerStack;
         }
         catch
         {

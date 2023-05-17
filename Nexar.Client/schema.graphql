@@ -536,10 +536,11 @@ type DesDeleteUserPayload {
 
 "A design manages all of the schematic, PCB, and BOM content for a project."
 type DesDesign {
+  "The list of variations contained in this design."
+  variants(where: DesWipVariantFilterInput): [DesWipVariant!]!
   "The list of published versions of the design grouped into pages."
   releases("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesReleaseFilterInput): DesReleaseConnection
-  "The most recent version of the design."
-  workInProgress: DesWorkInProgress!
+  workInProgress: DesWorkInProgress! @deprecated(reason: "Use `variants` instead.")
 }
 
 type DesDesignExchange {
@@ -687,12 +688,81 @@ type DesLibrary {
 
 "Revision naming scheme details obtained by `desLibrary\/lifeCycleDefinitions`."
 type DesLifeCycleDefinition {
+  "The `DesUser` this lifecycle definition was created by."
+  createdBy: DesUser!
+  "The `DesUser` this lifecycle definition was last updated by."
+  updatedBy: DesUser!
+  "The `DesLifeCycleStateTransition` list for this lifecycle definition."
+  stateTransitions: [DesLifeCycleStateTransition]!
+  "The reference ID for this lifecycle definition."
   lifeCycleDefinitionId: String!
+  "The name of this lifecycle definition."
   name: String!
+  "The `DesContentTypeKind` list for this lifecycle definition."
+  contentTypes: [DesContentTypeKind!]!
+  "The `DateTime` this lifecycle definition was created."
+  createdAt: DateTime!
+  "The `DateTime` this lifecycle definition was last updated."
+  updatedAt: DateTime!
+  "The `DesLifeCycleStage` list for this lifecycle definition."
+  stages: [DesLifeCycleStage]!
+}
+
+type DesLifeCycleStage {
+  "The `DesUser` this lifecycle stage was created by."
+  createdBy: DesUser!
+  "The `DesUser` this lifecycle stage was last updated by."
+  updatedBy: DesUser!
+  "The reference ID for this lifecycle stage."
+  lifeCycleStageId: String!
+  "The name of this lifecycle stage."
+  name: String!
+  "The stage index for this lifecycle stage."
+  stageIndex: Int!
+  "The `DateTime` this lifecycle stage was created."
+  createdAt: DateTime!
+  "The `DateTime` this lifecycle stage was last updated at."
+  updatedAt: DateTime!
+  "The `DesLifeCycleState` list for this lifecycle stage."
+  states: [DesLifeCycleState!]!
 }
 
 type DesLifeCycleState {
+  "The `DesUser` this lifecycle state was created by."
+  createdBy: DesUser!
+  "The `DesUser` this lifecycle state was last updated by."
+  updatedBy: DesUser!
+  "The reference ID for this lifecycle state."
+  lifeCycleStateId: String!
+  "The name of this lifecycle state."
   name: String!
+  "The description of this lifecycle state."
+  description: String!
+  "The state index for this lifecycle state."
+  stateIndex: Int!
+  "The `DateTime` this lifecycle state was created."
+  createdAt: DateTime!
+  "The `DateTime` this lifecycle state was last updated at."
+  updatedAt: DateTime!
+}
+
+type DesLifeCycleStateTransition {
+  "The `DesUser` this lifecycle state transition was created by."
+  createdBy: DesUser!
+  "The `DesUser` this lifecycle state transition was last updated by."
+  updatedBy: DesUser!
+  "The `DesLifeCycleState` before the transition is applied."
+  lifeCycleStateBefore: DesLifeCycleState
+  "The `DesLifeCycleState` after the transition is applied."
+  lifeCycleStateAfter: DesLifeCycleState
+  "The reference ID for this lifecycle state transition."
+  lifeCycleStateTransitionId: String!
+  "The name of this lifecycle state transition."
+  name: String!
+  "The `DateTime` this lifecycle state transition was created."
+  createdAt: DateTime!
+  "The `DateTime` this lifecycle state transition was last updated at."
+  updatedAt: DateTime!
 }
 
 type DesManufacturePackage implements Node {
@@ -1050,8 +1120,20 @@ type DesRevisionDetails {
 
 "Revision naming scheme details obtained by `desLibrary\/revisionNamingSchemes`."
 type DesRevisionNamingScheme {
+  "The `DesUser` this revision naming scheme was created by."
+  createdBy: DesUser!
+  "The `DesUser` this revision naming scheme was last updated by."
+  updatedBy: DesUser!
+  "The reference ID for this revision naming scheme."
   revisionNamingSchemeId: String!
+  "The name of this revision naming scheme."
   name: String!
+  "The `DesContentTypeKind` list for this revision naming scheme."
+  contentTypes: [DesContentTypeKind!]!
+  "The `DateTime` this revision naming scheme was created."
+  createdAt: DateTime!
+  "The `DateTime` this revision naming scheme was last updated at."
+  updatedAt: DateTime!
 }
 
 "A schematic contains the design parts and logical connections."
@@ -2102,6 +2184,13 @@ enum DesContentTypeKind {
   DXP_SDK
   DXP_PLUGIN
   BMS_AUTO_GENERATED_COMPONENTS
+  SCHEMATIC_SNIPPET
+  PCB_SNIPPET
+  MANAGED_BOM
+  HARNESS_LAYOUT
+  HARNESS_CONNECTIVITY
+  FABRICATION_FILE
+  ORCAD_PROJECT
 }
 
 enum DesDocumentType {

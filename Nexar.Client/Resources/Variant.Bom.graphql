@@ -2,11 +2,9 @@
 query VariantBom($projectId: ID!, $variantName: String!) {
   desProjectById(id: $projectId) {
     design {
-      workInProgress {
-        variants(where: {name: {eq: $variantName}}) {
-          bom {
-            ...MyBom
-          }
+      variants(where: {name: {eq: $variantName}}) {
+        bom {
+          ...MyBom
         }
       }
     }

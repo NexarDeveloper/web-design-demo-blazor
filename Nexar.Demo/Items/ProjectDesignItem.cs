@@ -22,7 +22,7 @@ public sealed class ProjectDesignItem : NodeTreeItem
         var res = await Client.ProjectVariants.ExecuteAsync(Parent.Tag.Id);
         res.AssertNoErrors();
 
-        return res.Data.DesProjectById.Design.WorkInProgress.Variants
+        return res.Data.DesProjectById.Design.Variants
             .Select(x => (TreeItem)new VariantItem(x, this))
             .ToHashSet();
     }

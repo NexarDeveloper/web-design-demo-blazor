@@ -2,12 +2,10 @@
 query VariantLayerStack($projectId: ID!, $variantName: String!) {
   desProjectById(id: $projectId) {
     design {
-      workInProgress {
-        variants(where: {name: {eq: $variantName}}) {
-          pcb {
-            layerStack {
-              ...MyStackup
-            }
+      variants(where: {name: {eq: $variantName}}) {
+        pcb {
+          layerStack {
+            ...MyStackup
           }
         }
       }

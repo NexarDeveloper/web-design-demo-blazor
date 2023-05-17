@@ -2,10 +2,8 @@
 query ProjectVariants($projectId: ID!) {
   desProjectById(id: $projectId) {
     design {
-      workInProgress {
-        variants {
-          ...MyWipVariant
-        }
+      variants {
+        ...MyWipVariant
       }
     }
   }

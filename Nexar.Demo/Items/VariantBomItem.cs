@@ -37,7 +37,7 @@ public sealed class VariantBomItem : LeafTreeItem
             var res = await Client.VariantBom.ExecuteAsync(Parent.Parent.Parent.Tag.Id, Parent.Tag.Name);
             res.AssertNoErrors();
 
-            Tag = res.Data.DesProjectById.Design.WorkInProgress.Variants[0].Bom;
+            Tag = res.Data.DesProjectById.Design.Variants[0].Bom;
         }
         catch
         {
