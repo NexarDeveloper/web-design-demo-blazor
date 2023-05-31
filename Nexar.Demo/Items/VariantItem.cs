@@ -22,6 +22,7 @@ public sealed class VariantItem : NodeTreeItem
         return Task.FromResult(new HashSet<TreeItem>
         {
             new VariantBomItem(this),
+            new VariantDesignItemsItem(this),
             new VariantLayerStackItem(this),
         });
     }

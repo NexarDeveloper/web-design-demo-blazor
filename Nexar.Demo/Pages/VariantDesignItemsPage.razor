@@ -1,0 +1,50 @@
+﻿@page "/VariantDesignItems"
+@inherits AbstractPage
+
+@if (VariantDesignItemsItem.Current?.Items is not null)
+{
+    <ItemPageHeader Text="Design Items" Item=@VariantDesignItemsItem.Current />
+
+    <TextField Label="TotalCount" Text=@VariantDesignItemsItem.Current.TotalCount.ToString() />
+
+    @if (VariantDesignItemsItem.Current.TotalCount > VariantDesignItemsItem.ItemsLimit)
+    {
+        <MudAlert Severity="Severity.Warning">
+            Limited to the first @(VariantDesignItemsItem.ItemsLimit) items.
+        </MudAlert>
+    }
+
+    <br />
+    <MudTable Items=@VariantDesignItemsItem.Current.Items Dense=true>
+        <HeaderContent>
+            <MudTh>Component.Name</MudTh>
+            <MudTh>Designator</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Value">@context.Component?.Name</MudTd>
+            <MudTd DataLabel="Name">@context.Designator</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+
+    <br />
+    <AlertGraphQL Files="Project.Variants.graphql Variant.DesignItems.graphql" />
+}
+else
+{
+    <MudProgressCircular Indeterminate=true />
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        VariantDesignItemsItem.OnChange += StateHasChanged;
+    }
+
+    protected override void Disposing()
+    {
+        VariantDesignItemsItem.OnChange -= StateHasChanged;
+    }
+}

@@ -5,13 +5,10 @@
 {
     <ItemPageHeader Text="BOM" Item=@VariantBomItem.Current />
 
-    <TextFieldCopy Label="Id" Text="@VariantBomItem.Current.Tag.Id" />
+    <TextFieldCopy Label="Id" Text=@VariantBomItem.Current.Tag.Id />
 
     <br />
     <MudTable Items=@VariantBomItem.Current.Tag.BomItems Dense=true>
-        <ToolBarContent>
-            <MudText Typo=Typo.h6>BOM Items</MudText>
-        </ToolBarContent>
         <HeaderContent>
             <MudTh>Component.Name</MudTh>
             <MudTh>Quantity</MudTh>
