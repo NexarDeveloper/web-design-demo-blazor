@@ -21,6 +21,7 @@ Covered Altium 365 data tree:
         - Design
             - Variants
                 - BOM
+                - Design Items
                 - Layer Stack
         - Releases
             - Variants

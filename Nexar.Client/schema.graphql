@@ -47,6 +47,8 @@ type Query {
   desProjectById("The node identifier for a project." id: ID!): DesProject
   "Gets the unique identifier for a project from its internal identifier."
   desProjectIdFromAfsId(workspaceUrl: String! afsId: String! "If the project is known to be shared or internal, this parameter can be provided to make the query faster." isSharedProject: Boolean): DesProjectIdPayload!
+  "Gets the specified project export job."
+  desProjectExportJob(projectExportJobId: String!): DesProjectExportJob!
   desDesignItemById(id: ID!): DesDesignItem
   desLibrary(workspaceUrl: String!): DesLibrary!
   desComponentById(id: ID!): DesComponent
@@ -131,7 +133,10 @@ type Query {
   "Get link to a downloadable SCR report."
   datScrReport("ID of the SCR job" jobId: String!): DatScrReport!
   "Get current metered usage statistics."
-  datScrUsage: DatScrUsage!
+  datScrUsage: DatScrUsage
+  datScrIpnPartInfo(partIds: [String!]! eau: Long!): DatScrIpnPartInfo!
+  "Get Historical Procurability and recent market availability data for parts."
+  datScrPartInfos("List of part ID - Estimated Annual Usage (EAU) pairs" parts: [DatScrPartInfoInput!]!): [DatScrPartInfo]!
   datEddiLatestEdition: DatEddiEdition!
   datEddiEditions(where: DatEddiEditionFilterInput): [DatEddiEdition!]!
 }
@@ -154,6 +159,8 @@ type Mutation {
   desUploadProject(input: DesUploadProjectInput!): DesUploadProjectPayload!
   "*** PROTOTYPE, SUBJECT TO CHANGE ***"
   desUploadCollaborationSimulation(input: DesUploadCollaborationSimulationInput!): DesUploadCollaborationSimulationPayload!
+  "Creates a job that exports the specified project data."
+  desCreateProjectExportJob(input: DesCreateProjectExportJobInput!): DesCreateProjectExportJobPayload!
   "Updates a specific result block."
   desUpdateReuseBlock(input: DesUpdateReuseBlockInput!): DesUpdateReuseBlockPayload!
   "Creates a user."
@@ -488,6 +495,12 @@ type DesCreateCommentThreadPayload {
 
 type DesCreateManufacturePackagePayload {
   jobId: ID!
+  errors: [DesPayloadError!]!
+}
+
+type DesCreateProjectExportJobPayload {
+  "The job ID to be used by `desProjectExportJob`."
+  projectExportJobId: String
   errors: [DesPayloadError!]!
 }
 
@@ -865,6 +878,8 @@ type DesPcb {
   tracks(where: DesTrackFilterInput): [DesTrack!]!
   "The list of all multiple layer connections in this PCB."
   vias: [DesVia!]!
+  "*** PROTOTYPE, SUBJECT TO CHANGE ***"
+  mesh3D: DesMesh3D
   "The list of all comment threads related to this PCB."
   commentThreads: [DesCommentThread!]!
   "The reference identifier for this PCB."
@@ -979,6 +994,15 @@ type DesProjectEdge {
   cursor: String!
   "The item at the end of the edge."
   node: DesProject!
+}
+
+type DesProjectExportJob {
+  "The job current status."
+  status: DesJobStatus!
+  "Whet the job status is `ERROR`, the error message."
+  reason: String
+  "When the job status is `DONE`, the result zip file download URL."
+  downloadUrl: String
 }
 
 type DesProjectIdPayload {
@@ -1654,6 +1678,25 @@ input DesCreateManufacturePackageInput {
   callbackUrl: String
 }
 
+input DesCreateProjectExportJobInput {
+  "The project node ID."
+  projectId: ID!
+  "The Git commit which determines the version of the project to use. If not provided, the latest version is used."
+  vcsRevisionId: String
+  "The project variant to use when creating the package. If not provided, the default variant is used."
+  variantName: String
+  "Tells to export any data specified by the input."
+  exportAny: DesProjectExportAnyInput
+  "Tells to export Gerber and specifies the options."
+  exportGerber: DesProjectExportGerberInput
+  "Tells to export GerberX2 and specifies the options."
+  exportGerberX2: DesProjectExportGerberX2Input
+  "Tells to export IDF and specifies the options."
+  exportIdf: DesProjectExportIdfInput
+  "Tells to export NCDrill and specifies the options."
+  exportNCDrill: DesProjectExportNCDrillInput
+}
+
 input DesCreateProjectTaskInput {
   "The project node ID."
   projectId: ID!
@@ -1757,6 +1800,33 @@ input DesOnCommentUpdatedInput {
 input DesPosition2DInput {
   x: Int!
   y: Int!
+}
+
+input DesProjectExportAnyInput {
+  "The content of Altium Designer `OutJob` file."
+  outJobContent: String!
+  "A suggested result file name. Default: `Export.zip`."
+  fileName: String
+}
+
+input DesProjectExportGerberInput {
+  "A suggested result file name. Default: `Gerber.zip`."
+  fileName: String
+}
+
+input DesProjectExportGerberX2Input {
+  "A suggested result file name. Default: `GerberX2.zip`."
+  fileName: String
+}
+
+input DesProjectExportIdfInput {
+  "A suggested result file name. Default: `IDF.zip`."
+  fileName: String
+}
+
+input DesProjectExportNCDrillInput {
+  "A suggested result file name. Default: `NCDrill.zip`."
+  fileName: String
 }
 
 "A project manages all development stages of the PCB\/PCA product lifecycle."
@@ -3813,6 +3883,10 @@ type DatScrDeleteJobPayload {
   errors: [DatScrDeleteJobError!]
 }
 
+type DatScrIpnPartInfo {
+  ipnHistoricalProcurability: Float!
+}
+
 "Contains information about an SCR processing job."
 type DatScrJob {
   "The ID of the user who owns the job."
@@ -3829,6 +3903,16 @@ type DatScrJob {
   jobMessage: String
   "Statistics relating to the running of this job."
   runStats: DatScrRunStats
+}
+
+type DatScrPartInfo {
+  historicalProcurability: Float!
+  marketAvailabilityToday: Int!
+  marketAvailability7dAgo: Int!
+  marketAvailability14dAgo: Int!
+  marketAvailability21dAgo: Int!
+  marketAvailability28dAgo: Int!
+  monthlyMarketAvailability: [Int!]!
 }
 
 "Error indicates that the user has exceeded their quota."
@@ -3876,6 +3960,11 @@ type DatScrRunStats {
   numDestocked: Int
 }
 
+"Error indicates that an SCR subscription could not be found."
+type DatScrSubscriptionNotFoundError implements DatError {
+  message: String!
+}
+
 "User's metered usage statistics."
 type DatScrUsage {
   "Total number of distinct resolved parts within the current period."
@@ -3886,7 +3975,7 @@ type DatScrUsage {
   quota: Int!
 }
 
-union DatScrCreateJobError = DatScrQuotaExceededError
+union DatScrCreateJobError = DatScrQuotaExceededError | DatScrSubscriptionNotFoundError
 
 union DatScrDeleteJobError = DatScrCouldNotDeleteJobError
 
@@ -4007,6 +4096,11 @@ input DatScrDeleteJobInput {
   jobId: String!
 }
 
+input DatScrPartInfoInput {
+  partId: String!
+  eau: Int!
+}
+
 enum DatBomAnalysisLevel {
   ERROR
   WARNING
@@ -4036,6 +4130,9 @@ enum ApplyPolicy {
   AFTER_RESOLVER
   VALIDATION
 }
+
+"The `Long` scalar type represents non-fractional signed whole 64-bit numeric values. Long can represent values between -(2^63) and 2^63 - 1."
+scalar Long
 
 "The built-in `Decimal` scalar type."
 scalar Decimal
