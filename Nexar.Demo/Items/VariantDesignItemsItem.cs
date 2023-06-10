@@ -8,7 +8,7 @@ namespace Nexar.Demo;
 
 public sealed class VariantDesignItemsItem : LeafTreeItem
 {
-    public const int ItemsLimit = 1000;
+    public const int ItemsLimit = 100;
 
     public VariantDesignItemsItem(VariantItem parent) : base(parent)
     {
@@ -46,8 +46,10 @@ public sealed class VariantDesignItemsItem : LeafTreeItem
             TotalCount = items.TotalCount;
             Items = items.Nodes;
         }
-        catch
+        catch (Exception ex)
         {
+            Console.WriteLine(ex.Message);
+            Items = Array.Empty<IMyDesignItem>();
         }
 
         OnChange?.Invoke();
