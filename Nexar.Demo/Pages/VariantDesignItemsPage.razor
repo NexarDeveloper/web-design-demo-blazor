@@ -1,21 +1,25 @@
 ﻿@page "/VariantDesignItems"
 @inherits AbstractPage
+@using Data = VariantDesignItemsItem
 
-@if (VariantDesignItemsItem.Current?.Items is not null)
+@if (Data.Current is not null)
 {
-    <ItemPageHeader Text="Design Items" Item=@VariantDesignItemsItem.Current />
+    <ItemPageHeader Text="Design Items" Item=@Data.Current />
+}
 
-    <TextField Label="TotalCount" Text=@VariantDesignItemsItem.Current.TotalCount.ToString() />
+@if (Data.Current?.Items is not null)
+{
+    <TextField Label="TotalCount" Text=@Data.Current.TotalCount.ToString() />
 
-    @if (VariantDesignItemsItem.Current.TotalCount > VariantDesignItemsItem.ItemsLimit)
+    @if (Data.Current.TotalCount > Data.ItemsLimit)
     {
         <MudAlert Severity="Severity.Warning">
-            Limited to the first @(VariantDesignItemsItem.ItemsLimit) items.
+            Limited to the first @(Data.ItemsLimit) items.
         </MudAlert>
     }
 
     <br />
-    <MudTable Items=@VariantDesignItemsItem.Current.Items Dense=true>
+    <MudTable Items=@Data.Current.Items Dense=true>
         <HeaderContent>
             <MudTh>Component.Name</MudTh>
             <MudTh>Designator</MudTh>
@@ -34,17 +38,17 @@
 }
 else
 {
-    <MudProgressCircular Indeterminate=true />
+    <MudProgressLinear Indeterminate=true />
 }
 
 @code {
     protected override void OnInitialized()
     {
-        VariantDesignItemsItem.OnChange += StateHasChanged;
+        Data.OnChange += StateHasChanged;
     }
 
     protected override void Disposing()
     {
-        VariantDesignItemsItem.OnChange -= StateHasChanged;
+        Data.OnChange -= StateHasChanged;
     }
 }

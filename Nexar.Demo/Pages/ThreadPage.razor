@@ -1,18 +1,19 @@
 ﻿@page "/Thread"
 @inherits AbstractPage
+@using Data = ThreadItem
 
-@if (ThreadItem.Current is not null)
+@if (Data.Current is not null)
 {
-    <ItemPageHeader Text="Thread" Item=@ThreadItem.Current />
+    <ItemPageHeader Text="Thread" Item=@Data.Current />
 
-    <TextFieldCopy Label="CommentThreadId" Text=@ThreadItem.Current.Tag.CommentThreadId />
+    <TextFieldCopy Label="CommentThreadId" Text=@Data.Current.Tag.CommentThreadId />
 
-    @if (ThreadItem.Current.Tag.OriginalStateScreenshotUrl is not null)
+    @if (Data.Current.Tag.OriginalStateScreenshotUrl is not null)
     {
-        <FieldImage Label="Original screenshot" Src=@ThreadItem.Current.Tag.OriginalStateScreenshotUrl />
+        <FieldImage Label="Original screenshot" Src=@Data.Current.Tag.OriginalStateScreenshotUrl />
     }
 
-    @foreach (var comment in ThreadItem.Current.Tag.Comments)
+    @foreach (var comment in Data.Current.Tag.Comments)
     {
         <CardComment Comment=@comment />
     }
@@ -24,11 +25,11 @@
 @code {
     protected override void OnInitialized()
     {
-        ThreadItem.OnChange += StateHasChanged;
+        Data.OnChange += StateHasChanged;
     }
 
     protected override void Disposing()
     {
-        ThreadItem.OnChange -= StateHasChanged;
+        Data.OnChange -= StateHasChanged;
     }
 }

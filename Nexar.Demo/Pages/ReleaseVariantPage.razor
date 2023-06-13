@@ -1,11 +1,12 @@
 ﻿@page "/ReleaseVariant"
 @inherits AbstractPage
+@using Data = ReleaseVariantItem
 
-@if (ReleaseVariantItem.Current is not null)
+@if (Data.Current is not null)
 {
-    <ItemPageHeader Text="Release Variant" Item=@ReleaseVariantItem.Current />
+    <ItemPageHeader Text="Release Variant" Item=@Data.Current />
 
-    <TextField Label="Name" Text=@ReleaseVariantItem.Current.Tag.Name />
+    <TextField Label="Name" Text=@Data.Current.Tag.Name />
 
     <br />
     <MudTable Items=@Downloads() Dense=true>
@@ -31,17 +32,17 @@
 @code {
     protected override void OnInitialized()
     {
-        ReleaseVariantItem.OnChange += StateHasChanged;
+        Data.OnChange += StateHasChanged;
     }
 
     protected override void Disposing()
     {
-        ReleaseVariantItem.OnChange -= StateHasChanged;
+        Data.OnChange -= StateHasChanged;
     }
 
     (string, string, string)[] Downloads()
     {
-        var fabrication = ReleaseVariantItem.Current.Tag.PcbFabrication;
+        var fabrication = Data.Current.Tag.PcbFabrication;
         return new (string, string, string)[]
         {
             ("Full", fabrication.PackageName, fabrication.DownloadUrl),

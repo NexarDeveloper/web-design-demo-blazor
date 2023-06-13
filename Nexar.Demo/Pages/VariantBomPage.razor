@@ -1,14 +1,18 @@
 ﻿@page "/VariantBom"
 @inherits AbstractPage
+@using Data = VariantBomItem
 
-@if (VariantBomItem.Current?.Tag is not null)
+@if (Data.Current is not null)
 {
-    <ItemPageHeader Text="BOM" Item=@VariantBomItem.Current />
+    <ItemPageHeader Text="BOM" Item=@Data.Current />
+}
 
-    <TextFieldCopy Label="Id" Text=@VariantBomItem.Current.Tag.Id />
+@if (Data.Current?.Tag is not null)
+{
+    <TextFieldCopy Label="Id" Text=@Data.Current.Tag.Id />
 
     <br />
-    <MudTable Items=@VariantBomItem.Current.Tag.BomItems Dense=true>
+    <MudTable Items=@Data.Current.Tag.BomItems Dense=true>
         <HeaderContent>
             <MudTh>Component.Name</MudTh>
             <MudTh>Quantity</MudTh>
@@ -27,17 +31,17 @@
 }
 else
 {
-    <MudProgressCircular Indeterminate=true />
+    <MudProgressLinear Indeterminate=true />
 }
 
 @code {
     protected override void OnInitialized()
     {
-        VariantBomItem.OnChange += StateHasChanged;
+        Data.OnChange += StateHasChanged;
     }
 
     protected override void Disposing()
     {
-        VariantBomItem.OnChange -= StateHasChanged;
+        Data.OnChange -= StateHasChanged;
     }
 }

@@ -1,33 +1,34 @@
 ﻿@page "/Project"
 @inherits AbstractPage
+@using Data = ProjectItem
 
-@if (ProjectItem.Current is not null)
+@if (Data.Current is not null)
 {
-    <ItemPageHeader Text="Project" Item=@ProjectItem.Current />
+    <ItemPageHeader Text="Project" Item=@Data.Current />
 
-    <TextFieldCopy Label="Id" Text=@ProjectItem.Current.Tag.Id />
+    <TextFieldCopy Label="Id" Text=@Data.Current.Tag.Id />
 
-    <TextFieldUrl Label="Url" Href=@ProjectItem.Current.Tag.Url />
+    <TextFieldUrl Label="Url" Href=@Data.Current.Tag.Url />
 
-    <TextField Label="Name" Text=@ProjectItem.Current.Tag.Name />
+    <TextField Label="Name" Text=@Data.Current.Tag.Name />
 
-    <FieldImage Label="Preview" Src=@ProjectItem.Current.Tag.PreviewUrl />
+    <FieldImage Label="Preview" Src=@Data.Current.Tag.PreviewUrl />
 
-    @if (ProjectItem.Current.Revision is null && ProjectItem.Current.Parameters is null)
+    @if (Data.Current.Revision is null && Data.Current.Parameters is null)
     {
-        <MudProgressCircular Indeterminate=true />
+        <MudProgressLinear Indeterminate=true />
     }
     else
     {
-        @if (ProjectItem.Current.Revision is not null)
+        @if (Data.Current.Revision is not null)
         {
-            <TextField Label="LatestRevision (CreatedAt / Author / Message / RevisionId)" Text=@Revision(ProjectItem.Current) />
+            <TextField Label="LatestRevision (CreatedAt / Author / Message / RevisionId)" Text=@Revision(Data.Current) />
         }
 
-        @if (ProjectItem.Current.Parameters is not null)
+        @if (Data.Current.Parameters is not null)
         {
             <br />
-            <MudTable Items=@ProjectItem.Current.Parameters Dense=true>
+            <MudTable Items=@Data.Current.Parameters Dense=true>
                 <ToolBarContent>
                     <MudText Typo=Typo.h6>Parameters</MudText>
                 </ToolBarContent>
@@ -50,15 +51,15 @@
 @code {
     protected override void OnInitialized()
     {
-        ProjectItem.OnChange += StateHasChanged;
+        Data.OnChange += StateHasChanged;
     }
 
     protected override void Disposing()
     {
-        ProjectItem.OnChange -= StateHasChanged;
+        Data.OnChange -= StateHasChanged;
     }
 
-    string Revision(ProjectItem item)
+    string Revision(Data item)
     {
         var rev = item.Revision;
         return $"{rev.CreatedAt.ToString("yyyy-MM-dd")} / {rev.Author} / {rev.Message} / {rev.RevisionId}";

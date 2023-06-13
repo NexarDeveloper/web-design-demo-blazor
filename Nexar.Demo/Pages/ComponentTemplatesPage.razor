@@ -1,17 +1,18 @@
 ﻿@page "/ComponentTemplates"
 @inherits AbstractPage
+@using Data = ComponentTemplatesItem
 
-@if (ComponentTemplatesItem.Current is not null)
+@if (Data.Current is not null)
 {
-    <ItemPageHeader Text="Component Templates" Item=@ComponentTemplatesItem.Current />
+    <ItemPageHeader Text="Component Templates" Item=@Data.Current />
 
-    @if (ComponentTemplatesItem.Current.Templates is null)
+    @if (Data.Current.Templates is null)
     {
-        <MudProgressCircular Indeterminate=true />
+        <MudProgressLinear Indeterminate=true />
     }
     else
     {
-        <MudTable Items=@ComponentTemplatesItem.Current.Templates Filter="FilterElement" Dense=true>
+        <MudTable Items=@Data.Current.Templates Filter="FilterElement" Dense=true>
             <ToolBarContent>
                 <MudSpacer />
                 <MudTextField @bind-Value="_filterString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search"></MudTextField>
@@ -55,12 +56,12 @@
 
     protected override void OnInitialized()
     {
-        ComponentTemplatesItem.OnChange += StateHasChanged;
+        Data.OnChange += StateHasChanged;
     }
 
     protected override void Disposing()
     {
-        ComponentTemplatesItem.OnChange -= StateHasChanged;
+        Data.OnChange -= StateHasChanged;
     }
 
     bool FilterElement(Nexar.Client.IMyComponentTemplate element)

@@ -17,15 +17,11 @@
         </MudCardContent>
         <MudCardActions>
             <MudButton Color=Color.Primary OnClick=@ConnectAsync>Connect</MudButton>
-            @if (_connecting)
-            {
-                <MudProgressCircular Indeterminate=true />
-            }
         </MudCardActions>
     </MudCard>
 }
 
-@if (_loading)
+@if (_loading || _connecting)
 {
-    <MudProgressCircular Indeterminate=true />
+    <MudProgressLinear Indeterminate=true />
 }

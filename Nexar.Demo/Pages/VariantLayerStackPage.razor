@@ -1,18 +1,22 @@
 ﻿@page "/VariantLayerStack"
 @inherits AbstractPage
 @using Nexar.Client
+@using Data = VariantLayerStackItem
 
-@if (VariantLayerStackItem.Current?.Tag is not null)
+@if (Data.Current is not null)
 {
-    <ItemPageHeader Text="Layer Stack" Item=@VariantLayerStackItem.Current />
+    <ItemPageHeader Text="Layer Stack" Item=@Data.Current />
+}
 
-    <TextField Label="StackupType" Text=@VariantLayerStackItem.Current.Tag.StackupType />
+@if (Data.Current?.Tag is not null)
+{
+    <TextField Label="StackupType" Text=@Data.Current.Tag.StackupType />
 
-    <TextField Label="RoughnessType" Text=@VariantLayerStackItem.Current.Tag.RoughnessType />
+    <TextField Label="RoughnessType" Text=@Data.Current.Tag.RoughnessType />
 
-    <TextField Label="RoughnessFactorSR" Text=@VariantLayerStackItem.Current.Tag.RoughnessFactorSR />
+    <TextField Label="RoughnessFactorSR" Text=@Data.Current.Tag.RoughnessFactorSR />
 
-    <TextField Label="RoughnessFactorRF" Text=@VariantLayerStackItem.Current.Tag.RoughnessFactorRF />
+    <TextField Label="RoughnessFactorRF" Text=@Data.Current.Tag.RoughnessFactorRF />
 
     @foreach (var stack in Stacks)
     {
@@ -43,19 +47,19 @@
 }
 else
 {
-    <MudProgressCircular Indeterminate=true />
+    <MudProgressLinear Indeterminate=true />
 }
 
 @code {
     protected override void OnInitialized()
     {
-        VariantLayerStackItem.OnChange += StateHasChanged;
+        Data.OnChange += StateHasChanged;
     }
 
     protected override void Disposing()
     {
-        VariantLayerStackItem.OnChange -= StateHasChanged;
+        Data.OnChange -= StateHasChanged;
     }
 
-    IEnumerable<IMyStack> Stacks => VariantLayerStackItem.Current.Tag.Stacks.Cast<IMyStack>();
+    IEnumerable<IMyStack> Stacks => Data.Current.Tag.Stacks.Cast<IMyStack>();
 }

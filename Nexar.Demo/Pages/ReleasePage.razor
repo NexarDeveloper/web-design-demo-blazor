@@ -1,17 +1,18 @@
 ﻿@page "/Release"
 @inherits AbstractPage
+@using Data = ReleaseItem
 
-@if (ReleaseItem.Current is not null)
+@if (Data.Current is not null)
 {
-    <ItemPageHeader Text="Release" Item=@ReleaseItem.Current />
+    <ItemPageHeader Text="Release" Item=@Data.Current />
 
-    <TextFieldCopy Label="Id" Text=@ReleaseItem.Current.Tag.Id />
+    <TextFieldCopy Label="Id" Text=@Data.Current.Tag.Id />
 
-    <TextFieldCopy Label="ReleaseId" Text=@ReleaseItem.Current.Tag.ReleaseId />
+    <TextFieldCopy Label="ReleaseId" Text=@Data.Current.Tag.ReleaseId />
 
-    <TextFieldText Label="Description" Text=@ReleaseItem.Current.Tag.Description />
+    <TextFieldText Label="Description" Text=@Data.Current.Tag.Description />
 
-    <TextField Label="CreatedAt" Text=@ReleaseItem.Current.Tag.CreatedAt.ToString() />
+    <TextField Label="CreatedAt" Text=@Data.Current.Tag.CreatedAt.ToString() />
 
     <br />
     <AlertGraphQL Files="Project.Releases.graphql" />
@@ -20,11 +21,11 @@
 @code {
     protected override void OnInitialized()
     {
-        ReleaseItem.OnChange += StateHasChanged;
+        Data.OnChange += StateHasChanged;
     }
 
     protected override void Disposing()
     {
-        ReleaseItem.OnChange -= StateHasChanged;
+        Data.OnChange -= StateHasChanged;
     }
 }

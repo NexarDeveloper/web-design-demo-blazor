@@ -1,17 +1,18 @@
 ﻿@page "/Revisions"
 @inherits AbstractPage
+@using Data = ProjectRevisionsItem
 
-@if (ProjectRevisionsItem.Current is not null)
+@if (Data.Current is not null)
 {
-    <ItemPageHeader Text="Revisions" Item=@ProjectRevisionsItem.Current />
+    <ItemPageHeader Text="Revisions" Item=@Data.Current />
 
-    @if (ProjectRevisionsItem.Current.Revisions is null)
+    @if (Data.Current.Revisions is null)
     {
-        <MudProgressCircular Indeterminate=true />
+        <MudProgressLinear Indeterminate=true />
     }
-    else if (ProjectRevisionsItem.Current.Revisions.Count > 0)
+    else if (Data.Current.Revisions.Count > 0)
     {
-        <MudTable Items=@ProjectRevisionsItem.Current.Revisions>
+        <MudTable Items=@Data.Current.Revisions>
             <HeaderContent>
                 <MudTh>CreatedAt</MudTh>
                 <MudTh>Author</MudTh>
@@ -37,11 +38,11 @@
 @code {
     protected override void OnInitialized()
     {
-        ProjectRevisionsItem.OnChange += StateHasChanged;
+        Data.OnChange += StateHasChanged;
     }
 
     protected override void Disposing()
     {
-        ProjectRevisionsItem.OnChange -= StateHasChanged;
+        Data.OnChange -= StateHasChanged;
     }
 }

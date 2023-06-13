@@ -1,21 +1,22 @@
 ﻿@page "/User"
 @inherits AbstractPage
+@using Data = UserItem
 
-@if (UserItem.Current is not null)
+@if (Data.Current is not null)
 {
-    <ItemPageHeader Text="User" Item=@UserItem.Current />
+    <ItemPageHeader Text="User" Item=@Data.Current />
 
-    <TextFieldCopy Label="UserId" Text=@UserItem.Current.Tag.UserId />
+    <TextFieldCopy Label="UserId" Text=@Data.Current.Tag.UserId />
 
-    <TextField Label="UserName" Text=@UserItem.Current.Tag.UserName />
+    <TextField Label="UserName" Text=@Data.Current.Tag.UserName />
 
-    <TextField Label="Email" Text=@UserItem.Current.Tag.Email />
+    <TextField Label="Email" Text=@Data.Current.Tag.Email />
 
-    <TextField Label="Groups" Text=@UserItem.Current.Groups />
+    <TextField Label="Groups" Text=@Data.Current.Groups />
 
     <MudField Label="Picture" Variant=Variant.Outlined>
         <MudAvatar Square=true Style="height:128px; width:128px;">
-            <MudImage Src=@UserItem.Current.Tag.PictureUrl />
+            <MudImage Src=@Data.Current.Tag.PictureUrl />
         </MudAvatar>
     </MudField>
 
@@ -26,11 +27,11 @@
 @code {
     protected override void OnInitialized()
     {
-        UserItem.OnChange += StateHasChanged;
+        Data.OnChange += StateHasChanged;
     }
 
     protected override void Disposing()
     {
-        UserItem.OnChange -= StateHasChanged;
+        Data.OnChange -= StateHasChanged;
     }
 }
