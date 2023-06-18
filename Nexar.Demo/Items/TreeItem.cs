@@ -10,6 +10,8 @@ namespace Nexar.Demo;
 /// </summary>
 public abstract class TreeItem
 {
+    private Exception _error;
+
     /// <summary>
     /// The tree text.
     /// </summary>
@@ -44,6 +46,20 @@ public abstract class TreeItem
     /// Sets this item current and tells to navigate to the returned page.
     /// </summary>
     public virtual string SetCurrent() => null;
+
+    /// <summary>
+    /// An error during processing.
+    /// </summary>
+    public Exception Error
+    {
+        get => _error;
+        set
+        {
+            _error = value;
+            if (value is not null)
+                Console.WriteLine(value);
+        }
+    }
 }
 
 /// <summary>

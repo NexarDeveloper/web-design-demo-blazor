@@ -2,10 +2,10 @@
 @inherits AbstractPage
 @using Data = WorkspaceItem
 
+<ItemPageHeader Text="Workspace" Item=@Data.Current />
+
 @if (Data.Current is not null)
 {
-    <ItemPageHeader Text="Workspace" Item=@Data.Current />
-
     <TextFieldCopy Label="Id" Text=@Data.Current.Tag.Id />
 
     <TextFieldUrl Label="Url" Href=@Data.Current.Tag.Url />

@@ -1,6 +1,17 @@
 ﻿
 <MudText Typo="Typo.h4">@Text</MudText>
-<MudText Typo="Typo.subtitle1">@Item.Path</MudText>
+
+@if (Item is not null)
+{
+    <MudText Typo="Typo.subtitle1">@Item.Path</MudText>
+}
+
+@if (Item?.Error is not null)
+{
+    <MudAlert Severity="Severity.Error">
+        @(Item.Error.Message)
+    </MudAlert>
+}
 
 @code {
     [Parameter]

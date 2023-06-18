@@ -2,10 +2,7 @@
 @inherits AbstractPage
 @using Data = VariantBomItem
 
-@if (Data.Current is not null)
-{
-    <ItemPageHeader Text="BOM" Item=@Data.Current />
-}
+<ItemPageHeader Text="BOM" Item=@Data.Current />
 
 @if (Data.Current?.Tag is not null)
 {

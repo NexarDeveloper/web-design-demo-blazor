@@ -2,10 +2,10 @@
 @inherits AbstractPage
 @using Data = ThreadItem
 
+<ItemPageHeader Text="Thread" Item=@Data.Current />
+
 @if (Data.Current is not null)
 {
-    <ItemPageHeader Text="Thread" Item=@Data.Current />
-
     <TextFieldCopy Label="CommentThreadId" Text=@Data.Current.Tag.CommentThreadId />
 
     @if (Data.Current.Tag.OriginalStateScreenshotUrl is not null)

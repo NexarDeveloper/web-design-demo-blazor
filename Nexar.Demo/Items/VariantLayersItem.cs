@@ -38,10 +38,12 @@ public sealed class VariantLayersItem : LeafTreeItem
             res.AssertNoErrors();
 
             Tag = res.Data.DesProjectById.Design.Variants[0].Pcb.LayerStack;
+            if (Tag is null)
+                throw new Exception("Cannot get layers.");
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
+            Error = ex;
         }
 
         OnChange?.Invoke();

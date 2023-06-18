@@ -2,10 +2,10 @@
 @inherits AbstractPage
 @using Data = ComponentTemplatesItem
 
+<ItemPageHeader Text="Component Templates" Item=@Data.Current />
+
 @if (Data.Current is not null)
 {
-    <ItemPageHeader Text="Component Templates" Item=@Data.Current />
-
     @if (Data.Current.Templates is null)
     {
         <MudProgressLinear Indeterminate=true />

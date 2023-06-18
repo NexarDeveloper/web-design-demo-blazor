@@ -3,10 +3,7 @@
 @using Nexar.Client
 @using Data = VariantLayersItem
 
-@if (Data.Current is not null)
-{
-    <ItemPageHeader Text="Layers" Item=@Data.Current />
-}
+<ItemPageHeader Text="Layers" Item=@Data.Current />
 
 @if (Data.Current?.Tag is not null)
 {
@@ -45,7 +42,7 @@
     <br />
     <AlertGraphQL Files="Project.Variants.graphql Variant.Layers.graphql" />
 }
-else
+else if (Data.Current?.Error is null)
 {
     <MudProgressLinear Indeterminate=true />
 }

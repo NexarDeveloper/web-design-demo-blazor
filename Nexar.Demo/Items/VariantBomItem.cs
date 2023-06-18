@@ -41,7 +41,7 @@ public sealed class VariantBomItem : LeafTreeItem
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
+            Error = ex;
         }
 
         OnChange?.Invoke();

@@ -2,10 +2,10 @@
 @inherits AbstractPage
 @using Data = ReleaseVariantItem
 
+<ItemPageHeader Text="Release Variant" Item=@Data.Current />
+
 @if (Data.Current is not null)
 {
-    <ItemPageHeader Text="Release Variant" Item=@Data.Current />
-
     <TextField Label="Name" Text=@Data.Current.Tag.Name />
 
     <br />
