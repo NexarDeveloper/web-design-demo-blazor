@@ -1,5 +1,5 @@
 ﻿# Gets the project design variant layer stack information.
-query VariantLayerStack($projectId: ID!, $variantName: String!) {
+query VariantLayers($projectId: ID!, $variantName: String!) {
   desProjectById(id: $projectId) {
     design {
       variants(where: {name: {eq: $variantName}}) {

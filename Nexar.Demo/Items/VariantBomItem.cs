@@ -39,8 +39,9 @@ public sealed class VariantBomItem : LeafTreeItem
 
             Tag = res.Data.DesProjectById.Design.Variants[0].Bom;
         }
-        catch
+        catch (Exception ex)
         {
+            Console.WriteLine(ex.Message);
         }
 
         OnChange?.Invoke();

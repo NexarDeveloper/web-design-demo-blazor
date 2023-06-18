@@ -1,0 +1,27 @@
+﻿# Gets the project design variant design items.
+query VariantPcb($projectId: ID!, $variantName: String!, $limit: Int!) {
+  desProjectById(id: $projectId) {
+    design {
+      variants(where: {name: {eq: $variantName}}) {
+        pcb {
+          ...MyPcb
+        }
+      }
+    }
+  }
+}
+
+# This fragment becomes IMyPcb in C#.
+fragment MyPcb on DesPcb {
+  documentId
+  designItems(first: $limit) {
+    totalCount
+    nodes {
+      id
+      designator
+      component {
+        name
+      }
+    }
+  }
+}

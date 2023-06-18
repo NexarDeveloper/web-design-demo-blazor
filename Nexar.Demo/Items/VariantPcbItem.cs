@@ -1,23 +1,20 @@
 ﻿using MudBlazor;
 using Nexar.Client;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class VariantDesignItemsItem : LeafTreeItem
+public sealed class VariantPcbItem : LeafTreeItem
 {
     public const int ItemsLimit = 100;
 
-    public VariantDesignItemsItem(VariantItem parent) : base(parent)
+    public VariantPcbItem(VariantItem parent) : base(parent)
     {
     }
 
-    public IReadOnlyList<IMyDesignItem> Items { get; private set; }
-    public int TotalCount { get; private set; }
-
-    public override string Text => "Design Items";
+    public IMyPcb Tag { get; private set; }
+    public override string Text => "PCB";
     public override string Icon => Icons.Material.Filled.List;
     public new VariantItem Parent => (VariantItem)base.Parent;
 
@@ -29,27 +26,24 @@ public sealed class VariantDesignItemsItem : LeafTreeItem
             Current = this;
             OnChange?.Invoke();
         }
-        return "VariantDesignItems";
+        return "VariantPcb";
     }
 
     public static event Action OnChange;
-    public static VariantDesignItemsItem Current { get; private set; }
+    public static VariantPcbItem Current { get; private set; }
 
     async Task Fetch()
     {
         try
         {
-            var res = await Client.VariantDesignItems.ExecuteAsync(Parent.Parent.Parent.Tag.Id, Parent.Tag.Name, ItemsLimit);
+            var res = await Client.VariantPcb.ExecuteAsync(Parent.Parent.Parent.Tag.Id, Parent.Tag.Name, ItemsLimit);
             res.AssertNoErrors();
 
-            var items = res.Data.DesProjectById.Design.Variants[0].Pcb.DesignItems;
-            TotalCount = items.TotalCount;
-            Items = items.Nodes;
+            Tag = res.Data.DesProjectById.Design.Variants[0].Pcb;
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
-            Items = Array.Empty<IMyDesignItem>();
         }
 
         OnChange?.Invoke();

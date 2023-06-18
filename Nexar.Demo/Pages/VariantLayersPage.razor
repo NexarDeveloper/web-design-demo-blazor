@@ -1,11 +1,11 @@
-﻿@page "/VariantLayerStack"
+﻿@page "/VariantLayers"
 @inherits AbstractPage
 @using Nexar.Client
-@using Data = VariantLayerStackItem
+@using Data = VariantLayersItem
 
 @if (Data.Current is not null)
 {
-    <ItemPageHeader Text="Layer Stack" Item=@Data.Current />
+    <ItemPageHeader Text="Layers" Item=@Data.Current />
 }
 
 @if (Data.Current?.Tag is not null)
@@ -43,7 +43,7 @@
     }
 
     <br />
-    <AlertGraphQL Files="Project.Variants.graphql Variant.LayerStack.graphql" />
+    <AlertGraphQL Files="Project.Variants.graphql Variant.Layers.graphql" />
 }
 else
 {
