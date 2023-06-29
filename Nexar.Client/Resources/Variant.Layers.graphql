@@ -32,6 +32,5 @@ fragment MyStack on DesStack {
     layerType
     material
     thickness { x }
-    copperRatio
   }
 }
