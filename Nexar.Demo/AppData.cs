@@ -72,7 +72,11 @@ public static class AppData
     public static HashSet<TreeItem> TreeItems { get; private set; }
     public static void SetWorkspaces(IReadOnlyList<IMyWorkspace> source)
     {
-        TreeItems = new();
+        TreeItems = new()
+        {
+            new SharedWithMeItem(),
+        };
+
         foreach (var it in source)
             TreeItems.Add(new WorkspaceItem(it));
 

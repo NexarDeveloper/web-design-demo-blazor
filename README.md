@@ -16,7 +16,9 @@ It is:
 
 Covered Altium 365 data tree:
 
-- Workspaces
+- Shared with Me
+    - Projects
+- Workspace
     - Projects
         - Design
             - Variants

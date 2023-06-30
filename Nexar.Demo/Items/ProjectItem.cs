@@ -57,8 +57,9 @@ public sealed class ProjectItem : NodeTreeItem
 
             Parameters = res.Data.DesProjectById.Parameters;
         }
-        catch
+        catch (Exception ex)
         {
+            Error = ex;
             Revision = null;
             Parameters = Array.Empty<IMyProjectParameter>();
         }

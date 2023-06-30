@@ -35,7 +35,7 @@ public abstract class TreeItem
     /// <summary>
     /// Gets the client for fetching data.
     /// </summary>
-    public abstract NexarClient Client { get; }
+    public virtual NexarClient Client => NexarClientFactory.GetClient(AppData.ApiEndpoint);
 
     /// <summary>
     /// Gets child items on the first expanding.

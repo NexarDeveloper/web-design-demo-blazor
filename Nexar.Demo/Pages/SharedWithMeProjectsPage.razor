@@ -1,0 +1,89 @@
+﻿@page "/SharedWithMeProjects"
+@inherits AbstractPage
+@using Data = SharedWithMeProjectsItem
+
+<ItemPageHeader Text="Projects" Item=@Data.Current />
+
+<MudLink Href="https://365.altium.com/sharedwithme" Target="_blank">Open Shared with Me</MudLink>
+
+@if (Data.Current.Errors?.Count > 0)
+{
+    <MudExpansionPanel>
+        <TitleContent>
+            <MudAlert Severity="Severity.Error">
+                @(Data.Current.Errors?.Count) errors...
+            </MudAlert>
+        </TitleContent>
+        <ChildContent>
+            @foreach (var error in Data.Current.Errors)
+            {
+                <MudAlert Severity="Severity.Error">
+                    @error
+                </MudAlert>
+            }
+        </ChildContent>
+    </MudExpansionPanel>
+}
+
+@if (Data.Current.Projects is not null)
+{
+    <MudTable Items=@Data.Current.Projects Filter="FilterElement" Dense=true>
+        <ToolBarContent>
+            <MudSpacer />
+            <MudTextField @bind-Value="_filterString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh Style="width:1%"></MudTh>
+            <MudTh>Name</MudTh>
+            <MudTh>Description</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>
+                <MudButtonGroup>
+                    <MudIconButton Icon=@Icons.Material.Filled.ContentCopy
+                                   Title="Copy project ID"
+                                   OnClick=@(() => JS.InvokeVoidAsyncWithErrorHandling("navigator.clipboard.writeText", context.Id)) />
+                </MudButtonGroup>
+            </MudTd>
+            <MudTd DataLabel="Name">
+                <MudLink Href=@context.Url Target="_blank">@context.Name</MudLink>
+            </MudTd>
+            <MudTd DataLabel="Description">@context.Description</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+}
+
+@if (Data.Current.Projects is null && Data.Current.Errors is null)
+{
+    <MudProgressLinear Indeterminate=true />
+}
+else
+{
+    <br />
+    <AlertGraphQL Files="SharedWithMe.Projects.graphql" />
+}
+
+@code {
+    string _filterString = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        Data.OnChange += StateHasChanged;
+    }
+
+    protected override void Disposing()
+    {
+        Data.OnChange -= StateHasChanged;
+    }
+
+    bool FilterElement(Nexar.Client.IMySharedWithMeProject element)
+    {
+        return
+            string.IsNullOrWhiteSpace(_filterString) ||
+            element.Name.Contains(_filterString, StringComparison.OrdinalIgnoreCase) ||
+            element.Description.Contains(_filterString, StringComparison.OrdinalIgnoreCase);
+    }
+}

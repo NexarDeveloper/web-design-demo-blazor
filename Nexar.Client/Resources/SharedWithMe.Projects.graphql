@@ -1,0 +1,16 @@
+﻿# Gets the shared with me projects.
+query SharedWithMeProjects {
+  desSharedWithMe {
+    projects {
+      ...MySharedWithMeProject
+    }
+  }
+}
+
+# This fragment becomes IMySharedWithMeProject in C#.
+fragment MySharedWithMeProject on DesProject {
+  id
+  url
+  name
+  description
+}
