@@ -1186,9 +1186,39 @@ type DesSchematic {
 }
 
 type DesSharedWithMe {
-  projects: [DesProject!]!
+  projects("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesSharedWithMeProjectInfoFilterInput): DesSharedWithMeProjectInfoConnection
   manufacturePackages: [DesManufacturePackage!]!
-  commentThreads: [DesCommentThread!]!
+}
+
+type DesSharedWithMeProjectInfo {
+  "The project or null if its workspace is deleted. Avoid this field on getting many projects at once. Consider using `id` and `desProjectById`."
+  project: DesProject
+  "The project node ID. Use it for getting the project by `desProjectById`."
+  projectId: ID!
+  "The project name."
+  name: String!
+  "The project description."
+  description: String!
+}
+
+"A connection to a list of items."
+type DesSharedWithMeProjectInfoConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [DesSharedWithMeProjectInfoEdge!]
+  "A flattened list of the nodes."
+  nodes: [DesSharedWithMeProjectInfo!]
+  "Identifies the total count of items in the connection."
+  totalCount: Int!
+}
+
+"An edge in a connection."
+type DesSharedWithMeProjectInfoEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: DesSharedWithMeProjectInfo!
 }
 
 type DesSimulation {
@@ -1990,6 +2020,15 @@ input DesSchematicFilterInput {
   documentName: StringOperationFilterInput
   parentIds: ListStringOperationFilterInput
   units: IntOperationFilterInput
+}
+
+input DesSharedWithMeProjectInfoFilterInput {
+  and: [DesSharedWithMeProjectInfoFilterInput!]
+  or: [DesSharedWithMeProjectInfoFilterInput!]
+  "The project name."
+  name: StringOperationFilterInput
+  "The project description."
+  description: StringOperationFilterInput
 }
 
 input DesTerminateWorkflowsInput {

@@ -12,5 +12,6 @@ fragment MyProject on DesProject {
   id
   url
   name
+  description
   previewUrl
 }

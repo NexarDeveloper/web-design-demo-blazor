@@ -1,9 +1,19 @@
-﻿# Gets the shared with me projects.
+﻿# Gets shared with me project ids and names.
 query SharedWithMeProjects {
   desSharedWithMe {
-    projects {
-      ...MySharedWithMeProject
+    projects(first: 1000) {
+      nodes {
+        projectId
+        name
+      }
     }
+  }
+}
+
+# Gets the shared with me project by id.
+query SharedWithMeProject($id: ID!) {
+  desProjectById(id: $id) {
+    ...MySharedWithMeProject
   }
 }
 

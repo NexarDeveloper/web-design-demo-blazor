@@ -7,10 +7,9 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class SharedWithMeProjectsItem : LeafTreeItem
+public sealed class SharedWithMeProjectsItem : NodeTreeItem
 {
-    public IReadOnlyList<IMySharedWithMeProject> Projects { get; private set; }
-    public IReadOnlyList<string> Errors { get; private set; }
+    public HashSet<TreeItem> Items { get; private set; }
 
     public SharedWithMeProjectsItem(SharedWithMeItem parent) : base(parent)
     {
@@ -21,29 +20,24 @@ public sealed class SharedWithMeProjectsItem : LeafTreeItem
 
     public override string SetCurrent()
     {
-        if (Current != this)
-        {
-            _ = Fetch();
-            Current = this;
-            OnChange?.Invoke();
-        }
+        Current = this;
+        OnChange?.Invoke();
         return "SharedWithMeProjects";
     }
 
     public static event Action OnChange;
     public static SharedWithMeProjectsItem Current { get; private set; }
 
-    async Task Fetch()
+    public override async Task<HashSet<TreeItem>> ServerData()
     {
         var res = await Client.SharedWithMeProjects.ExecuteAsync();
+        res.AssertNoErrors();
 
-        Projects = res.Data?.DesSharedWithMe?.Projects?
-            .OrderBy(x => x.Name)
-            .ToList();
+        Items = res.Data.DesSharedWithMe.Projects.Nodes
+            .OrderBy(x => x.Name, StringComparer.OrdinalIgnoreCase)
+            .Select(x => (TreeItem)new SharedWithMeProjectItem(x.ProjectId, x.Name, this))
+            .ToHashSet();
 
-        if (res.Errors.Count > 0)
-            Errors = res.Errors.Select(x => x.Message).ToList();
-
-        OnChange?.Invoke();
+        return Items;
     }
 }

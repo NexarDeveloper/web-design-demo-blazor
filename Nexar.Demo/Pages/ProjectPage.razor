@@ -12,6 +12,8 @@
 
     <TextField Label="Name" Text=@Data.Current.Tag.Name />
 
+    <TextFieldText Label="Description" Text=@Data.Current.Tag.Description />
+
     <FieldImage Label="Preview" Src=@Data.Current.Tag.PreviewUrl />
 
     @if (Data.Current.Revision is null && Data.Current.Parameters is null)

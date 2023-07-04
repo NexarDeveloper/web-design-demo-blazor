@@ -1,0 +1,38 @@
+﻿@page "/SharedWithMeProject"
+@inherits AbstractPage
+@using Data = SharedWithMeProjectItem
+
+<ItemPageHeader Text="Project" Item=@Data.Current />
+
+@if (Data.Current?.Tag is not null)
+{
+    <TextFieldCopy Label="Id" Text=@Data.Current.Tag.Id />
+
+    <TextFieldUrl Label="Url" Href=@Data.Current.Tag.Url />
+
+    <TextField Label="Name" Text=@Data.Current.Tag.Name />
+
+    <TextFieldText Label="Description" Text=@Data.Current.Tag.Description />
+}
+
+@if (Data.Current?.Tag is null && Data.Current.Error is null)
+{
+    <MudProgressLinear Indeterminate=true />
+}
+else
+{
+    <br />
+    <AlertGraphQL Files="SharedWithMe.Projects.graphql" />
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        Data.OnChange += StateHasChanged;
+    }
+
+    protected override void Disposing()
+    {
+        Data.OnChange -= StateHasChanged;
+    }
+}
