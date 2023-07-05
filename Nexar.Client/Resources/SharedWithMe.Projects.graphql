@@ -23,4 +23,5 @@ fragment MySharedWithMeProject on DesProject {
   url
   name
   description
+  previewUrl
 }
