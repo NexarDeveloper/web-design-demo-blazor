@@ -19,7 +19,6 @@ query SharedWithMeProject($id: ID!) {
 
 # This fragment becomes IMySharedWithMeProject in C#.
 fragment MySharedWithMeProject on DesProject {
-  id
   url
   name
   description

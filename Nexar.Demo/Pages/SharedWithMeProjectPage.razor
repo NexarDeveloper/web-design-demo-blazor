@@ -4,10 +4,13 @@
 
 <ItemPageHeader Text="Project" Item=@Data.Current />
 
+@if (Data.Current is not null)
+{
+    <TextFieldCopy Label="Id" Text=@Data.Current.ProjectId />
+}
+
 @if (Data.Current?.Tag is not null)
 {
-    <TextFieldCopy Label="Id" Text=@Data.Current.Tag.Id />
-
     <TextFieldUrl Label="Url" Href=@Data.Current.Tag.Url />
 
     <TextField Label="Name" Text=@Data.Current.Tag.Name />

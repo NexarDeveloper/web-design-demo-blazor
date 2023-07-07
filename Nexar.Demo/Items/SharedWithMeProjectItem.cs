@@ -7,12 +7,12 @@ namespace Nexar.Demo;
 
 public sealed class SharedWithMeProjectItem : LeafTreeItem
 {
-    readonly string _projectId;
+    public string ProjectId { get; }
     readonly string _projectName;
 
     public SharedWithMeProjectItem(string projectId, string projectName, SharedWithMeProjectsItem parent) : base(parent)
     {
-        _projectId = projectId;
+        ProjectId = projectId;
         _projectName = projectName;
     }
 
@@ -38,7 +38,7 @@ public sealed class SharedWithMeProjectItem : LeafTreeItem
     {
         try
         {
-            var res = await Client.SharedWithMeProject.ExecuteAsync(_projectId);
+            var res = await Client.SharedWithMeProject.ExecuteAsync(ProjectId);
             res.AssertNoErrors();
 
             Tag = res.Data.DesProjectById;
