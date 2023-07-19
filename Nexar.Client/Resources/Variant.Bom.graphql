@@ -18,6 +18,7 @@ fragment MyBom on DesBom {
     quantity
     component {
       name
+      isManaged
     }
   }
 }

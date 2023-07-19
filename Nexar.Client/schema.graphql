@@ -87,6 +87,8 @@ type Query {
   supCiivaIdFromPartId(partId: String!): String
   "Nexar supply part data for internal use only."
   supPartExtrasByPartId(partId: String!): SupPartExtras
+  "Nexar supply part data for internal use only."
+  supPartExtrasByPartIds(partIds: [String!]!): [SupUnionPayload!]!
   "Get all attributes"
   supAttributes: [SupAttribute!]!
   "Get manufacturer companies"
@@ -265,7 +267,7 @@ type DesBom implements Node {
 "A Bill of Materials (BOM) item contains usage information for a unique component on the PCB."
 type DesBomItem {
   "The detailed component information for this BOM item."
-  component: DesComponent
+  component: DesComponent!
   "The total number of times this item is used."
   quantity: Int!
   "The list of each instance of this BOM item."
@@ -390,13 +392,13 @@ type DesCommentThread {
 
 "A component contains the parametric details of a PCB part."
 type DesComponent implements Node {
-  "The node identifier for this component (used by `desComponentById`)."
+  "The node ID used by `desComponentById`. Unmanaged components may be not found."
   id: ID!
   "The component folder."
   folder: DesFolder
   "The list of the part choices associated with this component."
   manufacturerParts: [DesManufacturerPart!]!
-  "More component data, relatively expensive, recommended for individual components with `desComponentById`."
+  "More component data, consider using only with `desComponentById`."
   details: DesComponentDetails!
   model3D: DesModel3D
   "The library label for this component."
@@ -405,6 +407,8 @@ type DesComponent implements Node {
   comment: String!
   "The summary of function or other performance details for this component."
   description: String!
+  "Gets true if the component is managed."
+  isManaged: Boolean!
   "The component revision."
   revision: DesRevision!
 }
@@ -422,13 +426,13 @@ type DesComponentConnection {
 }
 
 type DesComponentDetails {
-  "The list of the parameters describing this component."
+  "The list of parameters. Parameter types are unknown (`NONE`) for unmanaged components."
   parameters: [DesComponentParameter!]!
-  "The list of the symbols for this component."
+  "The list of component symbols."
   symbols: [DesSymbol!]!
-  "The list of the footprints for this component."
+  "The list of component footprints."
   footprints: [DesFootprint!]!
-  "The list of the simuation models for this component."
+  "The list of component simuation models."
   simulations: [DesSimulation!]!
 }
 
@@ -1133,10 +1137,10 @@ type DesReuseBlockRevision implements Node {
 
 "Revision details ID for later use or full details."
 type DesRevision {
-  "The full revision details."
-  details: DesRevisionDetails!
-  "The revision details node ID for later use."
+  "The revision details ID for `desRevisionDetailsById`. The instance may not exist for unmanaged components."
   id: ID!
+  "The revision details or null for unmanaged components."
+  details: DesRevisionDetails
 }
 
 "Revision details."
@@ -1608,6 +1612,10 @@ type PageInfo {
   endCursor: String
 }
 
+type SupErrorPayload {
+  message: String!
+}
+
 "Nexar supply part data for internal use only."
 type SupPartExtras {
   alternatives(first: Int! = 100): [SupPartExtras!]!
@@ -1633,6 +1641,8 @@ type SupPartExtrasTechnicalDetail {
 }
 
 union DesUnionPayload = DesComponent | DesErrorPayload
+
+union SupUnionPayload = SupErrorPayload | SupPartExtras
 
 input BooleanOperationFilterInput {
   eq: Boolean
@@ -1677,6 +1687,8 @@ input DesComponentFilterInput {
   comment: StringOperationFilterInput
   "The summary of function or other performance details for this component."
   description: StringOperationFilterInput
+  "Gets true if the component is managed."
+  isManaged: BooleanOperationFilterInput
   "The component revision."
   revision: DesRevisionFilterInput
 }
@@ -2001,8 +2013,6 @@ input DesRemoveUsersFromGroupInput {
 input DesRevisionFilterInput {
   and: [DesRevisionFilterInput!]
   or: [DesRevisionFilterInput!]
-  "The revision details node ID for later use."
-  id: IdOperationFilterInput
 }
 
 input DesRevisionParameterInput {
@@ -2212,13 +2222,6 @@ input DesWorkspaceFilterInput {
   description: StringOperationFilterInput
   "Tells if the workspace is the current user default."
   isDefault: BooleanOperationFilterInput
-}
-
-input IdOperationFilterInput {
-  eq: ID
-  neq: ID
-  in: [ID]
-  nin: [ID]
 }
 
 input IntOperationFilterInput {
