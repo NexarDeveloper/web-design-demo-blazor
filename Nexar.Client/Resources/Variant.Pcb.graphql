@@ -21,6 +21,7 @@ fragment MyPcb on DesPcb {
       designator
       component {
         name
+        isManaged
       }
     }
   }

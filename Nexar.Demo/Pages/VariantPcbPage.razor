@@ -21,11 +21,13 @@
     <MudTable Items=@Data.Current.Tag.DesignItems.Nodes Dense=true>
         <HeaderContent>
             <MudTh>Component.Name</MudTh>
+            <MudTh>Component.IsManaged</MudTh>
             <MudTh>Designator</MudTh>
         </HeaderContent>
         <RowTemplate>
-            <MudTd DataLabel="Value">@context.Component?.Name</MudTd>
-            <MudTd DataLabel="Name">@context.Designator</MudTd>
+            <MudTd DataLabel="Name">@context.Component?.Name</MudTd>
+            <MudTd DataLabel="IsManaged">@context.Component?.IsManaged</MudTd>
+            <MudTd DataLabel="Designator">@context.Designator</MudTd>
         </RowTemplate>
         <PagerContent>
             <MudTablePager />
