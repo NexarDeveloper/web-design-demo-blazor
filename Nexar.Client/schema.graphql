@@ -45,8 +45,8 @@ type Query {
   desProjects("The web address of a workspace." workspaceUrl: String! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesProjectFilterInput): DesProjectConnection
   "Search a specific project by its unique identifier."
   desProjectById("The node identifier for a project." id: ID!): DesProject
-  "Gets the unique identifier for a project from its internal identifier."
-  desProjectIdFromAfsId(workspaceUrl: String! afsId: String! "If the project is known to be shared or internal, this parameter can be provided to make the query faster." isSharedProject: Boolean): DesProjectIdPayload!
+  "Gets the project node ID from its internal ID."
+  desProjectIdFromAfsId(workspaceUrl: String! afsId: String! "True for shared projects." isSharedProject: Boolean): DesProjectIdPayload!
   "Gets the specified project export job."
   desProjectExportJob(projectExportJobId: String!): DesProjectExportJob!
   desDesignItemById(id: ID!): DesDesignItem
@@ -76,7 +76,7 @@ type Query {
   "*** PROTOTYPE, SUBJECT TO CHANGE ***"
   desProjectCollaborationSimulationRevisions(projectId: ID! domainName: String! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesCollaborationSimulationRevisionConnection
   "*** PROTOTYPE, SUBJECT TO CHANGE ***"
-  desProjectCollaborationSimulationLatestRevision(projectId: ID! domainName: String! projectTypeName: String!): DesCollaborationSimulationRevision!
+  desProjectCollaborationSimulationLatestRevision(projectId: ID! domainName: String! projectTypeName: String!): DesCollaborationSimulationRevision
   desSharedWithMe: DesSharedWithMe!
   supOctopartIdFromCiivaId(workspaceUrl: String! ciivaId: String!): String @deprecated(reason: "Use `supPartIdFromCiivaId`.")
   "Nexar infrastructure, subject to change."
@@ -912,6 +912,8 @@ type DesPcbAssembly {
   pickAndPlace: DesPickAndPlace!
   assemblyDrawings: DesAssemblyDrawings!
   downloadUrl: String!
+  version: String!
+  lifeCycleStateName: String!
 }
 
 type DesPcbFabrication {
@@ -923,6 +925,8 @@ type DesPcbFabrication {
   ncDrill: DesNcDrill!
   testPoints: DesTestPoints!
   downloadUrl: String!
+  version: String!
+  lifeCycleStateName: String!
 }
 
 type DesPickAndPlace {
@@ -1155,6 +1159,29 @@ type DesRevisionDetails {
   comment: String
 }
 
+type DesRevisionNameLevel {
+  "The `DesUser` this revision name level was created by."
+  createdBy: DesUser!
+  "The `DesUser` this revision name level was last updated by."
+  updatedBy: DesUser!
+  "The reference ID for this revision name level."
+  revisionNameLevelId: String!
+  "The name of this revision name level."
+  name: String!
+  "The `DateTime` this revision name level was created."
+  createdAt: DateTime!
+  "The `DateTime` this revision name level was last updated at."
+  updatedAt: DateTime!
+  "The minimum width of this revision name level."
+  minimumWidth: Int!
+  "The level index of this revision name level."
+  levelIndex: Int!
+  "The level separator of this revision name level."
+  levelSeparator: String!
+  "The level sequence of this revision name level."
+  levelSequence: String!
+}
+
 "Revision naming scheme details obtained by `desLibrary\/revisionNamingSchemes`."
 type DesRevisionNamingScheme {
   "The `DesUser` this revision naming scheme was created by."
@@ -1171,6 +1198,10 @@ type DesRevisionNamingScheme {
   createdAt: DateTime!
   "The `DateTime` this revision naming scheme was last updated at."
   updatedAt: DateTime!
+  "The `DesRevisionNameLevel` list for this revision naming scheme."
+  levels: [DesRevisionNameLevel!]!
+  "The revision separator of this revision naming scheme."
+  itemRevisionSeparator: String!
 }
 
 "A schematic contains the design parts and logical connections."
@@ -2212,8 +2243,6 @@ input DesWorkflowVariableInput {
 input DesWorkspaceFilterInput {
   and: [DesWorkspaceFilterInput!]
   or: [DesWorkspaceFilterInput!]
-  "The node identifier for the workspace (used by `DesWorkspaceById`)."
-  id: StringOperationFilterInput
   "The descriptive label for this workspace."
   name: StringOperationFilterInput
   "The web address of this workspace."
@@ -2338,6 +2367,8 @@ enum DesContentTypeKind {
   HARNESS_CONNECTIVITY
   FABRICATION_FILE
   ORCAD_PROJECT
+  HARNESS_LAYOUT_TEMPLATE
+  HARNESS_WIRING_TEMPLATE
 }
 
 enum DesDocumentType {

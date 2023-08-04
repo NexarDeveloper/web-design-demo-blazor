@@ -9,9 +9,19 @@
     <TextField Label="Name" Text=@Data.Current.Tag.Name />
 
     <br />
+    <MudText Typo=Typo.h6>PCB Assembly</MudText>
+    <TextField Label="Version" Text=@Data.Current.Tag.PcbAssembly.Version />
+    <TextField Label="LifeCycleStateName" Text=@Data.Current.Tag.PcbAssembly.LifeCycleStateName />
+
+    <br />
+    <MudText Typo=Typo.h6>PCB Fabrication</MudText>
+    <TextField Label="Version" Text=@Data.Current.Tag.PcbFabrication.Version />
+    <TextField Label="LifeCycleStateName" Text=@Data.Current.Tag.PcbFabrication.LifeCycleStateName />
+
+    <br />
     <MudTable Items=@Downloads() Dense=true>
         <ToolBarContent>
-            <MudText Typo=Typo.h6>PCB Fabrication</MudText>
+            <MudText Typo=Typo.h6>Downloads</MudText>
         </ToolBarContent>
         <HeaderContent>
             <MudTh>Package</MudTh>
@@ -42,10 +52,12 @@
 
     (string, string, string)[] Downloads()
     {
+        var assembly = Data.Current.Tag.PcbAssembly;
         var fabrication = Data.Current.Tag.PcbFabrication;
         return new (string, string, string)[]
         {
-            ("Full", fabrication.PackageName, fabrication.DownloadUrl),
+            ("Assembly", assembly.PackageName, assembly.DownloadUrl),
+            ("Fabrication", fabrication.PackageName, fabrication.DownloadUrl),
             ("ODB", fabrication.Odb.PackageName, fabrication.Odb.DownloadUrl),
             ("IPC2581", fabrication.Ipc2581.PackageName, fabrication.Ipc2581.DownloadUrl),
             ("Gerber", fabrication.Gerber.PackageName, fabrication.Gerber.DownloadUrl),
