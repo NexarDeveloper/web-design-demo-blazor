@@ -1,0 +1,27 @@
+﻿@page "/Schematic"
+@inherits AbstractPage
+@using Data = SchematicItem
+
+<ItemPageHeader Text="Schematic" Item=@Data.Current />
+
+@if (Data.Current is not null)
+{
+    <TextFieldCopy Label="Id" Text=@Data.Current.Tag.DocumentId />
+
+    <TextField Label="Name" Text=@Data.Current.Tag.DocumentName />
+
+    <br />
+    <AlertGraphQL Files="Project.Variants.graphql Variant.Schematics.graphql" />
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        Data.OnChange += StateHasChanged;
+    }
+
+    protected override void Disposing()
+    {
+        Data.OnChange -= StateHasChanged;
+    }
+}

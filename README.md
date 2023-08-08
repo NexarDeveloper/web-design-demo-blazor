@@ -25,6 +25,7 @@ Covered Altium 365 data tree:
                 - BOM
                 - PCB
                 - Layers
+                - Schematics
         - Releases
             - Variants
         - Comments

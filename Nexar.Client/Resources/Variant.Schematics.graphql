@@ -1,0 +1,18 @@
+﻿# Gets the project design variant scgematics.
+query VariantSchematics($projectId: ID!, $variantName: String!) {
+  desProjectById(id: $projectId) {
+    design {
+      variants(where: {name: {eq: $variantName}}) {
+        schematics {
+          ...MySchematic
+        }
+      }
+    }
+  }
+}
+
+# This fragment becomes IMySchematic in C#.
+fragment MySchematic on DesSchematic {
+  documentId
+  documentName
+}

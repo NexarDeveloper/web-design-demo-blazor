@@ -24,6 +24,7 @@ public sealed class VariantItem : NodeTreeItem
             new VariantBomItem(this),
             new VariantPcbItem(this),
             new VariantLayersItem(this),
+            new VariantSchematicsItem(this),
         });
     }
 }
