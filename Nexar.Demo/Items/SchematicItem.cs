@@ -6,6 +6,8 @@ namespace Nexar.Demo;
 
 public sealed class SchematicItem : LeafTreeItem
 {
+    public const int ItemsLimit = 100;
+
     public SchematicItem(IMySchematic tag, VariantSchematicsItem parent) : base(parent)
     {
         Tag = tag;

@@ -1,5 +1,5 @@
 ﻿# Gets the project design variant scgematics.
-query VariantSchematics($projectId: ID!, $variantName: String!) {
+query VariantSchematics($projectId: ID!, $variantName: String!, $limit: Int!) {
   desProjectById(id: $projectId) {
     design {
       variants(where: {name: {eq: $variantName}}) {
@@ -15,4 +15,15 @@ query VariantSchematics($projectId: ID!, $variantName: String!) {
 fragment MySchematic on DesSchematic {
   documentId
   documentName
+  designItems(first: $limit) {
+    totalCount
+    nodes {
+      id
+      designator
+      component {
+        name
+        isManaged
+      }
+    }
+  }
 }

@@ -20,7 +20,7 @@ public sealed class VariantSchematicsItem : NodeTreeItem
 
     public override async Task<HashSet<TreeItem>> ServerData()
     {
-        var res = await Client.VariantSchematics.ExecuteAsync(_parent.Parent.Parent.Tag.Id, _parent.Tag.Name);
+        var res = await Client.VariantSchematics.ExecuteAsync(_parent.Parent.Parent.Tag.Id, _parent.Tag.Name, SchematicItem.ItemsLimit);
         res.AssertNoErrors();
 
         return res.Data.DesProjectById.Design.Variants[0].Schematics

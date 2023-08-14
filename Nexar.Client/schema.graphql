@@ -1208,16 +1208,12 @@ type DesRevisionNamingScheme {
 type DesSchematic {
   "The list of all part instances used in this schematic grouped into pages."
   designItems("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesDesignItemConnection
-  "The list of all logical part connections in this schematic."
-  nets("An optional array of names to search." names: [String!]): [DesNet!]!
   "The list of all comment threads related to this schematic."
   commentThreads: [DesCommentThread!]!
   "The reference identifier for this schematic."
   documentId: String!
   "The document file name."
   documentName: String!
-  parentIds: [String!]!
-  units: Int!
 }
 
 type DesSharedWithMe {
@@ -2029,8 +2025,6 @@ input DesReleaseVariantFilterInput {
   or: [DesReleaseVariantFilterInput!]
   "The descriptive label for this design variant."
   name: StringOperationFilterInput
-  "The list of schematic documents for this design variant."
-  schematics: ListFilterInputTypeOfDesSchematicFilterInput
 }
 
 input DesRemoveUsersFromGroupInput {
@@ -2049,18 +2043,6 @@ input DesRevisionFilterInput {
 input DesRevisionParameterInput {
   name: String!
   value: String!
-}
-
-"A schematic contains the design parts and logical connections."
-input DesSchematicFilterInput {
-  and: [DesSchematicFilterInput!]
-  or: [DesSchematicFilterInput!]
-  "The reference identifier for this schematic."
-  documentId: StringOperationFilterInput
-  "The document file name."
-  documentName: StringOperationFilterInput
-  parentIds: ListStringOperationFilterInput
-  units: IntOperationFilterInput
 }
 
 input DesSharedWithMeProjectInfoFilterInput {
@@ -2181,8 +2163,6 @@ input DesWipVariantFilterInput {
   or: [DesWipVariantFilterInput!]
   "The descriptive label for this design variant."
   name: StringOperationFilterInput
-  "The list of schematic documents for this design variant."
-  schematics: ListFilterInputTypeOfDesSchematicFilterInput
 }
 
 input DesWorkflowAttachmentVariableInput {
@@ -2253,39 +2233,10 @@ input DesWorkspaceFilterInput {
   isDefault: BooleanOperationFilterInput
 }
 
-input IntOperationFilterInput {
-  eq: Int
-  neq: Int
-  in: [Int]
-  nin: [Int]
-  gt: Int
-  ngt: Int
-  gte: Int
-  ngte: Int
-  lt: Int
-  nlt: Int
-  lte: Int
-  nlte: Int
-}
-
 input ListFilterInputTypeOfDesDesignItemParameterFilterInput {
   all: DesDesignItemParameterFilterInput
   none: DesDesignItemParameterFilterInput
   some: DesDesignItemParameterFilterInput
-  any: Boolean
-}
-
-input ListFilterInputTypeOfDesSchematicFilterInput {
-  all: DesSchematicFilterInput
-  none: DesSchematicFilterInput
-  some: DesSchematicFilterInput
-  any: Boolean
-}
-
-input ListStringOperationFilterInput {
-  all: StringOperationFilterInput
-  none: StringOperationFilterInput
-  some: StringOperationFilterInput
   any: Boolean
 }
 
@@ -2975,6 +2926,8 @@ input SupApiCredentials {
   username: String
   "Authentication details. `username` and `password` should be given together when an API requires them."
   password: String
+  "Authentication details. `apiKey` should be given when an API requires it."
+  apiKey: String
 }
 
 input SupPartMatchOptions {
@@ -4275,6 +4228,8 @@ directive @computed("Specifies the fields on which a computed field is dependent
 
 "Annotates the original name of a type."
 directive @source("The original name of the annotated type." name: String! "The name of the schema to which this type belongs to." schema: String!) repeatable on OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
+
+directive @Binding(constraint: String!) on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
 
 directive @BlockAll(roles: [SupRole!]!) on FIELD_DEFINITION
 
