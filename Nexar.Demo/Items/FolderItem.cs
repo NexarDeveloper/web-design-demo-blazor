@@ -11,6 +11,8 @@ public sealed class FolderItem : NodeTreeItem
 {
     readonly FolderTreeNode _node;
 
+    public IMyFolderExtras Extras { get; private set; }
+
     public FolderItem(NodeTreeItem parent, FolderTreeNode node) : base(parent)
     {
         _node = node;
@@ -33,11 +35,34 @@ public sealed class FolderItem : NodeTreeItem
 
     public override string SetCurrent()
     {
-        Current = this;
-        OnChange?.Invoke();
+        if (Current != this)
+        {
+            _ = Fetch();
+            Current = this;
+            OnChange?.Invoke();
+        }
         return "Folder";
     }
 
     public static event Action OnChange;
     public static FolderItem Current { get; private set; }
+
+    async Task Fetch()
+    {
+        try
+        {
+            var res = await Client.FolderExtras.ExecuteAsync(Tag.Id);
+            res.AssertNoErrors();
+
+            Extras = res.Data.Node as IMyFolderExtras
+                ?? throw new Exception("Cannot get folder extras.");
+        }
+        catch (Exception ex)
+        {
+            Error = ex;
+            Extras = null;
+        }
+
+        OnChange?.Invoke();
+    }
 }

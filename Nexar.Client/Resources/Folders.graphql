@@ -13,6 +13,8 @@ fragment MyFolder on DesFolder {
   name
   path
   description
+  folderType
+  itemNamingSchemeTemplate
   parent {
     id
   }

@@ -1,0 +1,22 @@
+﻿# Gets more details for the specified folder.
+query FolderExtras($folderId: ID!) {
+  node(id: $folderId) {
+    ...MyFolderExtras
+  }
+}
+
+# This fragment becomes IMyFolderExtras in C#.
+fragment MyFolderExtras on DesFolder {
+  folderPermissions {
+    ...MyFolderPermission
+  }
+}
+
+# This fragment becomes IMyFolderPermissions in C#.
+fragment MyFolderPermission on DesFolderPermission {
+  name
+  canEdit
+  group {
+    name
+  }
+}

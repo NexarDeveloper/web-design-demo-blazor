@@ -154,6 +154,8 @@ type Mutation {
   desReleaseComponent(input: DesReleaseComponentInput!): DesReleaseComponentPayload!
   "Creates and releases the specified component template."
   desReleaseComponentTemplate(input: DesReleaseComponentTemplateInput!): DesReleaseComponentTemplatePayload!
+  "Removes part choices of the specified component."
+  desRemoveComponentPartChoices(input: DesRemoveComponentPartChoicesInput!): DesRemoveComponentPartChoicesPayload!
   "Updates the specified component template."
   desUpdateComponentTemplate(input: DesUpdateComponentTemplateInput!): DesUpdateComponentTemplatePayload!
   "Updates parameters for the specified component (creates a new revision)."
@@ -643,6 +645,26 @@ type DesFolder implements Node {
   path: String!
   description: String!
   parent: DesFolder
+  "The `DesUser` this folder was created by."
+  createdBy: DesUser!
+  "The `DesUser` this folder was last updated by."
+  updatedBy: DesUser!
+  itemNamingSchemeTemplate: String
+  folderPermissions: [DesFolderPermission!]!
+  "The `DateTime` this folder was created."
+  createdAt: DateTime!
+  "The `DateTime` this folder was last updated at."
+  updatedAt: DateTime!
+  folderType: DesFolderType!
+}
+
+type DesFolderPermission {
+  "Determines whether this folder share has write permissions on the associated `DesFolder`."
+  canEdit: Boolean!
+  "The `DesUserGroup` this folder share is associated with."
+  group: DesUserGroup
+  "The name of this folder share."
+  name: String!
 }
 
 type DesFootprint {
@@ -732,6 +754,9 @@ type DesLifeCycleDefinition {
   updatedAt: DateTime!
   "The `DesLifeCycleStage` list for this lifecycle definition."
   stages: [DesLifeCycleStage]!
+  lifeCycleManagementType: DesLifeCycleManagementType!
+  "Tells if this lifecycle definition is automatically assigned the first `DesLifeCycleState` when a revision is released."
+  isRevisionSchemeAssigned: Boolean!
 }
 
 type DesLifeCycleStage {
@@ -1093,7 +1118,11 @@ type DesReleaseVariant {
   "The descriptive label for this design variant."
   name: String!
   "The list of schematic documents for this design variant."
-  schematics: [DesSchematic!]!
+  schematics(where: DesSchematicFilterInput): [DesSchematic!]!
+}
+
+type DesRemoveComponentPartChoicesPayload {
+  errors: [DesPayloadError!]!
 }
 
 type DesRemoveUsersFromGroupPayload {
@@ -1207,7 +1236,7 @@ type DesRevisionNamingScheme {
 "A schematic contains the design parts and logical connections."
 type DesSchematic {
   "The list of all part instances used in this schematic grouped into pages."
-  designItems("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesDesignItemConnection
+  designItems("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesDesignItemFilterInput): DesDesignItemConnection
   "The list of all comment threads related to this schematic."
   commentThreads: [DesCommentThread!]!
   "The reference identifier for this schematic."
@@ -1532,7 +1561,7 @@ type DesWipVariant {
   "The descriptive label for this design variant."
   name: String!
   "The list of schematic documents for this design variant."
-  schematics: [DesSchematic!]!
+  schematics(where: DesSchematicFilterInput): [DesSchematic!]!
 }
 
 "The most recent version of a design."
@@ -1894,6 +1923,11 @@ input DesOnCommentUpdatedInput {
   token: String!
 }
 
+input DesPartChoiceInput {
+  companyName: String!
+  partNumber: String!
+}
+
 input DesPosition2DInput {
   x: Int!
   y: Int!
@@ -2027,6 +2061,11 @@ input DesReleaseVariantFilterInput {
   name: StringOperationFilterInput
 }
 
+input DesRemoveComponentPartChoicesInput {
+  componentId: ID!
+  manufacturerParts: [DesPartChoiceInput!]
+}
+
 input DesRemoveUsersFromGroupInput {
   "The group node ID."
   id: ID!
@@ -2043,6 +2082,16 @@ input DesRevisionFilterInput {
 input DesRevisionParameterInput {
   name: String!
   value: String!
+}
+
+"A schematic contains the design parts and logical connections."
+input DesSchematicFilterInput {
+  and: [DesSchematicFilterInput!]
+  or: [DesSchematicFilterInput!]
+  "The reference identifier for this schematic."
+  documentId: StringOperationFilterInput
+  "The document file name."
+  documentName: StringOperationFilterInput
 }
 
 input DesSharedWithMeProjectInfoFilterInput {
@@ -2327,6 +2376,54 @@ enum DesDocumentType {
   PCB
 }
 
+enum DesFolderType {
+  GENERIC_FOLDER
+  ALTIUM_DESIGNER_PLUGIN_ZONE
+  COMPONENT_LIBRARY
+  COMPONENT_MANAGEMENT_ZONE
+  DESIGN_CONTENT_MANAGEMENT_ZONE
+  OUTPUTJOBS_CATALOG
+  DESIGN_TEMPLATES_CATALOG
+  MORFIK_PACKAGE_ZONE
+  PART_CHOICE_LIST
+  PCB_COMPONENT_LIBRARY
+  PCB3D_MODEL_LIBRARY
+  DESIGN_REUSE_BLOCKS_CATALOG
+  SCHEMATIC_SNIPPETS_CATALOG
+  PCB_SNIPPETS_CATALOG
+  PRODUCTION_RELEASE_ZONE
+  SCHEMATIC_SHEETS_CATALOG
+  SCHEMATIC_SYMBOL_LIBRARY
+  SCHEMATIC_TEMPLATES_CATALOG
+  SIGNAL_INTEGRITY_MODELS_LIBRARY
+  SIMULATION_MODELS_LIBRARY
+  WEB_CONTENT_LIBRARY
+  WEB_APPLICATION_DEPLOYMENT_ZONE
+  MORFIK_PACKAGE_CATALOG
+  MORFIK_APP_CATALOG
+  MORFIK_APP_SET_CATALOG
+  DATA_CLASS_CATALOG
+  DATA_CLASS_ZONE
+  DEVICE_CLASS_CATALOG
+  DEVICE_CLASS_ZONE
+  TEXT_DOCUMENT_LIBRARY
+  PREFERENCES_CATALOG
+  CONTENT_CART
+  LIBRARY3_D
+  SCRIPT_CATALOG
+  PROJECT_CATALOG
+  PROJECT
+  COMPONENT_TEMPLATES_CATALOG
+  BINARY_CATALOG
+  LAYER_STACK_CATALOG
+  PROJECT_TEMPLATE_CATALOG
+  BOM_TEMPLATE_CATALOG
+  DATASHEET_CATALOG
+  DRAFTSMAN_CATALOG
+  SHARED_FOLDER
+  MANAGED_BOM_CATALOG
+}
+
 enum DesJobStatus {
   PENDING
   PROCESSING
@@ -2357,6 +2454,11 @@ enum DesLayerType {
   PE_LAYER
   CONDUCTIVE
   NON_CONDUCTIVE
+}
+
+enum DesLifeCycleManagementType {
+  SIMPLE
+  STRUCTURED
 }
 
 enum DesPadType {
