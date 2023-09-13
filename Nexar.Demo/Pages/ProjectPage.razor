@@ -4,51 +4,52 @@
 
 <ItemPageHeader Text="Project" Item=@Data.Current />
 
-@if (Data.Current is not null)
+@if (Data.Current is null)
 {
-    <TextFieldCopy Label="Id" Text=@Data.Current.Tag.Id />
-
-    <TextFieldUrl Label="Url" Href=@Data.Current.Tag.Url />
-
-    <TextField Label="Name" Text=@Data.Current.Tag.Name />
-
-    <TextFieldText Label="Description" Text=@Data.Current.Tag.Description />
-
-    <FieldImage Label="Preview" Src=@Data.Current.Tag.PreviewUrl />
-
-    @if (Data.Current.Revision is null && Data.Current.Parameters is null)
-    {
-        <MudProgressLinear Indeterminate=true />
-    }
-    else
-    {
-        @if (Data.Current.Revision is not null)
-        {
-            <TextField Label="LatestRevision (CreatedAt / Author / Message / RevisionId)" Text=@Revision(Data.Current) />
-        }
-
-        @if (Data.Current.Parameters is not null)
-        {
-            <br />
-            <MudTable Items=@Data.Current.Parameters Dense=true>
-                <ToolBarContent>
-                    <MudText Typo=Typo.h6>Parameters</MudText>
-                </ToolBarContent>
-                <HeaderContent>
-                    <MudTh>Name</MudTh>
-                    <MudTh>Value</MudTh>
-                </HeaderContent>
-                <RowTemplate>
-                    <MudTd DataLabel="Name">@context.Name</MudTd>
-                    <MudTd DataLabel="Value">@context.Value</MudTd>
-                </RowTemplate>
-            </MudTable>
-        }
-
-        <br />
-        <AlertGraphQL Files="Projects.graphql Project.Extras.graphql" />
-    }
+    return;
 }
+
+<TextFieldCopy Label="Id" Text=@Data.Current.Tag.Id />
+
+<TextFieldUrl Label="Url" Href=@Data.Current.Tag.Url />
+
+<TextField Label="Name" Text=@Data.Current.Tag.Name />
+
+<TextFieldText Label="Description" Text=@Data.Current.Tag.Description />
+
+<FieldImage Label="Preview" Src=@Data.Current.Tag.PreviewUrl />
+
+@if (Data.Current.IsUpdating)
+{
+    <MudProgressLinear Indeterminate=true />
+    return;
+}
+
+@if (Data.Current.Revision is not null)
+{
+    <TextField Label="LatestRevision (CreatedAt / Author / Message / RevisionId)" Text=@Revision(Data.Current) />
+}
+
+@if (Data.Current.Parameters is not null)
+{
+    <br />
+    <MudTable Items=@Data.Current.Parameters Dense=true>
+        <ToolBarContent>
+            <MudText Typo=Typo.h6>Parameters</MudText>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Name</MudTh>
+            <MudTh>Value</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Name">@context.Name</MudTd>
+            <MudTd DataLabel="Value">@context.Value</MudTd>
+        </RowTemplate>
+    </MudTable>
+}
+
+<br />
+<AlertGraphQL Files="Projects.graphql Project.Extras.graphql" />
 
 @code {
     protected override void OnInitialized()

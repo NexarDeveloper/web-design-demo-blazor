@@ -20,9 +20,8 @@ public sealed class VariantBomItem : LeafTreeItem
     {
         if (Current != this)
         {
-            _ = Fetch();
             Current = this;
-            OnChange?.Invoke();
+            Update(() => OnChange?.Invoke());
         }
         return "VariantBom";
     }
@@ -30,20 +29,11 @@ public sealed class VariantBomItem : LeafTreeItem
     public static event Action OnChange;
     public static VariantBomItem Current { get; private set; }
 
-    async Task Fetch()
+    protected override async Task UpdateAsync()
     {
-        try
-        {
-            var res = await Client.VariantBom.ExecuteAsync(Parent.Parent.Parent.Tag.Id, Parent.Tag.Name);
-            res.AssertNoErrors();
+        var res = await Client.VariantBom.ExecuteAsync(Parent.Parent.Parent.Tag.Id, Parent.Tag.Name);
+        res.AssertNoErrors();
 
-            Tag = res.Data.DesProjectById.Design.Variants[0].Bom;
-        }
-        catch (Exception ex)
-        {
-            Error = ex;
-        }
-
-        OnChange?.Invoke();
+        Tag = res.Data.DesProjectById.Design.Variants[0].Bom;
     }
 }

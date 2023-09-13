@@ -4,23 +4,25 @@
 
 <ItemPageHeader Text="Thread" Item=@Data.Current />
 
-@if (Data.Current is not null)
+@if (Data.Current is null)
 {
-    <TextFieldCopy Label="CommentThreadId" Text=@Data.Current.Tag.CommentThreadId />
-
-    @if (Data.Current.Tag.OriginalStateScreenshotUrl is not null)
-    {
-        <FieldImage Label="Original screenshot" Src=@Data.Current.Tag.OriginalStateScreenshotUrl />
-    }
-
-    @foreach (var comment in Data.Current.Tag.Comments)
-    {
-        <CardComment Comment=@comment />
-    }
-
-    <br />
-    <AlertGraphQL Files="Comments.Thread.graphql Comments.Common.graphql" />
+    return;
 }
+
+<TextFieldCopy Label="CommentThreadId" Text=@Data.Current.Tag.CommentThreadId />
+
+@if (Data.Current.Tag.OriginalStateScreenshotUrl is not null)
+{
+    <FieldImage Label="Original screenshot" Src=@Data.Current.Tag.OriginalStateScreenshotUrl />
+}
+
+@foreach (var comment in Data.Current.Tag.Comments)
+{
+    <CardComment Comment=@comment />
+}
+
+<br />
+<AlertGraphQL Files="Comments.Thread.graphql Comments.Common.graphql" />
 
 @code {
     protected override void OnInitialized()

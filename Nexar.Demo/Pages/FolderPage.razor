@@ -4,50 +4,51 @@
 
 <ItemPageHeader Text="Folder" Item=@Data.Current />
 
-@if (Data.Current is not null)
+@if (Data.Current is null)
 {
-    <TextFieldCopy Label="Id" Text=@Data.Current.Tag.Id />
-
-    <TextField Label="Name" Text=@Data.Current.Tag.Name />
-
-    <TextField Label="Path" Text=@Data.Current.Tag.Path />
-
-    <TextFieldText Label="Description" Text=@Data.Current.Tag.Description />
-
-    <TextField Label="FolderType" Text=@Data.Current.Tag.FolderType.ToString() />
-
-    <TextField Label="ItemNamingSchemeTemplate" Text=@Data.Current.Tag.ItemNamingSchemeTemplate />
-
-    @if (Data.Current.Extras is null && Data.Current.Error is null)
-    {
-        <MudProgressLinear Indeterminate=true />
-    }
-    else
-    {
-        @if (Data.Current.Extras?.FolderPermissions.Count > 0)
-        {
-            <br />
-            <MudTable Items=@Data.Current.Extras.FolderPermissions Dense=true>
-                <ToolBarContent>
-                    <MudText Typo=Typo.h6>Permissions</MudText>
-                </ToolBarContent>
-                <HeaderContent>
-                    <MudTh>Name</MudTh>
-                    <MudTh>Group</MudTh>
-                    <MudTh>CanEdit</MudTh>
-                </HeaderContent>
-                <RowTemplate>
-                    <MudTd DataLabel="Name">@context.Name</MudTd>
-                    <MudTd DataLabel="Group">@context.Group?.Name</MudTd>
-                    <MudTd DataLabel="CanEdit">@context.CanEdit</MudTd>
-                </RowTemplate>
-            </MudTable>
-        }
-    }
-
-    <br />
-    <AlertGraphQL Files="Folders.graphql Folder.Extras.graphql" />
+    return;
 }
+
+<TextFieldCopy Label="Id" Text=@Data.Current.Tag.Id />
+
+<TextField Label="Name" Text=@Data.Current.Tag.Name />
+
+<TextField Label="Path" Text=@Data.Current.Tag.Path />
+
+<TextFieldText Label="Description" Text=@Data.Current.Tag.Description />
+
+<TextField Label="FolderType" Text=@Data.Current.Tag.FolderType.ToString() />
+
+<TextField Label="ItemNamingSchemeTemplate" Text=@Data.Current.Tag.ItemNamingSchemeTemplate />
+
+@if (Data.Current.IsUpdating)
+{
+    <MudProgressLinear Indeterminate=true />
+    return;
+}
+
+@if (Data.Current.Extras?.FolderPermissions.Count > 0)
+{
+    <br />
+    <MudTable Items=@Data.Current.Extras.FolderPermissions Dense=true>
+        <ToolBarContent>
+            <MudText Typo=Typo.h6>Permissions</MudText>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Name</MudTh>
+            <MudTh>Group</MudTh>
+            <MudTh>CanEdit</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Name">@context.Name</MudTd>
+            <MudTd DataLabel="Group">@context.Group?.Name</MudTd>
+            <MudTd DataLabel="CanEdit">@context.CanEdit</MudTd>
+        </RowTemplate>
+    </MudTable>
+}
+
+<br />
+<AlertGraphQL Files="Folders.graphql Folder.Extras.graphql" />
 
 @code {
     protected override void OnInitialized()

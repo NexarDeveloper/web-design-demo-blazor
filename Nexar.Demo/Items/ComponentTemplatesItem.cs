@@ -21,9 +21,8 @@ public sealed class ComponentTemplatesItem : LeafTreeItem
     {
         if (Current != this)
         {
-            _ = Fetch();
             Current = this;
-            OnChange?.Invoke();
+            Update(() => OnChange?.Invoke());
         }
         return "ComponentTemplates";
     }
@@ -31,20 +30,11 @@ public sealed class ComponentTemplatesItem : LeafTreeItem
     public static event Action OnChange;
     public static ComponentTemplatesItem Current { get; private set; }
 
-    async Task Fetch()
+    protected override async Task UpdateAsync()
     {
-        try
-        {
-            var res = await Client.ComponentTemplates.ExecuteAsync(Parent.Parent.Tag.Url);
-            res.AssertNoErrors();
+        var res = await Client.ComponentTemplates.ExecuteAsync(Parent.Parent.Tag.Url);
+        res.AssertNoErrors();
 
-            Templates = res.Data.DesLibrary.ComponentTemplates.Nodes;
-        }
-        catch
-        {
-            Templates = Array.Empty<IMyComponentTemplate>();
-        }
-
-        OnChange?.Invoke();
+        Templates = res.Data.DesLibrary.ComponentTemplates.Nodes;
     }
 }

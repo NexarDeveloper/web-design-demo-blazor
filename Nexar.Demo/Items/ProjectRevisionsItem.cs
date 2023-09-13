@@ -23,9 +23,8 @@ public sealed class ProjectRevisionsItem : LeafTreeItem
     {
         if (Current != this)
         {
-            _ = Fetch();
             Current = this;
-            OnChange?.Invoke();
+            Update(() => OnChange?.Invoke());
         }
         return "Revisions";
     }
@@ -33,20 +32,11 @@ public sealed class ProjectRevisionsItem : LeafTreeItem
     public static event Action OnChange;
     public static ProjectRevisionsItem Current { get; private set; }
 
-    async Task Fetch()
+    protected override async Task UpdateAsync()
     {
-        try
-        {
-            var res = await Client.ProjectRevisions.ExecuteAsync(Parent.Tag.Id);
-            res.AssertNoErrors();
+        var res = await Client.ProjectRevisions.ExecuteAsync(Parent.Tag.Id);
+        res.AssertNoErrors();
 
-            Revisions = res.Data.DesProjectById.Revisions.Nodes;
-        }
-        catch
-        {
-            Revisions = Array.Empty<IMyRevision>();
-        }
-
-        OnChange?.Invoke();
+        Revisions = res.Data.DesProjectById.Revisions.Nodes;
     }
 }

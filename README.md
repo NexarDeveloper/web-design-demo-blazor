@@ -28,8 +28,11 @@ Covered Altium 365 data tree:
                 - Schematics
         - Releases
             - Variants
-        - Comments
+        - Collaboration
+            - ECAD
+            - MCAD
         - Tasks
+        - Comments
         - Revisions
     - Library
         - Folders

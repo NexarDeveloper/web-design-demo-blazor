@@ -4,53 +4,54 @@
 
 <ItemPageHeader Text="Task" Item=@Data.Current />
 
-@if (Data.Current is not null)
+@if (Data.Current is null)
 {
-    <TextFieldCopy Label="Id" Text=@Data.Current.Tag.Id />
+    return;
+}
 
-    <TextField Label="Name" Text=@Data.Current.Tag.Name />
+<TextFieldCopy Label="Id" Text=@Data.Current.Tag.Id />
 
-    <TextField Label="RefId" Text=@Data.Current.Tag.RefId />
+<TextField Label="Name" Text=@Data.Current.Tag.Name />
 
-    <TextField Label="Priority" Text=@Data.Current.Tag.Priority.ToString() />
+<TextField Label="RefId" Text=@Data.Current.Tag.RefId />
 
-    <TextField Label="Status" Text=@Data.Current.Tag.Status.ToString() />
+<TextField Label="Priority" Text=@Data.Current.Tag.Priority.ToString() />
 
-    <TextFieldText Label="Description" Text=@Data.Current.Tag.Description />
+<TextField Label="Status" Text=@Data.Current.Tag.Status.ToString() />
 
-    <TextFieldAvatar Label="Assignee (Email / UserId)"
-            Url=@Data.Current.Tag.Assignee.PictureUrl
-            Text=@(Data.Current.Tag.Assignee.Email + " / " + Data.Current.Tag.Assignee.UserId) />
+<TextFieldText Label="Description" Text=@Data.Current.Tag.Description />
 
-    <TextFieldAvatar Label="CreatedBy (Email / UserId)"
-            Url=@Data.Current.Tag.CreatedBy.PictureUrl
-            Text=@(Data.Current.Tag.CreatedBy.Email + " / " + Data.Current.Tag.CreatedBy.UserId) />
+<TextFieldAvatar Label="Assignee (Email / UserId)"
+                 Url=@Data.Current.Tag.Assignee.PictureUrl
+                 Text=@(Data.Current.Tag.Assignee.Email + " / " + Data.Current.Tag.Assignee.UserId) />
 
-    <TextField Label="CreatedAt" Text=@Data.Current.Tag.CreatedAt.ToString() />
+<TextFieldAvatar Label="CreatedBy (Email / UserId)"
+                 Url=@Data.Current.Tag.CreatedBy.PictureUrl
+                 Text=@(Data.Current.Tag.CreatedBy.Email + " / " + Data.Current.Tag.CreatedBy.UserId) />
 
-    <TextField Label="ModifiedAt" Text="@Data.Current.Tag.ModifiedAt.ToString()" />
+<TextField Label="CreatedAt" Text=@Data.Current.Tag.CreatedAt.ToString() />
 
-    @if (Data.Current.Comments is null)
+<TextField Label="ModifiedAt" Text="@Data.Current.Tag.ModifiedAt.ToString()" />
+
+@if (Data.Current.IsUpdating)
+{
+    <MudProgressLinear Indeterminate=true />
+    return;
+}
+
+@if (Data.Current.Comments.Count > 0)
+{
+    <br />
+    <MudText Typo=Typo.h5>Comments</MudText>
+
+    foreach (var comment in Data.Current.Comments)
     {
-        <MudProgressLinear Indeterminate=true />
-    }
-    else
-    {
-        if (Data.Current.Comments.Count > 0)
-        {
-            <br />
-            <MudText Typo=Typo.h5>Comments</MudText>
-
-            foreach (var comment in Data.Current.Comments)
-            {
-                <CardComment Comment=@comment />
-            }
-        }
-
-        <br />
-        <AlertGraphQL Files="Tasks.graphql Comments.Task.graphql Comments.Common.graphql" />
+        <CardComment Comment=@comment />
     }
 }
+
+<br />
+<AlertGraphQL Files="Tasks.graphql Comments.Task.graphql Comments.Common.graphql" />
 
 @code {
     protected override void OnInitialized()

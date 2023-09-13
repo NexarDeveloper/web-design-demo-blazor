@@ -24,9 +24,8 @@ public sealed class TaskItem : LeafTreeItem
     {
         if (Current != this)
         {
-            _ = Fetch();
             Current = this;
-            OnChange?.Invoke();
+            Update(() => OnChange?.Invoke());
         }
         return "Task";
     }
@@ -34,22 +33,13 @@ public sealed class TaskItem : LeafTreeItem
     public static event Action OnChange;
     public static TaskItem Current { get; private set; }
 
-    async Task Fetch()
+    protected override async Task UpdateAsync()
     {
-        try
-        {
-            var res = await Client.TaskComments.ExecuteAsync(Tag.Id);
-            res.AssertNoErrors();
+        var res = await Client.TaskComments.ExecuteAsync(Tag.Id);
+        res.AssertNoErrors();
 
-            Comments = ((IMyTaskComments)res.Data.Node).Comments
-                .OrderBy(x => x.CreatedAt)
-                .ToList();
-        }
-        catch
-        {
-            Comments = Array.Empty<IMyComment>();
-        }
-
-        OnChange?.Invoke();
+        Comments = ((IMyTaskComments)res.Data.Node).Comments
+            .OrderBy(x => x.CreatedAt)
+            .ToList();
     }
 }

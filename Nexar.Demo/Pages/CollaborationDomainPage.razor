@@ -1,0 +1,64 @@
+﻿@page "/CollaborationDomain"
+@inherits AbstractPage
+@using Data = CollaborationDomainItem
+
+<ItemPageHeader Text="Collaboration" Item=@Data.Current />
+
+@if (Data.Current is null)
+{
+    return;
+}
+
+@if (Data.Current.IsUpdating)
+{
+    <MudProgressLinear Indeterminate=true />
+    return;
+}
+
+@if (Data.Current.LatestRevision is not null)
+{
+    <TextField Label="Comment" Text=@Data.Current.LatestRevision.Comment />
+
+    <TextField Label="CreatedAt" Text=@Data.Current.LatestRevision.CreatedAt.ToString() />
+
+    <TextField Label="CreatedBy" Text=@Data.Current.LatestRevision.CreatedBy.Email />
+}
+
+@if (Data.Current.Revisions?.Count > 0)
+{
+    <br />
+    <MudTable Items=@Data.Current.Revisions Dense=true>
+        <HeaderContent>
+            <MudTh>Download</MudTh>
+            <MudTh>CreatedAt</MudTh>
+            <MudTh>CreatedBy</MudTh>
+            <MudTh>Comment</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Download">
+                <MudLink Href=@context.DownloadableFile.DownloadUrl>@context.DownloadableFile.FileName</MudLink>
+            </MudTd>
+            <MudTd DataLabel="CreatedAt">@context.CreatedAt</MudTd>
+            <MudTd DataLabel="CreatedBy">@context.CreatedBy.Email</MudTd>
+            <MudTd DataLabel="Comment">@context.Comment</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+}
+
+<br />
+<AlertGraphQL Files="Project.Collaboration.graphql" />
+
+@code {
+    protected override void OnInitialized()
+    {
+        Data.OnChange += StateHasChanged;
+    }
+
+    protected override void Disposing()
+    {
+        Data.OnChange -= StateHasChanged;
+    }
+}

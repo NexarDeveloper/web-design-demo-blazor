@@ -4,7 +4,18 @@
 
 <ItemPageHeader Text="BOM" Item=@Data.Current />
 
-@if (Data.Current?.Tag is not null)
+@if (Data.Current is null)
+{
+    return;
+}
+
+@if (Data.Current.IsUpdating)
+{
+    <MudProgressLinear Indeterminate=true />
+    return;
+}
+
+@if (Data.Current.Tag is not null)
 {
     <TextFieldCopy Label="Id" Text=@Data.Current.Tag.Id />
 
@@ -24,14 +35,10 @@
             <MudTablePager />
         </PagerContent>
     </MudTable>
+}
 
-    <br />
-    <AlertGraphQL Files="Project.Variants.graphql Variant.Bom.graphql" />
-}
-else
-{
-    <MudProgressLinear Indeterminate=true />
-}
+<br />
+<AlertGraphQL Files="Project.Variants.graphql Variant.Bom.graphql" />
 
 @code {
     protected override void OnInitialized()

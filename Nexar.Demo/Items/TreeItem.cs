@@ -60,6 +60,37 @@ public abstract class TreeItem
                 Console.WriteLine(value);
         }
     }
+
+    public bool IsUpdating { get; private set; }
+
+    protected virtual Task UpdateAsync()
+    {
+        throw new NotImplementedException();
+    }
+
+    protected void Update(Action onChange)
+    {
+        Error = null;
+        IsUpdating = true;
+        onChange?.Invoke();
+
+        Task.Run(async () =>
+        {
+            try
+            {
+                await UpdateAsync();
+            }
+            catch (Exception ex)
+            {
+                Error = ex;
+            }
+            finally
+            {
+                IsUpdating = false;
+                onChange?.Invoke();
+            }
+        });
+    }
 }
 
 /// <summary>

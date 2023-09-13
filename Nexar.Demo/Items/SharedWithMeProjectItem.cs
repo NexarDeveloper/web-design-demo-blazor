@@ -24,9 +24,8 @@ public sealed class SharedWithMeProjectItem : LeafTreeItem
     {
         if (Current != this)
         {
-            _ = Fetch();
             Current = this;
-            OnChange?.Invoke();
+            Update(() => OnChange?.Invoke());
         }
         return "SharedWithMeProject";
     }
@@ -34,22 +33,13 @@ public sealed class SharedWithMeProjectItem : LeafTreeItem
     public static event Action OnChange;
     public static SharedWithMeProjectItem Current { get; private set; }
 
-    async Task Fetch()
+    protected override async Task UpdateAsync()
     {
-        try
-        {
-            var res = await Client.SharedWithMeProject.ExecuteAsync(ProjectId);
-            res.AssertNoErrors();
+        var res = await Client.SharedWithMeProject.ExecuteAsync(ProjectId);
+        res.AssertNoErrors();
 
-            Tag = res.Data.DesProjectById;
-            if (Tag is null)
-                throw new Exception("Cannot get project data.");
-        }
-        catch (Exception ex)
-        {
-            Error = ex;
-        }
-
-        OnChange?.Invoke();
+        Tag = res.Data.DesProjectById;
+        if (Tag is null)
+            throw new Exception("Cannot get project data.");
     }
 }

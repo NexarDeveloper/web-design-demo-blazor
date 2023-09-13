@@ -26,8 +26,9 @@ public sealed class ProjectItem : NodeTreeItem
         {
             new ProjectDesignItem(this),
             new ProjectReleasesItem(this),
-            new ProjectCommentsItem(this),
+            new ProjectCollaborationItem(this),
             new ProjectTasksItem(this),
+            new ProjectCommentsItem(this),
             new ProjectRevisionsItem(this),
         });
     }
@@ -36,9 +37,8 @@ public sealed class ProjectItem : NodeTreeItem
     {
         if (Current != this)
         {
-            _ = Fetch();
             Current = this;
-            OnChange?.Invoke();
+            Update(() => OnChange?.Invoke());
         }
         return "Project";
     }
@@ -46,24 +46,12 @@ public sealed class ProjectItem : NodeTreeItem
     public static event Action OnChange;
     public static ProjectItem Current { get; private set; }
 
-    async Task Fetch()
+    protected override async Task UpdateAsync()
     {
-        try
-        {
-            var res = await Client.ProjectExtras.ExecuteAsync(Tag.Id);
-            res.AssertNoErrors();
+        var res = await Client.ProjectExtras.ExecuteAsync(Tag.Id);
+        res.AssertNoErrors();
 
-            Revision = res.Data.DesProjectById.LatestRevision;
-
-            Parameters = res.Data.DesProjectById.Parameters;
-        }
-        catch (Exception ex)
-        {
-            Error = ex;
-            Revision = null;
-            Parameters = Array.Empty<IMyProjectParameter>();
-        }
-
-        OnChange?.Invoke();
+        Revision = res.Data.DesProjectById.LatestRevision;
+        Parameters = res.Data.DesProjectById.Parameters;
     }
 }

@@ -4,40 +4,42 @@
 
 <ItemPageHeader Text="Release Variant" Item=@Data.Current />
 
-@if (Data.Current is not null)
+@if (Data.Current is null)
 {
-    <TextField Label="Name" Text=@Data.Current.Tag.Name />
-
-    <br />
-    <MudText Typo=Typo.h6>PCB Assembly</MudText>
-    <TextField Label="Version" Text=@Data.Current.Tag.PcbAssembly.Version />
-    <TextField Label="LifeCycleStateName" Text=@Data.Current.Tag.PcbAssembly.LifeCycleStateName />
-
-    <br />
-    <MudText Typo=Typo.h6>PCB Fabrication</MudText>
-    <TextField Label="Version" Text=@Data.Current.Tag.PcbFabrication.Version />
-    <TextField Label="LifeCycleStateName" Text=@Data.Current.Tag.PcbFabrication.LifeCycleStateName />
-
-    <br />
-    <MudTable Items=@Downloads() Dense=true>
-        <ToolBarContent>
-            <MudText Typo=Typo.h6>Downloads</MudText>
-        </ToolBarContent>
-        <HeaderContent>
-            <MudTh>Package</MudTh>
-            <MudTh>Download</MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd DataLabel="Package">@context.Item1</MudTd>
-            <MudTd DataLabel="Download">
-                <MudLink Href=@context.Item3>@context.Item2</MudLink>
-            </MudTd>
-        </RowTemplate>
-    </MudTable>
-
-    <br />
-    <AlertGraphQL Files="Project.Releases.graphql Project.ReleaseById.graphql" />
+    return;
 }
+
+<TextField Label="Name" Text=@Data.Current.Tag.Name />
+
+<br />
+<MudText Typo=Typo.h6>PCB Assembly</MudText>
+<TextField Label="Version" Text=@Data.Current.Tag.PcbAssembly.Version />
+<TextField Label="LifeCycleStateName" Text=@Data.Current.Tag.PcbAssembly.LifeCycleStateName />
+
+<br />
+<MudText Typo=Typo.h6>PCB Fabrication</MudText>
+<TextField Label="Version" Text=@Data.Current.Tag.PcbFabrication.Version />
+<TextField Label="LifeCycleStateName" Text=@Data.Current.Tag.PcbFabrication.LifeCycleStateName />
+
+<br />
+<MudTable Items=@Downloads() Dense=true>
+    <ToolBarContent>
+        <MudText Typo=Typo.h6>Downloads</MudText>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Package</MudTh>
+        <MudTh>Download</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Package">@context.Item1</MudTd>
+        <MudTd DataLabel="Download">
+            <MudLink Href=@context.Item3>@context.Item2</MudLink>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+<br />
+<AlertGraphQL Files="Project.Releases.graphql Project.ReleaseById.graphql" />
 
 @code {
     protected override void OnInitialized()

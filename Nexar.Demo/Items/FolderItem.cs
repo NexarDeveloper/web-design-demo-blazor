@@ -37,9 +37,8 @@ public sealed class FolderItem : NodeTreeItem
     {
         if (Current != this)
         {
-            _ = Fetch();
             Current = this;
-            OnChange?.Invoke();
+            Update(() => OnChange?.Invoke());
         }
         return "Folder";
     }
@@ -47,22 +46,12 @@ public sealed class FolderItem : NodeTreeItem
     public static event Action OnChange;
     public static FolderItem Current { get; private set; }
 
-    async Task Fetch()
+    protected override async Task UpdateAsync()
     {
-        try
-        {
-            var res = await Client.FolderExtras.ExecuteAsync(Tag.Id);
-            res.AssertNoErrors();
+        var res = await Client.FolderExtras.ExecuteAsync(Tag.Id);
+        res.AssertNoErrors();
 
-            Extras = res.Data.Node as IMyFolderExtras
-                ?? throw new Exception("Cannot get folder extras.");
-        }
-        catch (Exception ex)
-        {
-            Error = ex;
-            Extras = null;
-        }
-
-        OnChange?.Invoke();
+        Extras = res.Data.Node as IMyFolderExtras
+            ?? throw new Exception("Cannot get folder extras.");
     }
 }

@@ -5,7 +5,18 @@
 
 <ItemPageHeader Text="Layers" Item=@Data.Current />
 
-@if (Data.Current?.Tag is not null)
+@if (Data.Current is null)
+{
+    return;
+}
+
+@if (Data.Current.IsUpdating)
+{
+    <MudProgressLinear Indeterminate=true />
+    return;
+}
+
+@if (Data.Current.Tag is not null)
 {
     <TextField Label="StackupType" Text=@Data.Current.Tag.StackupType />
 
@@ -36,14 +47,10 @@
                 </RowTemplate>
             </MudTable>
     }
+}
 
-    <br />
-    <AlertGraphQL Files="Project.Variants.graphql Variant.Layers.graphql" />
-}
-else if (Data.Current?.Error is null)
-{
-    <MudProgressLinear Indeterminate=true />
-}
+<br />
+<AlertGraphQL Files="Project.Variants.graphql Variant.Layers.graphql" />
 
 @code {
     protected override void OnInitialized()

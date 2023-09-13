@@ -4,44 +4,46 @@
 
 <ItemPageHeader Text="Schematic" Item=@Data.Current />
 
-@if (Data.Current is not null)
+@if (Data.Current is null)
 {
-    <TextFieldCopy Label="Id" Text=@Data.Current.Tag.DocumentId />
-
-    <TextField Label="Name" Text=@Data.Current.Tag.DocumentName />
-
-    <TextField Label="DesignItems.TotalCount" Text=@Data.Current.Tag.DesignItems.TotalCount.ToString() />
-
-    @if (Data.Current.Tag.DesignItems.TotalCount > Data.ItemsLimit)
-    {
-        <MudAlert Severity="Severity.Warning">
-            Limited to the first @(Data.ItemsLimit) items.
-        </MudAlert>
-    }
-
-    @if (@Data.Current.Tag.DesignItems.Nodes.Count > 0)
-    {
-        <br />
-        <MudTable Items=@Data.Current.Tag.DesignItems.Nodes Dense=true>
-            <HeaderContent>
-                <MudTh>Component.Name</MudTh>
-                <MudTh>Component.IsManaged</MudTh>
-                <MudTh>Designator</MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd DataLabel="Name">@context.Component?.Name</MudTd>
-                <MudTd DataLabel="IsManaged">@context.Component?.IsManaged</MudTd>
-                <MudTd DataLabel="Designator">@context.Designator</MudTd>
-            </RowTemplate>
-            <PagerContent>
-                <MudTablePager />
-            </PagerContent>
-        </MudTable>
-    }
-
-    <br />
-    <AlertGraphQL Files="Project.Variants.graphql Variant.Schematics.graphql" />
+    return;
 }
+
+<TextFieldCopy Label="Id" Text=@Data.Current.Tag.DocumentId />
+
+<TextField Label="Name" Text=@Data.Current.Tag.DocumentName />
+
+<TextField Label="DesignItems.TotalCount" Text=@Data.Current.Tag.DesignItems.TotalCount.ToString() />
+
+@if (Data.Current.Tag.DesignItems.TotalCount > Data.ItemsLimit)
+{
+    <MudAlert Severity="Severity.Warning">
+        Limited to the first @(Data.ItemsLimit) items.
+    </MudAlert>
+}
+
+@if (Data.Current.Tag.DesignItems.Nodes.Count > 0)
+{
+    <br />
+    <MudTable Items=@Data.Current.Tag.DesignItems.Nodes Dense=true>
+        <HeaderContent>
+            <MudTh>Component.Name</MudTh>
+            <MudTh>Component.IsManaged</MudTh>
+            <MudTh>Designator</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Name">@context.Component?.Name</MudTd>
+            <MudTd DataLabel="IsManaged">@context.Component?.IsManaged</MudTd>
+            <MudTd DataLabel="Designator">@context.Designator</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+}
+
+<br />
+<AlertGraphQL Files="Project.Variants.graphql Variant.Schematics.graphql" />
 
 @code {
     protected override void OnInitialized()

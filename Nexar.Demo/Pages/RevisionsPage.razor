@@ -4,36 +4,40 @@
 
 <ItemPageHeader Text="Revisions" Item=@Data.Current />
 
-@if (Data.Current is not null)
+@if (Data.Current is null)
 {
-    @if (Data.Current.Revisions is null)
-    {
-        <MudProgressLinear Indeterminate=true />
-    }
-    else if (Data.Current.Revisions.Count > 0)
-    {
-        <MudTable Items=@Data.Current.Revisions>
-            <HeaderContent>
-                <MudTh>CreatedAt</MudTh>
-                <MudTh>Author</MudTh>
-                <MudTh>Message</MudTh>
-                <MudTh>RevisionId</MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd DataLabel="CreatedAt">@context.CreatedAt</MudTd>
-                <MudTd DataLabel="Author">@context.Author</MudTd>
-                <MudTd DataLabel="Message">@context.Message</MudTd>
-                <MudTd DataLabel="RevisionId">@context.RevisionId</MudTd>
-            </RowTemplate>
-            <PagerContent>
-                <MudTablePager />
-            </PagerContent>
-        </MudTable>
-
-        <br />
-        <AlertGraphQL Files="Project.Revisions.graphql" />
-    }
+    return;
 }
+
+@if (Data.Current.IsUpdating)
+{
+    <MudProgressLinear Indeterminate=true />
+    return;
+}
+
+@if (Data.Current.Revisions.Count > 0)
+{
+    <MudTable Items=@Data.Current.Revisions>
+        <HeaderContent>
+            <MudTh>CreatedAt</MudTh>
+            <MudTh>Author</MudTh>
+            <MudTh>Message</MudTh>
+            <MudTh>RevisionId</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="CreatedAt">@context.CreatedAt</MudTd>
+            <MudTd DataLabel="Author">@context.Author</MudTd>
+            <MudTd DataLabel="Message">@context.Message</MudTd>
+            <MudTd DataLabel="RevisionId">@context.RevisionId</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+}
+
+<br />
+<AlertGraphQL Files="Project.Revisions.graphql" />
 
 @code {
     protected override void OnInitialized()

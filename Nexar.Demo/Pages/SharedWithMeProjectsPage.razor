@@ -6,6 +6,11 @@
 
 <MudLink Href="https://365.altium.com/sharedwithme" Target="_blank">Altium 365 Shared with Me</MudLink>
 
+@if (Data.Current is null)
+{
+    return;
+}
+
 @if (Data.Current.Items is not null)
 {
     <TextField Label="Project count" Text=@Data.Current.Items.Count.ToString() />

@@ -4,12 +4,20 @@
 
 <ItemPageHeader Text="Project" Item=@Data.Current />
 
-@if (Data.Current is not null)
+@if (Data.Current is null)
 {
-    <TextFieldCopy Label="Id" Text=@Data.Current.ProjectId />
+    return;
 }
 
-@if (Data.Current?.Tag is not null)
+<TextFieldCopy Label="Id" Text=@Data.Current.ProjectId />
+
+@if (Data.Current.IsUpdating == true)
+{
+    <MudProgressLinear Indeterminate=true />
+    return;
+}
+
+@if (Data.Current.Tag is not null)
 {
     <TextFieldUrl Label="Url" Href=@Data.Current.Tag.Url />
 
@@ -20,15 +28,8 @@
     <FieldImage Label="Preview" Src=@Data.Current.Tag.PreviewUrl />
 }
 
-@if (Data.Current?.Tag is null && Data.Current.Error is null)
-{
-    <MudProgressLinear Indeterminate=true />
-}
-else
-{
-    <br />
-    <AlertGraphQL Files="SharedWithMe.Projects.graphql" />
-}
+<br />
+<AlertGraphQL Files="SharedWithMe.Projects.graphql" />
 
 @code {
     protected override void OnInitialized()

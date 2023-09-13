@@ -1,0 +1,27 @@
+﻿# Gets the specified project collaboration revisions.
+# `latestRevision` is used here just for the sake of testing.
+# It is redundant in this query because it is included in `revisions`.
+query ProjectCollaboration($projectId: ID!, $domain: DesCollaborationDomain!) {
+  latestRevision: desProjectCollaborationLatestRevision(projectId: $projectId, domain: $domain) {
+    ...MyCollaborationRevision
+  }
+  revisions: desProjectCollaborationRevisions(projectId: $projectId, domain: $domain, last: 1000) {
+    totalCount
+    nodes {
+      ...MyCollaborationRevision
+    }
+  }
+}
+
+# This fragment becomes IMyCollaborationRevision in C#.
+fragment MyCollaborationRevision on DesCollaborationRevision {
+  comment
+  createdAt
+  createdBy {
+    email
+  }
+  downloadableFile {
+    fileName
+    downloadUrl
+  }
+}

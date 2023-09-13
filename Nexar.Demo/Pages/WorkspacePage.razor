@@ -4,21 +4,23 @@
 
 <ItemPageHeader Text="Workspace" Item=@Data.Current />
 
-@if (Data.Current is not null)
+@if (Data.Current is null)
 {
-    <TextFieldCopy Label="Id" Text=@Data.Current.Tag.Id />
-
-    <TextFieldUrl Label="Url" Href=@Data.Current.Tag.Url />
-
-    <TextField Label="Name" Text=@Data.Current.Tag.Name />
-
-    <TextFieldText Label="Description" Text=@Data.Current.Tag.Description />
-
-    <TextField Label="Location (Name / ApiServiceUrl)" Text=@Location />
-
-    <br />
-    <AlertGraphQL Files="Workspaces.graphql" />
+    return;
 }
+
+<TextFieldCopy Label="Id" Text=@Data.Current.Tag.Id />
+
+<TextFieldUrl Label="Url" Href=@Data.Current.Tag.Url />
+
+<TextField Label="Name" Text=@Data.Current.Tag.Name />
+
+<TextFieldText Label="Description" Text=@Data.Current.Tag.Description />
+
+<TextField Label="Location (Name / ApiServiceUrl)" Text=@Location />
+
+<br />
+<AlertGraphQL Files="Workspaces.graphql" />
 
 @code {
     protected override void OnInitialized()

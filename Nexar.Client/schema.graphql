@@ -73,9 +73,13 @@ type Query {
   desProjectTasks(projectId: ID! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesTaskConnection
   "The list of workspace tasks."
   desWorkspaceTasks(workspaceUrl: String! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesTaskConnection
-  "*** PROTOTYPE, SUBJECT TO CHANGE ***"
+  "The project latest ECAD or MCAD revision."
+  desProjectCollaborationLatestRevision(projectId: ID! domain: DesCollaborationDomain!): DesCollaborationRevision
+  "The project ECAD or MCAD revisions returned by pages."
+  desProjectCollaborationRevisions(projectId: ID! domain: DesCollaborationDomain! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesCollaborationRevisionConnection
+  "*PROTOTYPE, SUBJECT TO CHANGE*"
   desProjectCollaborationSimulationRevisions(projectId: ID! domainName: String! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesCollaborationSimulationRevisionConnection
-  "*** PROTOTYPE, SUBJECT TO CHANGE ***"
+  "*PROTOTYPE, SUBJECT TO CHANGE*"
   desProjectCollaborationSimulationLatestRevision(projectId: ID! domainName: String! projectTypeName: String!): DesCollaborationSimulationRevision
   desSharedWithMe: DesSharedWithMe!
   supOctopartIdFromCiivaId(workspaceUrl: String! ciivaId: String!): String @deprecated(reason: "Use `supPartIdFromCiivaId`.")
@@ -162,7 +166,7 @@ type Mutation {
   desUpdateComponentRevisionParameters(input: DesUpdateComponentRevisionParametersInput!): DesUpdateComponentRevisionParametersPayload!
   "Uploads the project zip file."
   desUploadProject(input: DesUploadProjectInput!): DesUploadProjectPayload!
-  "*** PROTOTYPE, SUBJECT TO CHANGE ***"
+  "*PROTOTYPE, SUBJECT TO CHANGE*"
   desUploadCollaborationSimulation(input: DesUploadCollaborationSimulationInput!): DesUploadCollaborationSimulationPayload!
   "Creates a job that exports the specified project data."
   desCreateProjectExportJob(input: DesCreateProjectExportJobInput!): DesCreateProjectExportJobPayload!
@@ -284,13 +288,45 @@ type DesBomItemInstance {
   isFitted: Boolean!
 }
 
-"*** PROTOTYPE, SUBJECT TO CHANGE ***"
+"ECAD or MCAD revision data."
+type DesCollaborationRevision {
+  "The user who created this revision."
+  createdBy: DesUser!
+  "Revision comment."
+  comment: String!
+  "Creation time."
+  createdAt: DateTime!
+  "Revision download data."
+  downloadableFile: DesDownloadableFile!
+}
+
+"A connection to a list of items."
+type DesCollaborationRevisionConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [DesCollaborationRevisionEdge!]
+  "A flattened list of the nodes."
+  nodes: [DesCollaborationRevision!]
+  "Identifies the total count of items in the connection."
+  totalCount: Int!
+}
+
+"An edge in a connection."
+type DesCollaborationRevisionEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: DesCollaborationRevision!
+}
+
+"*PROTOTYPE, SUBJECT TO CHANGE*"
 type DesCollaborationSimulationFile {
   fileTypeName: String!
   downloadUrl: String!
 }
 
-"*** PROTOTYPE, SUBJECT TO CHANGE ***"
+"*PROTOTYPE, SUBJECT TO CHANGE*"
 type DesCollaborationSimulationRevision {
   files: [DesCollaborationSimulationFile!]!
   createdBy: DesUser!
@@ -574,7 +610,7 @@ type DesDesignItem implements Node {
   id: ID!
   "The detailed component information for this design item."
   component: DesComponent
-  "*** PROTOTYPE, SUBJECT TO CHANGE ***"
+  "*PROTOTYPE, SUBJECT TO CHANGE*"
   mesh3D: DesMesh3D
   "The list of all comment threads related to this design item."
   commentThreads: [DesCommentThread!]
@@ -916,7 +952,7 @@ type DesPcb {
   tracks(where: DesTrackFilterInput): [DesTrack!]!
   "The list of all multiple layer connections in this PCB."
   vias: [DesVia!]!
-  "*** PROTOTYPE, SUBJECT TO CHANGE ***"
+  "*PROTOTYPE, SUBJECT TO CHANGE*"
   mesh3D: DesMesh3D
   "The list of all comment threads related to this PCB."
   commentThreads: [DesCommentThread!]!
@@ -998,6 +1034,10 @@ type DesProject implements Node {
   latestRevision: DesVcsRevision!
   "The list of VCS revisions."
   revisions("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesVcsRevisionConnection
+  "The latest ECAD or MCAD revision. See also `desProjectCollaborationLatestRevision`."
+  collaborationLatestRevision(domain: DesCollaborationDomain!): DesCollaborationRevision
+  "ECAD or MCAD revisions returned by pages. See also `desProjectCollaborationRevisions`."
+  collaborationRevisions(domain: DesCollaborationDomain! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesCollaborationRevisionConnection
   "The Altium 365 web address."
   url: String!
   "The Altium 365 workspace URL."
@@ -1745,8 +1785,6 @@ input DesComponentFilterInput {
   description: StringOperationFilterInput
   "Gets true if the component is managed."
   isManaged: BooleanOperationFilterInput
-  "The component revision."
-  revision: DesRevisionFilterInput
 }
 
 input DesCreateCommentInput {
@@ -2073,12 +2111,6 @@ input DesRemoveUsersFromGroupInput {
   userIds: [String!]!
 }
 
-"Revision details ID for later use or full details."
-input DesRevisionFilterInput {
-  and: [DesRevisionFilterInput!]
-  or: [DesRevisionFilterInput!]
-}
-
 input DesRevisionParameterInput {
   name: String!
   value: String!
@@ -2302,6 +2334,12 @@ input StringOperationFilterInput {
   nstartsWith: String
   endsWith: String
   nendsWith: String
+}
+
+"Specifies ECAD or MCAD domain."
+enum DesCollaborationDomain {
+  ECAD
+  MCAD
 }
 
 enum DesCommentContextType {

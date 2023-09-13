@@ -4,19 +4,21 @@
 
 <ItemPageHeader Text="Release" Item=@Data.Current />
 
-@if (Data.Current is not null)
+@if (Data.Current is null)
 {
-    <TextFieldCopy Label="Id" Text=@Data.Current.Tag.Id />
-
-    <TextFieldCopy Label="ReleaseId" Text=@Data.Current.Tag.ReleaseId />
-
-    <TextFieldText Label="Description" Text=@Data.Current.Tag.Description />
-
-    <TextField Label="CreatedAt" Text=@Data.Current.Tag.CreatedAt.ToString() />
-
-    <br />
-    <AlertGraphQL Files="Project.Releases.graphql" />
+    return;
 }
+
+<TextFieldCopy Label="Id" Text=@Data.Current.Tag.Id />
+
+<TextFieldCopy Label="ReleaseId" Text=@Data.Current.Tag.ReleaseId />
+
+<TextFieldText Label="Description" Text=@Data.Current.Tag.Description />
+
+<TextField Label="CreatedAt" Text=@Data.Current.Tag.CreatedAt.ToString() />
+
+<br />
+<AlertGraphQL Files="Project.Releases.graphql" />
 
 @code {
     protected override void OnInitialized()
