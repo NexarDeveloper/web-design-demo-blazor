@@ -1,0 +1,21 @@
+﻿# Gets the specified project collaboration simulation revisions.
+query ProjectSimulation($projectId: ID!, $domainName: String!) {
+  desProjectCollaborationSimulationRevisions(projectId: $projectId, domainName: $domainName, last: 1000) {
+    nodes {
+      ...MyCollaborationSimulationRevision
+    }
+  }
+}
+
+# This fragment becomes IMyCollaborationSimulationRevision in C#.
+fragment MyCollaborationSimulationRevision on DesCollaborationSimulationRevision {
+  createdAt
+  createdBy {
+    userName
+  }
+  metadata
+  files {
+    fileTypeName
+    downloadUrl
+  }
+}

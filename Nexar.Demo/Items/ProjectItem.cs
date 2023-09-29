@@ -27,6 +27,7 @@ public sealed class ProjectItem : NodeTreeItem
             new ProjectDesignItem(this),
             new ProjectReleasesItem(this),
             new ProjectCollaborationItem(this),
+            new ProjectSimulationItem(this),
             new ProjectTasksItem(this),
             new ProjectCommentsItem(this),
             new ProjectRevisionsItem(this),

@@ -1,0 +1,58 @@
+﻿@page "/SimulationDomain"
+@inherits AbstractPage
+@using Data = SimulationDomainItem
+
+<ItemPageHeader Text="Simulation" Item=@Data.Current />
+
+@if (Data.Current is null)
+{
+    return;
+}
+
+@if (Data.Current.IsUpdating)
+{
+    <MudProgressLinear Indeterminate=true />
+    return;
+}
+
+@if (Data.Current.Revisions?.Count > 0)
+{
+    <br />
+    <MudTable Items=@Data.Current.Revisions Dense=true>
+        <HeaderContent>
+            <MudTh>CreatedAt</MudTh>
+            <MudTh>CreatedBy</MudTh>
+            <MudTh>Metadata</MudTh>
+            <MudTh>Files</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="CreatedAt">@context.CreatedAt</MudTd>
+            <MudTd DataLabel="CreatedBy">@context.CreatedBy.UserName</MudTd>
+            <MudTd DataLabel="Metadata">@context.Metadata</MudTd>
+            <MudTd DataLabel="Files">
+                @foreach (var file in @context.Files)
+                {
+                    <MudLink Href=@file.DownloadUrl>@file.FileTypeName</MudLink>
+                }
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+}
+
+<br />
+<AlertGraphQL Files="Project.Simulation.graphql" />
+
+@code {
+    protected override void OnInitialized()
+    {
+        Data.OnChange += StateHasChanged;
+    }
+
+    protected override void Disposing()
+    {
+        Data.OnChange -= StateHasChanged;
+    }
+}

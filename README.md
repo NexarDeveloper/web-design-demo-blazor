@@ -31,6 +31,9 @@ Covered Altium 365 data tree:
         - Collaboration
             - ECAD
             - MCAD
+        - Simulation
+            - AnsysEDB
+            - PCBEDB
         - Tasks
         - Comments
         - Revisions
