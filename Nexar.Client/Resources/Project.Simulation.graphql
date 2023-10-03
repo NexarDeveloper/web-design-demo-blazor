@@ -1,6 +1,6 @@
 ﻿# Gets the specified project collaboration simulation revisions.
 query ProjectSimulation($projectId: ID!, $domainName: String!) {
-  desProjectCollaborationSimulationRevisions(projectId: $projectId, domainName: $domainName, last: 1000) {
+  desProjectCollaborationSimulationRevisions(projectId: $projectId, domainName: $domainName, first: 100) {
     nodes {
       ...MyCollaborationSimulationRevision
     }

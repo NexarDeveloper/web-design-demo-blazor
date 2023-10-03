@@ -40,6 +40,6 @@ public sealed class SimulationDomainItem : LeafTreeItem
         var res = await Client.ProjectSimulation.ExecuteAsync(Parent.Parent.Tag.Id, DomainName);
         res.AssertNoErrors();
 
-        Revisions = res.Data.DesProjectCollaborationSimulationRevisions.Nodes.Reverse().ToList();
+        Revisions = res.Data.DesProjectCollaborationSimulationRevisions.Nodes.ToList();
     }
 }

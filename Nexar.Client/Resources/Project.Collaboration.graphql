@@ -5,7 +5,7 @@ query ProjectCollaboration($projectId: ID!, $domain: DesCollaborationDomain!) {
   latestRevision: desProjectCollaborationLatestRevision(projectId: $projectId, domain: $domain) {
     ...MyCollaborationRevision
   }
-  revisions: desProjectCollaborationRevisions(projectId: $projectId, domain: $domain, last: 1000) {
+  revisions: desProjectCollaborationRevisions(projectId: $projectId, domain: $domain, last: 100) {
     totalCount
     nodes {
       ...MyCollaborationRevision
