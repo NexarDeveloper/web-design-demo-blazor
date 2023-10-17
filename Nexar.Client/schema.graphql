@@ -130,6 +130,7 @@ type Query {
   datBomPart(item: DatBomItemInput!): DatBomPartsResult!
   datBomParts(items: [DatBomItemInput!]!): [DatBomPartsResult!]!
   datBomPartHistories(partIds: [String!]!): [DatBomPartHistory]!
+  datBomDuplicateAnalyses(items: [DatBomPartItemInput!]!): [DatBomAnalysis!]!
   datBomAnalyses(items: [DatBomPartItemInput!]!): [DatBomAnalysis!]!
   datBomCategoryIdsByDesignator(designators: [String!]!): [DatBomCategory]!
   "Get an SCR Job with a specific id"
@@ -144,8 +145,11 @@ type Query {
   datScrIpnPartInfo("List of part IDs, as returned from an Octopart supply data query." partIds: [String!]! "Estimated Annual Usage (EAU) as a number of pieces." eau: Long!): DatScrIpnPartInfo!
   "SCR data, including historical procurability, recent market availability and future prediction, for a set of parts."
   datScrPartInfos("List of part ID - Estimated Annual Usage (EAU) pairs." parts: [DatScrPartInfoInput!]!): [DatScrPartInfo]!
+  "Information about the model parameters involved in SCR calculations."
+  datScrModelInfo: DatScrModelInfo!
   datEddiLatestEdition: DatEddiEdition!
   datEddiEditions(where: DatEddiEditionFilterInput): [DatEddiEdition!]!
+  supOctocart(items: [SupOctocartPartsBySellerInput!]! country: String = "US" currency: String = "USD"): [SupOctocartLink!]!
 }
 
 type Mutation {
@@ -168,6 +172,8 @@ type Mutation {
   desUploadProject(input: DesUploadProjectInput!): DesUploadProjectPayload!
   "*PROTOTYPE, SUBJECT TO CHANGE*"
   desUploadCollaborationSimulation(input: DesUploadCollaborationSimulationInput!): DesUploadCollaborationSimulationPayload!
+  "Uploads the specified collaboration."
+  desUploadCollaboration(input: DesUploadCollaborationInput!): DesUploadCollaborationPayload!
   "Creates a job that exports the specified project data."
   desCreateProjectExportJob(input: DesCreateProjectExportJobInput!): DesCreateProjectExportJobPayload!
   "Updates a specific result block."
@@ -464,8 +470,10 @@ type DesComponentConnection {
 }
 
 type DesComponentDetails {
-  "The list of parameters. Parameter types are unknown (`NONE`) for unmanaged components."
+  "The list of revision level parameters from the latest revision. Parameter types are unknown (`NONE`) for unmanaged components."
   parameters: [DesComponentParameter!]!
+  "The list of item level parameters."
+  itemParameters: [DesComponentParameter!]!
   "The list of component symbols."
   symbols: [DesSymbol!]!
   "The list of component footprints."
@@ -695,12 +703,22 @@ type DesFolder implements Node {
 }
 
 type DesFolderPermission {
-  "Determines whether this folder share has write permissions on the associated `DesFolder`."
-  canEdit: Boolean!
-  "The `DesUserGroup` this folder share is associated with."
+  "The folder permission scope to differentiate different permission types."
+  scope: DesFolderPermissionScope!
+  "The `DesUserGroup` this folder permission is associated with."
   group: DesUserGroup
-  "The name of this folder share."
+  "The `DesUser` this folder permission is associated with."
+  user: DesUser
+  "The name of this folder permission."
   name: String!
+  "Tells if this folder permission allows reading of the associated folder."
+  canRead: Boolean!
+  "Tells if this folder permission allows editing the associated folder."
+  canEdit: Boolean!
+  "Tells if this folder permission allows creation of objects within the associated folder."
+  canCreate: Boolean!
+  "Tells if this folder permission allows deletion of the associated folder."
+  canDelete: Boolean!
 }
 
 type DesFootprint {
@@ -1502,6 +1520,10 @@ type DesUpdateUserPayload {
   errors: [DesPayloadError!]!
 }
 
+type DesUploadCollaborationPayload {
+  errors: [DesPayloadError!]!
+}
+
 type DesUploadCollaborationSimulationPayload {
   errors: [DesPayloadError!]!
 }
@@ -2216,6 +2238,17 @@ input DesUpdateUserInput {
   lastName: String
 }
 
+input DesUploadCollaborationInput {
+  "The project node ID."
+  projectId: ID!
+  "The ECAD or MCAD domain."
+  domain: DesCollaborationDomain!
+  "The uploaded file comment."
+  comment: String!
+  "The uploaded file ID."
+  fileId: String!
+}
+
 input DesUploadCollaborationSimulationInput {
   projectId: ID!
   domain: String!
@@ -2412,6 +2445,15 @@ enum DesContentTypeKind {
 enum DesDocumentType {
   SCHEMATIC
   PCB
+}
+
+enum DesFolderPermissionScope {
+  USER
+  ANYONE
+  ORGANISATION
+  GROUP
+  OWNER
+  COLLABORATOR
 }
 
 enum DesFolderType {
@@ -4108,6 +4150,11 @@ type DatScrJob {
   runStats: DatScrRunStats
 }
 
+type DatScrModelInfo {
+  "Number of days into the future that the SCR predictions are run for (estimatedDaysOfSupply and probableAvailabilityWindow)."
+  predictionHorizonDays: Int!
+}
+
 "SCR part information."
 type DatScrPartInfo {
   "Number between 0 and 1 that indicates what proportion of the last 365 days that a part’s globally available stock was at or above the input EAU value."
@@ -4188,6 +4235,12 @@ type DatScrUsage {
   fromDate: String!
   "Allowed quota of the user within the current period."
   quota: Int!
+}
+
+type SupOctocartLink {
+  sellerId: String!
+  cartUrl: String
+  messages: [String!]! @deprecated(reason: "Error messages have been moved to the root `errors` object")
 }
 
 union DatScrCreateJobError = DatScrQuotaExceededError | DatScrSubscriptionNotFoundError
@@ -4317,6 +4370,17 @@ input DatScrPartInfoInput {
   partId: String!
   "Estimated Annual Usage (EAU) as a number of pieces."
   eau: Int!
+}
+
+input SupOctocartItemInput {
+  partId: String!
+  offerId: String!
+  quantity: Int!
+}
+
+input SupOctocartPartsBySellerInput {
+  sellerId: String!
+  items: [SupOctocartItemInput!]!
 }
 
 enum DatBomAnalysisLevel {

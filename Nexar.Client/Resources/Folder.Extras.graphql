@@ -15,7 +15,11 @@ fragment MyFolderExtras on DesFolder {
 # This fragment becomes IMyFolderPermissions in C#.
 fragment MyFolderPermission on DesFolderPermission {
   name
+  scope
+  canRead
   canEdit
+  canCreate
+  canDelete
   group {
     name
   }

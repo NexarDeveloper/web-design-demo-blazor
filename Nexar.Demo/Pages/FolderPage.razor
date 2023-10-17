@@ -36,13 +36,21 @@
         </ToolBarContent>
         <HeaderContent>
             <MudTh>Name</MudTh>
+            <MudTh>Scope</MudTh>
             <MudTh>Group</MudTh>
+            <MudTh>CanRead</MudTh>
             <MudTh>CanEdit</MudTh>
+            <MudTh>CanCreate</MudTh>
+            <MudTh>CanDelete</MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="Name">@context.Name</MudTd>
+            <MudTd DataLabel="Scope">@context.Scope</MudTd>
             <MudTd DataLabel="Group">@context.Group?.Name</MudTd>
+            <MudTd DataLabel="CanRead">@context.CanRead</MudTd>
             <MudTd DataLabel="CanEdit">@context.CanEdit</MudTd>
+            <MudTd DataLabel="CanCreate">@context.CanCreate</MudTd>
+            <MudTd DataLabel="CanDelete">@context.CanDelete</MudTd>
         </RowTemplate>
     </MudTable>
 }
