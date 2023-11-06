@@ -20,5 +20,14 @@ fragment MyBom on DesBom {
       name
       isManaged
     }
+    bomItemInstances {
+      ...MyBomItemInstance
+    }
   }
+}
+
+# This fragment becomes IMyBomItemInstance in C#.
+fragment MyBomItemInstance on DesBomItemInstance {
+  designator
+  isFitted
 }

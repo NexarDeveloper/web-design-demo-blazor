@@ -20,17 +20,40 @@
     <TextFieldCopy Label="Id" Text=@Data.Current.Tag.Id />
 
     <br />
-    <MudTable Items=@Data.Current.Tag.BomItems Dense=true>
+    <MudTable Items=@Data.Current.Items Dense=true>
         <HeaderContent>
             <MudTh>Component.Name</MudTh>
             <MudTh>Component.IsManaged</MudTh>
             <MudTh>Quantity</MudTh>
+            <MudTh></MudTh>
         </HeaderContent>
         <RowTemplate>
-            <MudTd DataLabel="Name">@context.Component.Name</MudTd>
-            <MudTd DataLabel="IsManaged">@context.Component.IsManaged</MudTd>
+            <MudTd DataLabel="Name">@context.Name</MudTd>
+            <MudTd DataLabel="IsManaged">@context.IsManaged</MudTd>
             <MudTd DataLabel="Quantity">@context.Quantity</MudTd>
+            <MudTd><MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => ToggleDetails(context))">@((context.ShowDetails == true) ? "Hide" : "Show") instances</MudButton></MudTd>
         </RowTemplate>
+        <ChildRowContent>
+            @if (context.ShowDetails)
+            {
+                <MudTr>
+                    <MudCard Elevation="0">
+                        <MudCardContent>
+                            <MudTable Items=@context.Instances Context="Instance" Dense=true>
+                                <HeaderContent>
+                                    <MudTh>Designator</MudTh>
+                                    <MudTh>IsFitted</MudTh>
+                                </HeaderContent>
+                                <RowTemplate>
+                                    <MudTd DataLabel="Designator">@Instance.Designator</MudTd>
+                                    <MudTd DataLabel="IsFitted">@Instance.IsFitted</MudTd>
+                                </RowTemplate>
+                            </MudTable>
+                        </MudCardContent>
+                    </MudCard>
+                </MudTr>
+            }
+        </ChildRowContent>
         <PagerContent>
             <MudTablePager />
         </PagerContent>
@@ -49,5 +72,10 @@
     protected override void Disposing()
     {
         Data.OnChange -= StateHasChanged;
+    }
+
+    private void ToggleDetails(Data.MyData data)
+    {
+        data.ShowDetails = !data.ShowDetails;
     }
 }
