@@ -5,14 +5,9 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class ProjectCollaborationItem : NodeTreeItem
+public sealed class ProjectCollaborationItem(ProjectItem parent) : NodeTreeItem(parent)
 {
-    public ProjectCollaborationItem(ProjectItem parent) : base(parent)
-    {
-        Parent = parent;
-    }
-
-    public new ProjectItem Parent { get; }
+    public new ProjectItem Parent { get; } = parent;
     public override string Text => "Collaboration";
     public override string Icon => Icons.Material.Filled.CompareArrows;
 

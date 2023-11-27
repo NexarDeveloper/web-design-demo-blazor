@@ -5,12 +5,8 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class VariantLayersItem : LeafTreeItem
+public sealed class VariantLayersItem(VariantItem parent) : LeafTreeItem(parent)
 {
-    public VariantLayersItem(VariantItem parent) : base(parent)
-    {
-    }
-
     public IMyStackup Tag { get; private set; }
     public override string Text => "Layers";
     public override string Icon => Icons.Material.Outlined.Layers;

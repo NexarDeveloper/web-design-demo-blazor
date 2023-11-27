@@ -7,13 +7,9 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class SharedWithMeProjectsItem : NodeTreeItem
+public sealed class SharedWithMeProjectsItem(SharedWithMeItem parent) : NodeTreeItem(parent)
 {
     public HashSet<TreeItem> Items { get; private set; }
-
-    public SharedWithMeProjectsItem(SharedWithMeItem parent) : base(parent)
-    {
-    }
 
     public override string Text => "Projects";
     public override string Icon => Icons.Material.Filled.Memory;

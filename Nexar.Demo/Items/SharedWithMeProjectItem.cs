@@ -5,16 +5,10 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class SharedWithMeProjectItem : LeafTreeItem
+public sealed class SharedWithMeProjectItem(string projectId, string projectName, SharedWithMeProjectsItem parent) : LeafTreeItem(parent)
 {
-    public string ProjectId { get; }
-    readonly string _projectName;
-
-    public SharedWithMeProjectItem(string projectId, string projectName, SharedWithMeProjectsItem parent) : base(parent)
-    {
-        ProjectId = projectId;
-        _projectName = projectName;
-    }
+    public string ProjectId { get; } = projectId;
+    readonly string _projectName = projectName;
 
     public IMySharedWithMeProject Tag { get; private set; }
     public override string Text => _projectName;

@@ -7,19 +7,13 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class CollaborationDomainItem : LeafTreeItem
+public sealed class CollaborationDomainItem(ProjectCollaborationItem parent, DesCollaborationDomain domain) : LeafTreeItem(parent)
 {
-    public DesCollaborationDomain Domain { get; private set; }
+    public DesCollaborationDomain Domain { get; private set; } = domain;
     public IMyCollaborationRevision LatestRevision { get; private set; }
     public IReadOnlyList<IMyCollaborationRevision> Revisions { get; private set; }
 
-    public CollaborationDomainItem(ProjectCollaborationItem parent, DesCollaborationDomain domain) : base(parent)
-    {
-        Domain = domain;
-        Parent = parent;
-    }
-
-    public new ProjectCollaborationItem Parent { get; }
+    public new ProjectCollaborationItem Parent { get; } = parent;
     public override string Text => Domain.ToString().ToUpper();
     public override string Icon => Icons.Material.Filled.CompareArrows;
 

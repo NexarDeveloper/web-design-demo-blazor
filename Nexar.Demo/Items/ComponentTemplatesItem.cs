@@ -6,12 +6,8 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class ComponentTemplatesItem : LeafTreeItem
+public sealed class ComponentTemplatesItem(WorkspaceLibraryItem parent) : LeafTreeItem(parent)
 {
-    public ComponentTemplatesItem(WorkspaceLibraryItem parent) : base(parent)
-    {
-    }
-
     public IReadOnlyList<IMyComponentTemplate> Templates { get; private set; }
     public override string Text => "Component Templates";
     public override string Icon => Icons.Material.Filled.CopyAll;

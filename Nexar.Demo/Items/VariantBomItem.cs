@@ -7,12 +7,8 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class VariantBomItem : LeafTreeItem
+public sealed class VariantBomItem(VariantItem parent) : LeafTreeItem(parent)
 {
-    public VariantBomItem(VariantItem parent) : base(parent)
-    {
-    }
-
     public IMyBom Tag { get; private set; }
     public List<MyData> Items { get; private set; }
     public override string Text => "BOM";

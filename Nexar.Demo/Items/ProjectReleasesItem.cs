@@ -6,14 +6,9 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class ProjectReleasesItem : NodeTreeItem
+public sealed class ProjectReleasesItem(ProjectItem parent) : NodeTreeItem(parent)
 {
-    public ProjectReleasesItem(ProjectItem parent) : base(parent)
-    {
-        Parent = parent;
-    }
-
-    public new ProjectItem Parent { get; }
+    public new ProjectItem Parent { get; } = parent;
     public override string Text => "Releases";
     public override string Icon => Icons.Material.Filled.Launch;
 

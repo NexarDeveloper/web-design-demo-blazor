@@ -4,14 +4,9 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class ProjectSimulationItem : NodeTreeItem
+public sealed class ProjectSimulationItem(ProjectItem parent) : NodeTreeItem(parent)
 {
-    public ProjectSimulationItem(ProjectItem parent) : base(parent)
-    {
-        Parent = parent;
-    }
-
-    public new ProjectItem Parent { get; }
+    public new ProjectItem Parent { get; } = parent;
     public override string Text => "Simulation";
     public override string Icon => Icons.Material.Filled.CompareArrows;
 

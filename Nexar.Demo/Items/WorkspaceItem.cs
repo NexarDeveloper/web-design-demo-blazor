@@ -6,14 +6,9 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class WorkspaceItem : TreeItem
+public sealed class WorkspaceItem(IMyWorkspace tag) : TreeItem
 {
-    public WorkspaceItem(IMyWorkspace tag)
-    {
-        Tag = tag;
-    }
-
-    public IMyWorkspace Tag { get; }
+    public IMyWorkspace Tag { get; } = tag;
     public override string Text => Tag.Name;
     public override string Path => Tag.Name;
     public override string Icon => Icons.Material.Filled.FolderOpen;

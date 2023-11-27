@@ -7,16 +7,11 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class TaskItem : LeafTreeItem
+public sealed class TaskItem(IMyTask tag, NodeTreeItem parent) : LeafTreeItem(parent)
 {
     public IReadOnlyList<IMyComment> Comments { get; private set; }
 
-    public TaskItem(IMyTask tag, NodeTreeItem parent) : base(parent)
-    {
-        Tag = tag;
-    }
-
-    public IMyTask Tag { get; }
+    public IMyTask Tag { get; } = tag;
     public override string Text => Tag.Name;
     public override string Icon => Icons.Material.Filled.Task;
 

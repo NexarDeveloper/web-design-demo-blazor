@@ -168,12 +168,20 @@ type Mutation {
   desUpdateComponentTemplate(input: DesUpdateComponentTemplateInput!): DesUpdateComponentTemplatePayload!
   "Updates parameters for the specified component (creates a new revision)."
   desUpdateComponentRevisionParameters(input: DesUpdateComponentRevisionParametersInput!): DesUpdateComponentRevisionParametersPayload!
+  "Updates item parameters for the specified component (does not affect the revision)."
+  desUpdateComponentItemParameters(input: DesUpdateComponentItemParametersInput!): DesUpdateComponentItemParametersPayload!
+  "Updates the permissions for the associated folder."
+  desUpdateFolderPermissions(input: DesUpdateFolderPermissionsInput!): DesUpdateFolderPermissionsPayload!
+  "Updates lifecycle state for the provided component."
+  desUpdateComponentLifeCycleState(input: DesUpdateComponentLifeCycleStateInput!): DesUpdateComponentLifeCycleStatePayload!
   "Uploads the project zip file."
   desUploadProject(input: DesUploadProjectInput!): DesUploadProjectPayload!
   "*PROTOTYPE, SUBJECT TO CHANGE*"
   desUploadCollaborationSimulation(input: DesUploadCollaborationSimulationInput!): DesUploadCollaborationSimulationPayload!
   "Uploads the specified collaboration."
   desUploadCollaboration(input: DesUploadCollaborationInput!): DesUploadCollaborationPayload!
+  "Updates the permissions for the associated project."
+  desUpdateProjectPermissions(input: DesUpdateProjectPermissionsInput!): DesUpdateProjectPermissionsPayload!
   "Creates a job that exports the specified project data."
   desCreateProjectExportJob(input: DesCreateProjectExportJobInput!): DesCreateProjectExportJobPayload!
   "Updates a specific result block."
@@ -294,10 +302,269 @@ type DesBomItemInstance {
   isFitted: Boolean!
 }
 
+type DesCadBendingLine {
+  foldIndex: Int!
+  radius: Int!
+  angle: Float!
+  affectedRegions: [String!]
+  startPoint: DesCadPoint!
+  endPoint: DesCadPoint!
+}
+
+type DesCadBoard3DBodyModelData {
+  modelFilePath: String
+  modelFileHash: String
+  modelIdOnServer: String
+  modelDisplayName: String
+  localTestFileName: String
+  modelFileExtension: String
+  modelNetName: String
+  modelPartName: String
+  isEcadProvidesRaw3DModel: Boolean!
+  color: Long
+  opacity: Float
+}
+
+type DesCadBoardArea {
+  uniqueId: String
+  comment: String
+  restrictsVia: Boolean!
+  restrictsTrack: Boolean!
+  restrictsCopper: Boolean!
+  restrictsSMDPad: Boolean!
+  restrictsTHPad: Boolean!
+  placement: DesCadBoardComponentPlacement!
+  "JSON serialized `GeometricShape`."
+  shapeJson: String
+  objectType: DesCadBoardObjectType!
+  rotation: Float!
+  location: DesCadPoint!
+  designator: String
+}
+
+type DesCadBoardComponent {
+  id: String
+  variantName: String
+  placement: DesCadBoardComponentPlacement!
+  isLocked: Boolean!
+  isFree3DBody: Boolean!
+  boardRegionName: String
+  deepening: Int!
+  isMcadUsesOwn3DBody: Boolean!
+  free3DBodyRotationX: Float!
+  free3DBodyRotationY: Float!
+  free3DBodyRotationZ: Float!
+  free3DBodyStandoffHeight: Int!
+  modelInComponentTransform: DesCadBodyTransformation
+  innerBodyRelativeToBoardTransform: DesCadBodyTransformation
+  objectType: DesCadBoardObjectType!
+  rotation: Float!
+  location: DesCadPoint!
+  designator: String
+}
+
+type DesCadBoardComponentType {
+  id: String
+  internalId: String
+  itemGuid: String
+  revisionGuid: String
+  companyComponentId: String
+  libraryReference: String
+  isFromLocalPcbLibrary: Boolean!
+  dmsComponentName: String
+  bodyShape: DesCadComponentBodyShape
+  properties: [DesCadProperty!]
+  components: [DesCadBoardComponent!]
+}
+
+type DesCadBoardCopperLayer {
+  name: String
+  platformLayerId: Int!
+  thickness: Int!
+  isPadAndViaBarrelsSpecialLayer: Boolean!
+  models: [DesCadBoard3DBodyModelData!]
+}
+
+type DesCadBoardCopperRegion {
+  layerName: String
+  regionType: DesCadBoardCopperRegionType!
+  "JSON serialized array of `GeometricShape`."
+  outlineShapesJson: String
+  "JSON serialized array of `GeometricShape`."
+  holeShapesJson: String
+}
+
+type DesCadBoardCutout {
+  "JSON serialized `GeometricShape`."
+  shapeJson: String
+  uniqueId: String
+  originalDesignator: String
+  associatedComponentDesignator: String
+  objectType: DesCadBoardObjectType!
+  rotation: Float!
+  location: DesCadPoint!
+  designator: String
+}
+
+type DesCadBoardHole {
+  holeType: DesCadHoleType!
+  diameter: Int!
+  isPlated: Boolean!
+  size: DesCadPoint!
+  uniqueId: String
+  originalDesignator: String
+  associatedComponentDesignator: String
+  objectType: DesCadBoardObjectType!
+  rotation: Float!
+  location: DesCadPoint!
+  designator: String
+}
+
+type DesCadBoardLayer {
+  name: String
+  platformLayerId: Int!
+  thickness: Int!
+  layerType: DesCadBoardLayerType!
+  layerPosition: DesCadBoardLayerPosition!
+  layerCategory: DesCadBoardLayerCategory!
+  layerPhysicalCategory: DesCadBoardLayerPhysicalCategory!
+  layerComponentPlacement: DesCadBoardLayerComponentPlacement!
+  layerDielectricType: DesCadBoardLayerDielectricType!
+}
+
+type DesCadBoardRegion {
+  name: String
+  regionLayerZBottom: Int!
+  regionLayerZTop: Int!
+  isFlex: Boolean!
+  isLocked3D: Boolean!
+  color: Long!
+  internalPoint: DesCadPoint!
+  "JSON serialized `ComplexShape`."
+  shapeJson: String
+  layers: [DesCadBoardLayer!]
+}
+
+type DesCadBoardTrack {
+  netName: String
+  layerName: String
+  width: Int!
+  points: [DesCadPoint!]!
+}
+
+type DesCadBoardVariant {
+  uniqueId: String
+  name: String
+  description: String
+  variations: [DesCadComponentVariation!]
+}
+
+type DesCadBoardVariants {
+  componentTypeVariantLibrary: [DesCadBoardComponentType!]
+  variants: [DesCadBoardVariant!]
+}
+
+type DesCadBoardVia {
+  startLayerName: String
+  endLayerName: String
+  copperDiameter: Int!
+  holeDiameter: Int!
+  location: DesCadPoint!
+}
+
+type DesCadBodyTransformation {
+  translationX: Float!
+  translationY: Float!
+  translationZ: Float!
+  rotationX: Float!
+  rotationY: Float!
+  rotationZ: Float!
+  scaleX: Float!
+  scaleY: Float!
+  scaleZ: Float!
+}
+
+type DesCadComponentBodyShape {
+  height: Int!
+  isHidden: Boolean!
+  isBodylessOnEcad: Boolean!
+  "JSON serialized `GeometricShape`."
+  shapeJson: String
+  modelData: DesCadBoard3DBodyModelData
+}
+
+type DesCadComponentVariation {
+  designator: String
+  rotation: Float!
+  variantKind: DesCadComponentVariationKind!
+  componentTypeId: String
+  placement: DesCadBoardComponentPlacement!
+  location: DesCadPoint!
+  modelInComponentTransform: DesCadBodyTransformation
+}
+
+type DesCadDesign {
+  boardThickness: Int!
+  workflowState: DesCadWorkflowState!
+  designFileName: String
+  designVariantId: String
+  designVariantName: String
+  layersExportMode: DesCadLayersExportMode!
+  hasHatchedCopperPolygons: Boolean!
+  boardColor: Long!
+  boardCoreColor: Long
+  boardCoreOpacity: Float
+  minimalHeightComponentsShown: Int!
+  isRF20Design: Boolean!
+  copperExportFeatures: [DesCadBoardCopperExportFeature!]!
+  collaborationFlags: [DesCadBoardCollaborationFlag!]!
+  boardOrigin: DesCadPoint!
+  boardOffsetMcadToEcadOrigin: DesCadPoint!
+  coordinateSystemTranslation: DesCadPoint!
+  componentTypes: [DesCadBoardComponentType!]
+  holes: [DesCadBoardHole!]
+  cutouts: [DesCadBoardCutout!]
+  copperLayers: [DesCadBoardCopperLayer!]
+  copperRegions: [DesCadBoardCopperRegion!]
+  "JSON serialized `ComplexShape`."
+  boardOutlineJson: String
+  boardSplitLines: [DesCadSplitLine!]
+  boardRegions: [DesCadBoardRegion!]
+  boardBendingLines: [DesCadBendingLine!]
+  boardAreas: [DesCadBoardArea!]
+  boardLayers: [DesCadBoardLayer!]
+  tracks: [DesCadBoardTrack!]
+  vias: [DesCadBoardVia!]
+  variants: DesCadBoardVariants
+  messages: [String!]
+}
+
+type DesCadPoint {
+  x: Int!
+  y: Int!
+  z: Int!
+}
+
+type DesCadProperty {
+  name: String!
+  value: String
+}
+
+type DesCadSplitLine {
+  leftRegionName: String
+  rightRegionName: String
+  "JSON serialized `ComplexShape`."
+  shapeJson: String
+  startPoint: DesCadPoint!
+  endPoint: DesCadPoint!
+}
+
 "ECAD or MCAD revision data."
 type DesCollaborationRevision {
   "The user who created this revision."
   createdBy: DesUser!
+  "*PROTOTYPE, SUBJECT TO CHANGE*"
+  design: DesCadDesign!
   "Revision comment."
   comment: String!
   "Creation time."
@@ -703,22 +970,22 @@ type DesFolder implements Node {
 }
 
 type DesFolderPermission {
-  "The folder permission scope to differentiate different permission types."
-  scope: DesFolderPermissionScope!
-  "The `DesUserGroup` this folder permission is associated with."
+  "The permission scope to differentiate different permission types."
+  scope: DesPermissionScope!
+  "The `DesUserGroup` this permission is associated with."
   group: DesUserGroup
-  "The `DesUser` this folder permission is associated with."
+  "The `DesUser` this permission is associated with."
   user: DesUser
-  "The name of this folder permission."
-  name: String!
-  "Tells if this folder permission allows reading of the associated folder."
+  "Tells if this permission allows reading of the associated folder."
   canRead: Boolean!
-  "Tells if this folder permission allows editing the associated folder."
+  "Tells if this permission allows editing the associated folder."
   canEdit: Boolean!
-  "Tells if this folder permission allows creation of objects within the associated folder."
+  "Tells if this permission allows creation of objects within the associated folder."
   canCreate: Boolean!
-  "Tells if this folder permission allows deletion of the associated folder."
+  "Tells if this permission allows deletion of the associated folder."
   canDelete: Boolean!
+  "The name of this permission."
+  name: String!
 }
 
 type DesFootprint {
@@ -1056,6 +1323,7 @@ type DesProject implements Node {
   collaborationLatestRevision(domain: DesCollaborationDomain!): DesCollaborationRevision
   "ECAD or MCAD revisions returned by pages. See also `desProjectCollaborationRevisions`."
   collaborationRevisions(domain: DesCollaborationDomain! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesCollaborationRevisionConnection
+  projectPermissions: [DesProjectPermission!]!
   "The Altium 365 web address."
   url: String!
   "The Altium 365 workspace URL."
@@ -1112,6 +1380,25 @@ type DesProjectIdPayload {
 type DesProjectParameter {
   name: String!
   value: String!
+}
+
+type DesProjectPermission {
+  "The permission scope to differentiate different permission types."
+  scope: DesPermissionScope!
+  "The `DesUserGroup` this permission is associated with."
+  group: DesUserGroup
+  "The `DesUser` this permission is associated with."
+  user: DesUser
+  "Tells if this permission allows reading of the associated project."
+  canRead: Boolean!
+  "Tells if this permission allows editing the associated project."
+  canEdit: Boolean!
+  "Tells if this permission allows creation of objects within the associated project."
+  canCreate: Boolean!
+  "Tells if this permission allows deletion of the associated project."
+  canDelete: Boolean!
+  "The name of this permission."
+  name: String!
 }
 
 type DesRectangle {
@@ -1491,6 +1778,16 @@ type DesUpdateCommentPayload {
   errors: [DesPayloadError!]!
 }
 
+type DesUpdateComponentItemParametersPayload {
+  componentId: ID!
+  errors: [DesPayloadError!]!
+}
+
+type DesUpdateComponentLifeCycleStatePayload {
+  componentId: ID!
+  errors: [DesPayloadError!]!
+}
+
 type DesUpdateComponentRevisionParametersPayload {
   componentId: ID!
   errors: [DesPayloadError!]!
@@ -1498,6 +1795,14 @@ type DesUpdateComponentRevisionParametersPayload {
 
 type DesUpdateComponentTemplatePayload {
   errors: [DesPayloadError!]!
+}
+
+type DesUpdateFolderPermissionsPayload {
+  folderId: ID!
+}
+
+type DesUpdateProjectPermissionsPayload {
+  projectId: ID!
 }
 
 type DesUpdateReuseBlockPayload {
@@ -1744,7 +2049,7 @@ type SupPartExtras {
   datasheetUrls: [String!]
   lifeCycle: SupPartLifeCycle!
   parameters: [SupPartExtrasParameter!]
-  technicalDetails: [SupPartExtrasTechnicalDetail!]
+  technicalDetails: [SupPartExtrasTechnicalDetail!] @deprecated(reason: "Use `parameters`.")
 }
 
 type SupPartExtrasParameter {
@@ -1789,6 +2094,258 @@ input DesAddUsersToGroupInput {
   userIds: [String!]!
 }
 
+input DesCadBendingLineInput {
+  startPoint: DesCadBoardPointInput
+  endPoint: DesCadBoardPointInput
+  foldIndex: Int
+  radius: Int
+  angle: Float
+  affectedRegions: [String!]
+}
+
+input DesCadBoard3DBodyModelDataInput {
+  modelFilePath: String
+  modelFileHash: String
+  modelIdOnServer: String
+  modelDisplayName: String
+  localTestFileName: String
+  modelFileExtension: String
+  modelNetName: String
+  modelPartName: String
+  isEcadProvidesRaw3DModel: Boolean
+  color: Long
+  opacity: Float
+}
+
+input DesCadBoardAreaInput {
+  designator: String
+  rotation: Float
+  location: DesCadBoardPointInput
+  uniqueId: String
+  comment: String
+  restrictsVia: Boolean
+  restrictsTrack: Boolean
+  restrictsCopper: Boolean
+  restrictsSMDPad: Boolean
+  restrictsTHPad: Boolean
+  placement: DesCadBoardComponentPlacement
+  "JSON serialized `GeometricShape`."
+  shapeJson: String
+}
+
+input DesCadBoardComponentInput {
+  designator: String
+  rotation: Float
+  location: DesCadBoardPointInput
+  id: String
+  variantName: String
+  placement: DesCadBoardComponentPlacement
+  isLocked: Boolean
+  isFree3DBody: Boolean
+  boardRegionName: String
+  deepening: Int
+  isMcadUsesOwn3DBody: Boolean
+  free3DBodyRotationX: Float
+  free3DBodyRotationY: Float
+  free3DBodyRotationZ: Float
+  free3DBodyStandoffHeight: Int
+  modelInComponentTransform: DesCadBodyTransformationInput
+  innerBodyRelativeToBoardTransform: DesCadBodyTransformationInput
+}
+
+input DesCadBoardComponentTypeInput {
+  id: String
+  internalId: String
+  itemGuid: String
+  revisionGuid: String
+  companyComponentId: String
+  libraryReference: String
+  isFromLocalPcbLibrary: Boolean
+  dmsComponentName: String
+  bodyShape: DesCadComponentBodyShapeInput
+  properties: [DesCadPropertyInput!]
+  components: [DesCadBoardComponentInput!]
+}
+
+input DesCadBoardCopperLayerInput {
+  name: String
+  platformLayerId: Int
+  thickness: Int
+  isPadAndViaBarrelsSpecialLayer: Boolean
+  models: [DesCadBoard3DBodyModelDataInput!]
+}
+
+input DesCadBoardCopperRegionInput {
+  layerName: String
+  "JSON serialized array of `GeometricShape`."
+  outlineShapesJson: String
+  "JSON serialized array of `GeometricShape`."
+  holeShapesJson: String
+}
+
+input DesCadBoardCutoutInput {
+  designator: String
+  rotation: Float
+  location: DesCadBoardPointInput
+  uniqueId: String
+  originalDesignator: String
+  associatedComponentDesignator: String
+  "JSON serialized `GeometricShape`."
+  shapeJson: String
+}
+
+input DesCadBoardHoleInput {
+  designator: String
+  rotation: Float
+  location: DesCadBoardPointInput
+  uniqueId: String
+  originalDesignator: String
+  associatedComponentDesignator: String
+  holeType: DesCadHoleType
+  diameter: Int
+  isPlated: Boolean
+  size: DesCadBoardPointInput
+}
+
+input DesCadBoardLayerInput {
+  name: String
+  platformLayerId: Int
+  thickness: Int
+  layerType: DesCadBoardLayerType
+  layerPosition: DesCadBoardLayerPosition
+  layerCategory: DesCadBoardLayerCategory
+  layerPhysicalCategory: DesCadBoardLayerPhysicalCategory
+  layerComponentPlacement: DesCadBoardLayerComponentPlacement
+  layerDielectricType: DesCadBoardLayerDielectricType
+}
+
+input DesCadBoardPointInput {
+  x: Int!
+  y: Int!
+  z: Int!
+}
+
+input DesCadBoardRegionInput {
+  name: String
+  regionLayerZBottom: Int
+  regionLayerZTop: Int
+  isFlex: Boolean
+  isLocked3D: Boolean
+  color: Long
+  internalPoint: DesCadBoardPointInput
+  "JSON serialized `ComplexShape`."
+  shapeJson: String
+  layers: [DesCadBoardLayerInput!]
+}
+
+input DesCadBoardTrackInput {
+  netName: String
+  layerName: String
+  width: Int
+  points: [DesCadBoardPointInput!]
+}
+
+input DesCadBoardVariantInput {
+  uniqueId: String
+  name: String
+  description: String
+  variations: [DesCadComponentVariationInput!]
+}
+
+input DesCadBoardVariantsInput {
+  componentTypeVariantLibrary: [DesCadBoardComponentTypeInput!]
+  variants: [DesCadBoardVariantInput!]
+}
+
+input DesCadBoardViaInput {
+  startLayerName: String
+  endLayerName: String
+  copperDiameter: Int
+  holeDiameter: Int
+  location: DesCadBoardPointInput
+}
+
+input DesCadBodyTransformationInput {
+  translationX: Float!
+  translationY: Float!
+  translationZ: Float!
+  rotationX: Float!
+  rotationY: Float!
+  rotationZ: Float!
+  scaleX: Float!
+  scaleY: Float!
+  scaleZ: Float!
+}
+
+input DesCadComponentBodyShapeInput {
+  height: Int
+  isHidden: Boolean
+  isBodylessOnEcad: Boolean
+  "JSON serialized `GeometricShape`."
+  shapeJson: String
+  modelData: DesCadBoard3DBodyModelDataInput
+}
+
+input DesCadComponentVariationInput {
+  designator: String
+  rotation: Float
+  variantKind: DesCadComponentVariationKind
+  componentTypeId: String
+  placement: DesCadBoardComponentPlacement
+  location: DesCadBoardPointInput
+  modelInComponentTransform: DesCadBodyTransformationInput
+}
+
+input DesCadDesignInput {
+  boardThickness: Int
+  workflowState: DesCadWorkflowState
+  designFileName: String
+  designVariantId: String
+  designVariantName: String
+  layersExportMode: DesCadLayersExportMode
+  hasHatchedCopperPolygons: Boolean
+  boardColor: Long
+  boardCoreColor: Long
+  boardCoreOpacity: Float
+  minimalHeightComponentsShown: Int
+  isRF20Design: Boolean
+  copperExportFeatures: [DesCadBoardCopperExportFeature!]
+  collaborationFlags: [DesCadBoardCollaborationFlag!]
+  boardOrigin: DesCadBoardPointInput
+  boardOffsetMcadToEcadOrigin: DesCadBoardPointInput
+  coordinateSystemTranslation: DesCadBoardPointInput
+  componentTypes: [DesCadBoardComponentTypeInput!]
+  holes: [DesCadBoardHoleInput!]
+  cutouts: [DesCadBoardCutoutInput!]
+  copperLayers: [DesCadBoardCopperLayerInput!]
+  copperRegions: [DesCadBoardCopperRegionInput!]
+  "JSON serialized `ComplexShape`."
+  boardOutlineJson: String
+  boardSplitLines: [DesCadSplitLineInput!]
+  boardRegions: [DesCadBoardRegionInput!]
+  boardBendingLines: [DesCadBendingLineInput!]
+  boardAreas: [DesCadBoardAreaInput!]
+  boardLayers: [DesCadBoardLayerInput!]
+  tracks: [DesCadBoardTrackInput!]
+  vias: [DesCadBoardViaInput!]
+  variants: DesCadBoardVariantsInput
+  messages: [String!]
+}
+
+input DesCadPropertyInput {
+  name: String!
+  value: String
+}
+
+input DesCadSplitLineInput {
+  startPoint: DesCadBoardPointInput
+  endPoint: DesCadBoardPointInput
+  leftRegionName: String
+  rightRegionName: String
+  "JSON serialized `ComplexShape`."
+  shapeJson: String
+}
+
 input DesCollaborationSimulationFileInput {
   fileId: String!
   fileType: String!
@@ -1807,6 +2364,11 @@ input DesComponentFilterInput {
   description: StringOperationFilterInput
   "Gets true if the component is managed."
   isManaged: BooleanOperationFilterInput
+}
+
+input DesComponentItemParameterInput {
+  name: String!
+  value: String!
 }
 
 input DesCreateCommentInput {
@@ -2175,6 +2737,19 @@ input DesUpdateCommentInput {
   text: String!
 }
 
+input DesUpdateComponentItemParametersInput {
+  componentId: ID!
+  "Tells to replace all existing parameters. By default parameters are added to existing."
+  replaceExisting: Boolean
+  parameters: [DesComponentItemParameterInput!]!
+}
+
+input DesUpdateComponentLifeCycleStateInput {
+  componentId: ID!
+  lifeCycleStateTransitionId: String!
+  comment: String
+}
+
 input DesUpdateComponentRevisionParametersInput {
   componentId: ID!
   componentRevisionNamingSchemeId: String
@@ -2194,6 +2769,40 @@ input DesUpdateComponentTemplateInput {
   comment: String
   "Optional description."
   description: String
+}
+
+input DesUpdateFolderPermissionInput {
+  "Allows updating, deleting and creating when set, otherwise only read permissions will be allowed."
+  canModify: Boolean!
+  scope: DesPermissionScope!
+  userId: String
+  groupId: ID
+}
+
+input DesUpdateFolderPermissionsInput {
+  folderId: ID!
+  "Tells to replace all existing permissions. By default permissions are added to existing."
+  replaceExisting: Boolean
+  "Tells to apply the permissions update to all child objects. By default permissions are only set for the folder itself."
+  applyToChildren: Boolean
+  permissions: [DesUpdateFolderPermissionInput!]!
+}
+
+input DesUpdateProjectPermissionInput {
+  "Allows updating, deleting and creating when set, otherwise only read permissions will be allowed."
+  canModify: Boolean!
+  scope: DesPermissionScope!
+  userId: String
+  groupId: ID
+}
+
+input DesUpdateProjectPermissionsInput {
+  projectId: ID!
+  "Tells to replace all existing permissions. By default permissions are added to existing."
+  replaceExisting: Boolean
+  "Tells to apply the permissions update to all child objects. By default permissions are only set for the project itself."
+  applyToChildren: Boolean
+  permissions: [DesUpdateProjectPermissionInput!]!
 }
 
 input DesUpdateReuseBlockInput {
@@ -2245,8 +2854,10 @@ input DesUploadCollaborationInput {
   domain: DesCollaborationDomain!
   "The uploaded file comment."
   comment: String!
-  "The uploaded file ID."
-  fileId: String!
+  "The uploaded file ID. Either the file ID or design must be given."
+  fileId: String
+  "*PROTOTYPE, SUBJECT TO CHANGE*"
+  design: DesCadDesignInput
 }
 
 input DesUploadCollaborationSimulationInput {
@@ -2369,6 +2980,110 @@ input StringOperationFilterInput {
   nendsWith: String
 }
 
+enum DesCadBoardCollaborationFlag {
+  IGNORE_DUPLICATE_PAD_DESIGNATORS
+  BASELINE_UNIT_IMPERIAL
+}
+
+enum DesCadBoardComponentPlacement {
+  TOP
+  BOTTOM
+  BOTH
+}
+
+enum DesCadBoardCopperExportFeature {
+  COPPER_REGIONS
+  PADS
+  TRACKS
+  VIAS
+}
+
+enum DesCadBoardCopperRegionType {
+  REGION
+  PAD
+}
+
+enum DesCadBoardLayerCategory {
+  PHYSICAL
+  MECHANICAL
+}
+
+enum DesCadBoardLayerComponentPlacement {
+  NONE
+  BODY_UP
+  BODY_DOWN
+}
+
+enum DesCadBoardLayerDielectricType {
+  NONE
+  CORE
+  PRE_PREQ
+  SURFACE
+  FILM
+}
+
+enum DesCadBoardLayerPhysicalCategory {
+  ELECTRICAL_INTERNAL_PLANE
+  ELECTRICAL_SIGNAL_LAYER
+  DIELECTRICAL_ORDINAL
+  DIELECTRICAL_SOLDER_MASK
+  PHYSICAL_OVERLAY
+  PHYSICAL_PASTE_MASK
+}
+
+enum DesCadBoardLayerPosition {
+  TOP
+  INTERNAL
+  BOTTOM
+}
+
+enum DesCadBoardLayerType {
+  DIELECTRIC
+  SIGNAL
+  INTERNAL_PLANE
+}
+
+enum DesCadBoardObjectType {
+  COMPONENT
+  HOLE
+  CUTOUT
+  COMPONENT_TYPE
+  BOARD_AREA
+  BOARD_OUTLINE
+  BOARD_VIA
+  LAYER
+  REGION
+  SPLIT_LINE
+  BENDING_LINE
+  TRACK
+}
+
+enum DesCadComponentVariationKind {
+  FITTED
+  NOT_FITTED
+  ALTERNATE
+}
+
+enum DesCadHoleType {
+  CIRCULAR
+  RECTANGULAR
+  SLOT
+  UNKNOWN
+}
+
+enum DesCadLayersExportMode {
+  NO_LAYERS
+  ALL_LAYERS
+  OUTER_SIGNAL_LAYERS_ONLY
+}
+
+enum DesCadWorkflowState {
+  NONE
+  SENT_PROPOSED_CHANGES
+  RECEIVED_PROPOSED_CHANGES
+  READY_TO_SEND_OR_RECEIVE_CHANGES
+}
+
 "Specifies ECAD or MCAD domain."
 enum DesCollaborationDomain {
   ECAD
@@ -2445,15 +3160,6 @@ enum DesContentTypeKind {
 enum DesDocumentType {
   SCHEMATIC
   PCB
-}
-
-enum DesFolderPermissionScope {
-  USER
-  ANYONE
-  ORGANISATION
-  GROUP
-  OWNER
-  COLLABORATOR
 }
 
 enum DesFolderType {
@@ -2567,6 +3273,15 @@ enum DesParameterType {
   TIME
 }
 
+enum DesPermissionScope {
+  USER
+  ANYONE
+  ORGANISATION
+  GROUP
+  OWNER
+  COLLABORATOR
+}
+
 enum DesPinElectricalType {
   INPUT
   IO
@@ -2579,9 +3294,17 @@ enum DesPinElectricalType {
 }
 
 enum DesPrimitiveShape {
+  NONE
   ROUND
   RECTANGLE
+  OCTAGON
+  CIRCLE
+  ARC
+  TERMINATOR
+  ROUND_RECTANGLE
+  ROTATED_RECTANGLE
   ROUNDED_RECTANGLE
+  CUSTOM
 }
 
 enum DesTaskPriority {
@@ -4175,6 +4898,8 @@ type DatScrPartInfo {
   estimatedDaysOfSupply: Int
   "Estimated number of days into the future that the total global stock for a part is predicted to remain above the EAU value, including predicted restock events."
   probableAvailabilityWindow: Float
+  "Risk rating for the procurability of this part."
+  rating: DatScrPartInfoRating
 }
 
 "Error indicates that the user has exceeded their quota."
@@ -4240,7 +4965,6 @@ type DatScrUsage {
 type SupOctocartLink {
   sellerId: String!
   cartUrl: String
-  messages: [String!]! @deprecated(reason: "Error messages have been moved to the root `errors` object")
 }
 
 union DatScrCreateJobError = DatScrQuotaExceededError | DatScrSubscriptionNotFoundError
@@ -4407,6 +5131,16 @@ enum DatScrJobState {
   UNKNOWN
 }
 
+"Possible levels of an SCR part rating."
+enum DatScrPartInfoRating {
+  "This part has had a volatile supply or been mainly unavailable in the past 12 months or is predicted to be unavailable in your desired quantity in the next 2 months."
+  RED
+  "This part has had occasional procurement issues in the past 12 months or availability has trended down significantly in the last quarter."
+  AMBER
+  "This part has been procurable for the past 12 months and is predicted to be available in your desired quantity for 2+ months."
+  GREEN
+}
+
 enum ApplyPolicy {
   BEFORE_RESOLVER
   AFTER_RESOLVER
@@ -4432,6 +5166,8 @@ directive @computed("Specifies the fields on which a computed field is dependent
 
 "Annotates the original name of a type."
 directive @source("The original name of the annotated type." name: String! "The name of the schema to which this type belongs to." schema: String!) repeatable on OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
+
+directive @tag(name: String!) repeatable on SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
 
 directive @Binding(constraint: String!) on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
 

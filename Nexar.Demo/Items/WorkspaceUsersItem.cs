@@ -7,14 +7,9 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class WorkspaceUsersItem : NodeTreeItem
+public sealed class WorkspaceUsersItem(WorkspaceItem parent) : NodeTreeItem(parent)
 {
-    public WorkspaceUsersItem(WorkspaceItem parent) : base(parent)
-    {
-        _parent = parent;
-    }
-
-    readonly WorkspaceItem _parent;
+    readonly WorkspaceItem _parent = parent;
     public override string Text => "Users";
     public override string Icon => Icons.Material.Filled.Person;
 

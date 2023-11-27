@@ -3,16 +3,10 @@ using System.Linq;
 
 namespace Nexar.Client;
 
-public class FolderTreeNode
+public class FolderTreeNode(IMyFolder folder, List<FolderTreeNode> nodes)
 {
-    public IMyFolder Folder { get; }
-    public List<FolderTreeNode> Nodes { get; }
-
-    public FolderTreeNode(IMyFolder folder, List<FolderTreeNode> nodes)
-    {
-        Folder = folder;
-        Nodes = nodes;
-    }
+    public IMyFolder Folder { get; } = folder;
+    public List<FolderTreeNode> Nodes { get; } = nodes;
 
     public static List<FolderTreeNode> GetRootNodes(IEnumerable<IMyFolder> folders)
     {

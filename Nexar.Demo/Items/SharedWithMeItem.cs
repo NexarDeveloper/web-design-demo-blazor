@@ -1,5 +1,4 @@
 ﻿using MudBlazor;
-using Nexar.Client;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -8,10 +7,6 @@ namespace Nexar.Demo;
 public sealed class SharedWithMeItem : TreeItem
 {
     const string MyName = "Shared with Me";
-
-    public SharedWithMeItem()
-    {
-    }
 
     public override string Text => MyName;
     public override string Path => MyName;

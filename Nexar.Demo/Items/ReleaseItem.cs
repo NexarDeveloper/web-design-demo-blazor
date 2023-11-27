@@ -7,14 +7,9 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class ReleaseItem : NodeTreeItem
+public sealed class ReleaseItem(IMyRelease tag, ProjectReleasesItem parent) : NodeTreeItem(parent)
 {
-    public ReleaseItem(IMyRelease tag, ProjectReleasesItem parent) : base(parent)
-    {
-        Tag = tag;
-    }
-
-    public IMyRelease Tag { get; }
+    public IMyRelease Tag { get; } = tag;
     public override string Text => Tag.CreatedAt.ToString();
     public override string Icon => Icons.Material.Filled.Launch;
 
@@ -41,7 +36,7 @@ public sealed class ReleaseItem : NodeTreeItem
         }
         catch
         {
-            return new HashSet<TreeItem>();
+            return [];
         }
     }
 }

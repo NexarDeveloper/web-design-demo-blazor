@@ -6,14 +6,9 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class WorkspaceTasksItem : NodeTreeItem
+public sealed class WorkspaceTasksItem(WorkspaceItem parent) : NodeTreeItem(parent)
 {
-    public WorkspaceTasksItem(WorkspaceItem parent) : base(parent)
-    {
-        _parent = parent;
-    }
-
-    readonly WorkspaceItem _parent;
+    readonly WorkspaceItem _parent = parent;
     public override string Text => "Tasks";
     public override string Icon => Icons.Material.Filled.Task;
 

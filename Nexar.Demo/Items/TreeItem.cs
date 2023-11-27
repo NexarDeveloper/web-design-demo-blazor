@@ -96,13 +96,9 @@ public abstract class TreeItem
 /// <summary>
 /// Tree item with children.
 /// </summary>
-public abstract class NodeTreeItem : TreeItem
+public abstract class NodeTreeItem(TreeItem parent) : TreeItem
 {
-    public NodeTreeItem(TreeItem parent)
-    {
-        Parent = parent;
-    }
-    public TreeItem Parent { get; }
+    public TreeItem Parent { get; } = parent;
     public sealed override NexarClient Client => Parent.Client;
     public sealed override string Path => Parent.Path + " / " + Text;
 }
@@ -110,11 +106,8 @@ public abstract class NodeTreeItem : TreeItem
 /// <summary>
 /// Tree item with no children.
 /// </summary>
-public abstract class LeafTreeItem : NodeTreeItem
+public abstract class LeafTreeItem(TreeItem parent) : NodeTreeItem(parent)
 {
-    public LeafTreeItem(TreeItem parent) : base(parent)
-    {
-    }
     public sealed override bool CanExpand => false;
     public sealed override Task<HashSet<TreeItem>> ServerData() => throw new NotImplementedException();
 }

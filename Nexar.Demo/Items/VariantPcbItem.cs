@@ -5,13 +5,9 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class VariantPcbItem : LeafTreeItem
+public sealed class VariantPcbItem(VariantItem parent) : LeafTreeItem(parent)
 {
     public const int ItemsLimit = 100;
-
-    public VariantPcbItem(VariantItem parent) : base(parent)
-    {
-    }
 
     public IMyPcb Tag { get; private set; }
     public override string Text => "PCB";

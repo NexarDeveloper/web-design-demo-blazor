@@ -6,17 +6,12 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class ProjectItem : NodeTreeItem
+public sealed class ProjectItem(IMyProject tag, WorkspaceProjectsItem parent) : NodeTreeItem(parent)
 {
     public IMyProjectRevision Revision { get; private set; }
     public IReadOnlyList<IMyProjectParameter> Parameters { get; private set; }
 
-    public ProjectItem(IMyProject tag, WorkspaceProjectsItem parent) : base(parent)
-    {
-        Tag = tag;
-    }
-
-    public IMyProject Tag { get; }
+    public IMyProject Tag { get; } = tag;
     public override string Text => Tag.Name;
     public override string Icon => Icons.Material.Filled.Memory;
 

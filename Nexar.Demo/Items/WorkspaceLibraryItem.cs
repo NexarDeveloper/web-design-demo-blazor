@@ -5,12 +5,8 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class WorkspaceLibraryItem : NodeTreeItem
+public sealed class WorkspaceLibraryItem(WorkspaceItem parent) : NodeTreeItem(parent)
 {
-    public WorkspaceLibraryItem(WorkspaceItem parent) : base(parent)
-    {
-    }
-
     public IMyWorkspace Tag => Parent.Tag;
     public override string Text => "Library";
     public override string Icon => Icons.Material.Filled.FolderOpen;

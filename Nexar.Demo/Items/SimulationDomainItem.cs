@@ -7,18 +7,12 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class SimulationDomainItem : LeafTreeItem
+public sealed class SimulationDomainItem(ProjectSimulationItem parent, string domainName) : LeafTreeItem(parent)
 {
-    public string DomainName { get; private set; }
+    public string DomainName { get; private set; } = domainName;
     public IReadOnlyList<IMyCollaborationSimulationRevision> Revisions { get; private set; }
 
-    public SimulationDomainItem(ProjectSimulationItem parent, string domainName) : base(parent)
-    {
-        DomainName = domainName;
-        Parent = parent;
-    }
-
-    public new ProjectSimulationItem Parent { get; }
+    public new ProjectSimulationItem Parent { get; } = parent;
     public override string Text => DomainName;
     public override string Icon => Icons.Material.Filled.CompareArrows;
 

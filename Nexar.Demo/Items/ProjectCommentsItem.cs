@@ -6,14 +6,9 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class ProjectCommentsItem : NodeTreeItem
+public sealed class ProjectCommentsItem(ProjectItem parent) : NodeTreeItem(parent)
 {
-    public ProjectCommentsItem(ProjectItem parent) : base(parent)
-    {
-        _parent = parent;
-    }
-
-    readonly ProjectItem _parent;
+    readonly ProjectItem _parent = parent;
     public override string Text => "Comments";
     public override string Icon => Icons.Material.Filled.ChatBubbleOutline;
 

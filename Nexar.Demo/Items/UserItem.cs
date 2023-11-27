@@ -5,14 +5,9 @@ using System.Linq;
 
 namespace Nexar.Demo;
 
-public sealed class UserItem : LeafTreeItem
+public sealed class UserItem(IMyUser tag, WorkspaceUsersItem parent) : LeafTreeItem(parent)
 {
-    public UserItem(IMyUser tag, WorkspaceUsersItem parent) : base(parent)
-    {
-        Tag = tag;
-    }
-
-    public IMyUser Tag { get; }
+    public IMyUser Tag { get; } = tag;
     public override string Text => Tag.UserName;
     public override string Icon => Icons.Material.Filled.Person;
 

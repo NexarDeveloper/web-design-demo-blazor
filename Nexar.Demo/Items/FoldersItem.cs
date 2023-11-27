@@ -6,14 +6,9 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class FoldersItem : NodeTreeItem
+public sealed class FoldersItem(WorkspaceLibraryItem parent) : NodeTreeItem(parent)
 {
-    public FoldersItem(WorkspaceLibraryItem parent) : base(parent)
-    {
-        Parent = parent;
-    }
-
-    public new WorkspaceLibraryItem Parent { get; }
+    public new WorkspaceLibraryItem Parent { get; } = parent;
     public override string Text => "Folders";
     public override string Icon => Icons.Material.Outlined.SnippetFolder;
 

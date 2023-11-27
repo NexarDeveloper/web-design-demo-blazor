@@ -4,16 +4,11 @@ using System;
 
 namespace Nexar.Demo;
 
-public sealed class SchematicItem : LeafTreeItem
+public sealed class SchematicItem(IMySchematic tag, VariantSchematicsItem parent) : LeafTreeItem(parent)
 {
     public const int ItemsLimit = 100;
 
-    public SchematicItem(IMySchematic tag, VariantSchematicsItem parent) : base(parent)
-    {
-        Tag = tag;
-    }
-
-    public IMySchematic Tag { get; }
+    public IMySchematic Tag { get; } = tag;
     public override string Text => Tag.DocumentName;
     public override string Icon => Icons.Material.Filled.Transform;
 

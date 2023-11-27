@@ -1,20 +1,14 @@
 ﻿using MudBlazor;
 using Nexar.Client;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class VariantSchematicsItem : NodeTreeItem
+public sealed class VariantSchematicsItem(VariantItem parent) : NodeTreeItem(parent)
 {
-    public VariantSchematicsItem(VariantItem parent) : base(parent)
-    {
-        _parent = parent;
-    }
-
-    readonly VariantItem _parent;
+    readonly VariantItem _parent = parent;
     public override string Text => "Schematics";
     public override string Icon => Icons.Material.Filled.Transform;
 

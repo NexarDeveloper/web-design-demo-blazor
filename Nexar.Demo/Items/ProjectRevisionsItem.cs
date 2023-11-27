@@ -6,16 +6,11 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class ProjectRevisionsItem : LeafTreeItem
+public sealed class ProjectRevisionsItem(ProjectItem parent) : LeafTreeItem(parent)
 {
     public IReadOnlyList<IMyRevision> Revisions { get; private set; }
 
-    public ProjectRevisionsItem(ProjectItem parent) : base(parent)
-    {
-        Parent = parent;
-    }
-
-    public new ProjectItem Parent { get; }
+    public new ProjectItem Parent { get; } = parent;
     public override string Text => "Revisions";
     public override string Icon => Icons.Material.Filled.Checklist;
 
