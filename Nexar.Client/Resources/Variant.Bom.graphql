@@ -1,5 +1,5 @@
 ﻿# Gets the project design variant BOM.
-query VariantBom($projectId: ID!, $variantName: String!) {
+query VariantBom($projectId: ID!, $variantName: String!, $limit: Int!) {
   desProjectById(id: $projectId) {
     design {
       variants(where: {name: {eq: $variantName}}) {
@@ -14,14 +14,17 @@ query VariantBom($projectId: ID!, $variantName: String!) {
 # This fragment becomes IMyBom in C#.
 fragment MyBom on DesBom {
   id
-  bomItems {
-    quantity
-    component {
-      name
-      isManaged
-    }
-    bomItemInstances {
-      ...MyBomItemInstance
+  items(first: $limit) {
+    totalCount
+    nodes {
+      quantity
+      component {
+        name
+        isManaged
+      }
+      bomItemInstances {
+        ...MyBomItemInstance
+      }
     }
   }
 }

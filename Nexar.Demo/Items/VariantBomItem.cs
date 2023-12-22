@@ -9,6 +9,8 @@ namespace Nexar.Demo;
 
 public sealed class VariantBomItem(VariantItem parent) : LeafTreeItem(parent)
 {
+    public const int ItemsLimit = 100;
+
     public IMyBom Tag { get; private set; }
     public List<MyData> Items { get; private set; }
     public override string Text => "BOM";
@@ -30,12 +32,12 @@ public sealed class VariantBomItem(VariantItem parent) : LeafTreeItem(parent)
 
     protected override async Task UpdateAsync()
     {
-        var res = await Client.VariantBom.ExecuteAsync(Parent.Parent.Parent.Tag.Id, Parent.Tag.Name);
+        var res = await Client.VariantBom.ExecuteAsync(Parent.Parent.Parent.Tag.Id, Parent.Tag.Name, ItemsLimit);
         res.AssertNoErrors();
 
         Tag = res.Data.DesProjectById.Design.Variants[0].Bom;
 
-        Items = Tag?.BomItems
+        Items = Tag?.Items.Nodes
             .Select(x => new MyData
             {
                 Name = x.Component.Name,

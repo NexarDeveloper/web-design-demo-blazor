@@ -19,6 +19,15 @@
 {
     <TextFieldCopy Label="Id" Text=@Data.Current.Tag.Id />
 
+    <TextField Label="Items.TotalCount" Text=@Data.Current.Tag.Items.TotalCount.ToString() />
+
+    @if (Data.Current.Tag.Items.TotalCount > Data.ItemsLimit)
+    {
+        <MudAlert Severity="Severity.Warning">
+            Limited to the first @(Data.ItemsLimit) items.
+        </MudAlert>
+    }
+
     <br />
     <MudTable Items=@Data.Current.Items Dense=true>
         <HeaderContent>
