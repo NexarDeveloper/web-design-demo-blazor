@@ -52,10 +52,12 @@
                                 <HeaderContent>
                                     <MudTh>Designator</MudTh>
                                     <MudTh>IsFitted</MudTh>
+                                    <MudTh>Alternate</MudTh>
                                 </HeaderContent>
                                 <RowTemplate>
                                     <MudTd DataLabel="Designator">@Instance.Designator</MudTd>
                                     <MudTd DataLabel="IsFitted">@Instance.IsFitted</MudTd>
+                                    <MudTd DataLabel="Alternate">@Instance.AlternateComponent?.Name</MudTd>
                                 </RowTemplate>
                             </MudTable>
                         </MudCardContent>

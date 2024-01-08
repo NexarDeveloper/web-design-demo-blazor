@@ -334,6 +334,8 @@ type DesBomItemEdge {
 
 "A Bill of Materials (BOM) item instance contains information for one specific use case of the item."
 type DesBomItemInstance {
+  "An alternate component used in this variant."
+  alternateComponent: DesComponent
   "The unique label for this item."
   designator: String!
   "The variant use status for this item."

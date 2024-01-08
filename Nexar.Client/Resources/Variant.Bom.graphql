@@ -33,4 +33,7 @@ fragment MyBom on DesBom {
 fragment MyBomItemInstance on DesBomItemInstance {
   designator
   isFitted
+  alternateComponent {
+    name
+  }
 }
