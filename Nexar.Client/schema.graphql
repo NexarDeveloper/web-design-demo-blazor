@@ -247,6 +247,8 @@ type Mutation {
   desUpdateRevisionNamingScheme(input: DesUpdateRevisionNamingSchemeInput!): DesUpdateRevisionNamingSchemePayload!
   "Deletes the revision naming scheme."
   desDeleteRevisionNamingScheme(input: DesDeleteRevisionNamingSchemeInput!): DesDeleteRevisionNamingSchemePayload!
+  "Updates the value associated with the specified setting"
+  desUpdateSetting(input: DesUpdateSettingInput!): DesUpdateSettingPayload!
   "Creates a manufacture package."
   desCreateManufacturePackage(input: DesCreateManufacturePackageInput!): DesCreateManufacturePackagePayload!
   manCreateRapidQuoteRequest(qty: Int! meta: ManBoardMetaInput! shipping: ManShippingDetailsInput): ManRapidQuoteResponse
@@ -1140,6 +1142,8 @@ type DesLayerProperty {
 }
 
 type DesLibrary {
+  createdBy: DesUser!
+  updatedBy: DesUser!
   "Gets library folders."
   folders: [DesFolder!]!
   "Gets library components."
@@ -1150,6 +1154,12 @@ type DesLibrary {
   reuseBlocks("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesReuseBlockConnection
   "*PROTOTYPE, SUBJECT TO CHANGE*"
   downloadUrlsByTokens(tokens: [String!]!): [String]!
+  name: String!
+  description: String!
+  version: String!
+  eventChannel: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 "Revision naming scheme details obtained by `desLibrary\/lifeCycleDefinitions`."
@@ -1398,6 +1408,7 @@ type DesPin {
   description: String!
   designator: String!
   electricalType: DesPinElectricalType!
+  isHidden: Boolean!
 }
 
 type DesPolygon {
@@ -1708,6 +1719,11 @@ type DesSchematic {
   documentName: String!
 }
 
+type DesSetting {
+  name: String!
+  value: String!
+}
+
 type DesSharedWithMe {
   projects("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesSharedWithMeProjectInfoFilterInput): DesSharedWithMeProjectInfoConnection
   manufacturePackages: [DesManufacturePackage!]!
@@ -1937,6 +1953,12 @@ type DesUpdateReuseBlockPayload {
 }
 
 type DesUpdateRevisionNamingSchemePayload {
+  errors: [DesPayloadError!]!
+}
+
+type DesUpdateSettingPayload {
+  "The setting that was updated."
+  setting: DesSetting!
   errors: [DesPayloadError!]!
 }
 
@@ -3106,6 +3128,15 @@ input DesUpdateRevisionNamingSchemeLevelInput {
   revisionNamingPolicy: DesRevisionNamingPolicy
 }
 
+input DesUpdateSettingInput {
+  "The workspace URL that the setting should be updated on."
+  workspaceUrl: String!
+  "The name of the setting to be updated."
+  name: String!
+  "The value that the setting should be replaced with."
+  value: String!
+}
+
 input DesUpdateTaskCommentInput {
   "The task node ID."
   taskId: ID!
@@ -3459,6 +3490,15 @@ enum DesContentTypeKind {
   HARNESS_LAYOUT_TEMPLATE
   HARNESS_WIRING_TEMPLATE
   PACKAGE
+  MULTIBOARD_DESIGN
+  HARNESS_DESIGN
+  ORCAD_DESIGN
+  KICAD_DESIGN
+  EAGLE_DESIGN
+  KICAD_PROJECT
+  EAGLE_PROJECT
+  ORDER_BOM
+  PADS_PROJECT
 }
 
 enum DesDocumentType {
@@ -5177,8 +5217,14 @@ type DatScrDeleteJobPayload {
 
 "Grouped SCR part information."
 type DatScrIpnPartInfo {
-  "Number between 0 and 1 indicating what proportion of the past 365 days the globally available stock of at least one part in the group was at or above the input EAU value."
+  "Number between 0 and 1 indicating what proportion of the past 365 days the globally available stock for all parts in the group combined was at or above the input EAU value."
   ipnHistoricalProcurability: Float!
+  "Weekly averages of the sum over the list of input parts of the total global stock available at franchised distributors for the last 51 full calendar weeks."
+  weeklyMarketAvailability("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DatScrPartAvailabilitySnapshotConnection
+  "Part IDs in this group."
+  partIds: [String!]!
+  "Expected Annual Usage."
+  eau: Long!
 }
 
 "Contains information about an SCR processing job."
@@ -5204,28 +5250,59 @@ type DatScrModelInfo {
   predictionHorizonDays: Int!
 }
 
+type DatScrPartAvailabilitySnapshot {
+  snapshotStartDate: DateTime!
+  availability: Int!
+}
+
+"A connection to a list of items."
+type DatScrPartAvailabilitySnapshotConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [DatScrPartAvailabilitySnapshotEdge!]
+  "A flattened list of the nodes."
+  nodes: [DatScrPartAvailabilitySnapshot!]
+  "Identifies the total count of items in the connection."
+  totalCount: Int!
+}
+
+"An edge in a connection."
+type DatScrPartAvailabilitySnapshotEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: DatScrPartAvailabilitySnapshot!
+}
+
 "SCR part information."
 type DatScrPartInfo {
   "Number between 0 and 1 that indicates what proportion of the last 365 days that a part’s globally available stock was at or above the input EAU value."
   historicalProcurability: Float
   "Weekly average of the total global stock available at franchised distributors over the past week."
-  marketAvailabilityToday: Int
+  marketAvailabilityToday: Int @deprecated(reason: "Use the `weeklyMarketAvailability` field instead.")
   "Weekly average of the total global stock available at franchised distributors for last week."
-  marketAvailability7dAgo: Int
+  marketAvailability7dAgo: Int @deprecated(reason: "Use the `weeklyMarketAvailability` field instead.")
   "Weekly average of the total global stock available at franchised distributors for two weeks ago."
-  marketAvailability14dAgo: Int
+  marketAvailability14dAgo: Int @deprecated(reason: "Use the `weeklyMarketAvailability` field instead.")
   "Weekly average of the total global stock available at franchised distributors for three weeks ago."
-  marketAvailability21dAgo: Int
+  marketAvailability21dAgo: Int @deprecated(reason: "Use the `weeklyMarketAvailability` field instead.")
   "Weekly average of the total global stock available at franchised distributors for four weeks ago."
-  marketAvailability28dAgo: Int
+  marketAvailability28dAgo: Int @deprecated(reason: "Use the `weeklyMarketAvailability` field instead.")
   "Monthly averages of the total global stock available at franchised distributors for the last 11 full calendar months."
-  monthlyMarketAvailability: [Int!]
+  monthlyMarketAvailability: [DatScrPartAvailabilitySnapshot!]
+  "Weekly averages of the total global stock available at franchised distributors for the last 51 full calendar weeks."
+  weeklyMarketAvailability("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DatScrPartAvailabilitySnapshotConnection
   "Estimated number of days into the future that the total global stock for a part is predicted to remain above the EAU value, assuming the part is not restocked."
   estimatedDaysOfSupply: Int
   "Estimated number of days into the future that the total global stock for a part is predicted to remain above the EAU value, including predicted restock events."
   probableAvailabilityWindow: Float
   "Risk rating for the procurability of this part."
   rating: DatScrPartInfoRating
+  "Input Part ID, as returned from an Octopart supply data query."
+  partId: String!
+  "Input Estimated Annual Usage (EAU) as a number of pieces."
+  eau: Int!
 }
 
 "Error indicates that the user has exceeded their quota."

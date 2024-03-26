@@ -32,6 +32,9 @@ public static class IOperationResult_AssertNoErrors
             sb.AppendLine();
         }
 
+        if (result.Extensions is { } ext && ext.TryGetValue("requestId", out object requestId))
+            sb.AppendLine($"requestId: {requestId}");
+
         var message = sb.ToString();
         throw new Exception(message);
     }
