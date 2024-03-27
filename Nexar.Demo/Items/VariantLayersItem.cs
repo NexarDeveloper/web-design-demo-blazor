@@ -30,7 +30,11 @@ public sealed class VariantLayersItem(VariantItem parent) : LeafTreeItem(parent)
         var res = await Client.VariantLayers.ExecuteAsync(Parent.Parent.Parent.Tag.Id, Parent.Tag.Name);
         res.AssertNoErrors();
 
-        Tag = res.Data.DesProjectById.Design.Variants[0].Pcb.LayerStack
+        var pcb = res.Data.DesProjectById.Design.Variants[0].Pcb;
+        if (pcb is null)
+            return;
+
+        Tag = pcb.LayerStack
             ?? throw new Exception("Cannot get layers.");
     }
 }
