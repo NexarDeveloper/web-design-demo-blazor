@@ -46,13 +46,11 @@ type Query {
   "Gets a user by the specified global ID."
   desUserByGlobalId(id: String!): DesUser
   "Search projects within a workspace with results in paged groups."
-  desProjects("The web address of a workspace." workspaceUrl: String! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesProjectFilterInput): DesProjectConnection
+  desProjects("The web address of a workspace." workspaceUrl: String! "Requirements block filter." requirementsBlockFilter: DesProjectsRequirementsBlockFilterInput "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesProjectFilterInput): DesProjectConnection
   "Search a specific project by its unique identifier."
   desProjectById("The node identifier for a project." id: ID!): DesProject
   "Gets the project node ID from its internal ID."
   desProjectIdFromAfsId(workspaceUrl: String! afsId: String! "True for shared projects." isSharedProject: Boolean): DesProjectIdPayload!
-  "Gets the specified project export job."
-  desProjectExportJob(projectExportJobId: String!): DesProjectExportJob!
   desDesignItemById(id: ID!): DesDesignItem
   desLibrary(workspaceUrl: String!): DesLibrary!
   desComponentById(id: ID!): DesComponent
@@ -69,7 +67,6 @@ type Query {
   desBomById("The BOM identifier." id: ID!): DesBom
   desManufacturePackages: [DesManufacturePackage!]!
   desManufacturePackageById(id: ID!): DesManufacturePackage
-  desManufacturePackageCreationJob(id: ID!): DesManufacturePackageCreationJob
   "Find a specific reuse block by its unique identifier."
   desReuseBlockById("The node identifier for a reuse block." id: ID!): DesReuseBlock
   "Find a specific reuse block revision by its unique identifier."
@@ -86,6 +83,8 @@ type Query {
   desProjectCollaborationSimulationRevisions(projectId: ID! domainName: String! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesCollaborationSimulationRevisionConnection
   "*PROTOTYPE, SUBJECT TO CHANGE*"
   desProjectCollaborationSimulationLatestRevision(projectId: ID! domainName: String! projectTypeName: String!): DesCollaborationSimulationRevision
+  "Gets the specified project export job."
+  desProjectExportJob(projectExportJobId: String!): DesProjectExportJob!
   desSharedWithMe: DesSharedWithMe!
   supOctopartIdFromCiivaId(workspaceUrl: String! ciivaId: String!): String @deprecated(reason: "Use `supPartIdFromCiivaId`.")
   "Nexar infrastructure, subject to change."
@@ -98,10 +97,11 @@ type Query {
   supPartExtrasByPartId(partId: String!): SupPartExtras
   "Nexar supply part data for internal use only."
   supPartExtrasByPartIds(partIds: [String!]!): [SupUnionPayload!]!
+  desManufacturePackageCreationJob(id: ID!): DesManufacturePackageCreationJob
   "Get all attributes"
   supAttributes: [SupAttribute!]!
   "Get manufacturer companies"
-  supManufacturers("list of company IDs.  Omit to fetch all manufacturers." ids: [String!] "list of URL slugs for \/manufacturers paths" slugs: [String!]): [SupCompany!]!
+  supManufacturers("list of company IDs.  Omit to fetch all manufacturers." ids: [String!] "list of URL slugs for \/manufacturers paths" slugs: [String!] "Return only manufacturers that have a minimum number of active parts." minNumberOfActiveParts: Int): [SupCompany!]!
   "Get seller companies (distributors)"
   supSellers("list of company IDs.  Omit to fetch all sellers." ids: [String!] "list of URL slugs for \/distributors paths" slugs: [String!]): [SupCompany!]!
   "Get categories"
@@ -199,8 +199,8 @@ type Mutation {
   desUploadCollaboration(input: DesUploadCollaborationInput!): DesUploadCollaborationPayload!
   "Updates the permissions for the associated project."
   desUpdateProjectPermissions(input: DesUpdateProjectPermissionsInput!): DesUpdateProjectPermissionsPayload!
-  "Creates a job that exports the specified project data."
-  desCreateProjectExportJob(input: DesCreateProjectExportJobInput!): DesCreateProjectExportJobPayload!
+  "Link\/unlink A365 project with requirements block component."
+  desSetProjectRequirementsBlock(input: DesSetProjectRequirementsBlockInput!): DesSetProjectRequirementsBlockPayload!
   "Updates a specific result block."
   desUpdateReuseBlock(input: DesUpdateReuseBlockInput!): DesUpdateReuseBlockPayload!
   "Creates a user."
@@ -249,6 +249,8 @@ type Mutation {
   desDeleteRevisionNamingScheme(input: DesDeleteRevisionNamingSchemeInput!): DesDeleteRevisionNamingSchemePayload!
   "Updates the value associated with the specified setting"
   desUpdateSetting(input: DesUpdateSettingInput!): DesUpdateSettingPayload!
+  "Creates a job that exports the specified project data."
+  desCreateProjectExportJob(input: DesCreateProjectExportJobInput!): DesCreateProjectExportJobPayload!
   "Creates a manufacture package."
   desCreateManufacturePackage(input: DesCreateManufacturePackageInput!): DesCreateManufacturePackagePayload!
   manCreateRapidQuoteRequest(qty: Int! meta: ManBoardMetaInput! shipping: ManShippingDetailsInput): ManRapidQuoteResponse
@@ -1428,6 +1430,8 @@ type DesPosition2D {
 type DesProject implements Node {
   "The node identifier for this project (used by `desProjectById`)."
   id: ID!
+  "The requirements block identifier."
+  requirementsBlockId: String
   "The account information for who created this project."
   createdBy: DesUser!
   "The account information for who last modified this project."
@@ -1717,6 +1721,10 @@ type DesSchematic {
   documentId: String!
   "The document file name."
   documentName: String!
+}
+
+type DesSetProjectRequirementsBlockPayload {
+  errors: [DesPayloadError!]!
 }
 
 type DesSetting {
@@ -2872,6 +2880,11 @@ input DesProjectFilterInput {
   updatedAt: DateTimeOperationFilterInput
 }
 
+input DesProjectsRequirementsBlockFilterInput {
+  "Requirements block IDs."
+  blockIds: [String!]!
+}
+
 input DesRectangleInput {
   pos1: DesPosition2DInput!
   pos2: DesPosition2DInput!
@@ -2978,6 +2991,13 @@ input DesSchematicFilterInput {
   documentId: StringOperationFilterInput
   "The document file name."
   documentName: StringOperationFilterInput
+}
+
+input DesSetProjectRequirementsBlockInput {
+  "The project node ID."
+  projectId: ID!
+  "Requirements block ID."
+  requirementsBlockId: String
 }
 
 input DesSharedWithMeProjectInfoFilterInput {
@@ -3499,6 +3519,7 @@ enum DesContentTypeKind {
   EAGLE_PROJECT
   ORDER_BOM
   PADS_PROJECT
+  PART_REPORT
 }
 
 enum DesDocumentType {
@@ -3976,6 +3997,8 @@ type SupPart {
   estimatedFactoryLeadDays: Int
   "This part might be known by these alternate MPNs"
   akaMpns: [String!]!
+  "Altium Internal Id"
+  altiumInternalId: String!
   "Nexar supply part data for internal use only."
   extras: SupPartExtras
 }
@@ -5668,4 +5691,4 @@ directive @HasPlanTier(tier: SupPlanTier!) on FIELD_DEFINITION | ARGUMENT_DEFINI
 
 directive @NexarRequire(feature: SupNexarFeatureID!) on FIELD_DEFINITION
 
-directive @RequireAny(roles: [SupRole!]!) on FIELD_DEFINITION
+directive @RequireAny(roles: [SupRole!]!) on FIELD_DEFINITION | ARGUMENT_DEFINITION
