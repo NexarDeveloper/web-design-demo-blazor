@@ -36,7 +36,7 @@ public partial class ConnectPage
         res.AssertNoErrors();
 
         // share workspaces
-        AppData.SetWorkspaces(res.Data.DesWorkspaces);
+        AppData.SetWorkspaces(res.Data.DesWorkspaceInfos);
     }
 
     /// <summary>

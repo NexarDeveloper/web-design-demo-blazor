@@ -15,8 +15,8 @@ type Query {
   node("ID of the object." id: ID!): Node
   "Lookup nodes by a list of IDs."
   nodes("The list of node IDs." ids: [ID!]!): [Node]!
-  "Search for workspaces associated with this account."
-  desWorkspaces(where: DesWorkspaceFilterInput): [DesWorkspace!]!
+  "Retrieves all workspace details associated with this account."
+  desWorkspaceInfos: [DesWorkspaceInfo!]!
   "Search a specific workspace by its unique identifier."
   desWorkspaceById("The node identifier for a workspace." id: ID!): DesWorkspace
   "Search a specific workspace by its URL."
@@ -83,6 +83,7 @@ type Query {
   desProjectCollaborationSimulationRevisions(projectId: ID! domainName: String! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesCollaborationSimulationRevisionConnection
   "*PROTOTYPE, SUBJECT TO CHANGE*"
   desProjectCollaborationSimulationLatestRevision(projectId: ID! domainName: String! projectTypeName: String!): DesCollaborationSimulationRevision
+  desWorkspaces(where: DesWorkspaceFilterInput): [DesWorkspace!]! @deprecated(reason: "Use `desWorkspaceInfos`.")
   "Gets the specified project export job."
   desProjectExportJob(projectExportJobId: String!): DesProjectExportJob!
   desSharedWithMe: DesSharedWithMe!
@@ -108,6 +109,8 @@ type Query {
   supCategories("list of category IDs. Omit to fetch all categories." ids: [String!] "list of \/electronic-parts SEO page paths for categories." paths: [String!]): [SupCategory!]!
   "Get parts by ID."
   supParts("list of part IDs. APIv3 UIDs are also supported." ids: [String!]! "user's country" country: String! = "US" "user's currency" currency: String! = "USD" "fetch latest pricing and stock data from distributor API. Company.isDistributorApi indicates if a distributor supports this feature." distributorApi: Boolean "how long to wait for distributor API to respond as a duration string (e.g. `3s` or `500ms`)" distributorApiTimeout: String! = "3s" "if needed, pass along credentials for API integrations" customPricingCredentials: [SupApiCredentials!]): [SupPart]!
+  "Get part offers by reference."
+  supPartOffers(country: String! currency: String! references: [SupOfferReference!]! "fetch latest pricing and stock data from distributor API." distributorApi: Boolean "how long to wait for distributor API to respond as a duration string (e.g. `3s` or `500ms`)" distributorApiTimeout: String! = "3s" "if needed, pass along credentials for API integrations" customPricingCredentials: [SupApiCredentials!]): [SupPartOffer]!
   "Attempt to complete a partial query string.  Used for autosuggest \/ typeahead text inputs."
   supSuggest("partial query string" q: String! "categoryId to scope suggestions to" categoryId: String "only return part number suggestions" partNumbersOnly: Boolean): [SupSuggestion!]!
   "Search parts, including filters, pagination, aggregation, sorting"
@@ -2167,12 +2170,32 @@ type DesWorkspace implements Node {
   name: String!
   "The web address of this workspace."
   url: String!
+  "The ID of this workspace used for authorization."
+  authId: String!
   "The summary of this workspace content or purpose."
   description: String
   "Tells if the workspace is the current user default."
   isDefault: Boolean!
   "The list of workspace tasks. For a particular workspace consider using the more effective query `desWorkspaceTasks`."
   tasks: [DesTask!]
+}
+
+"A workspace provides a flexible and secure method for managing design, manufacturing and supply content."
+type DesWorkspaceInfo {
+  "The node identifier for the workspace (used by `DesWorkspaceById`)."
+  workspaceId: ID!
+  "The descriptive label for this workspace."
+  name: String!
+  "The web address of this workspace."
+  url: String!
+  "The ID of this workspace used for authorization."
+  authId: String!
+  "The summary of this workspace content or purpose."
+  description: String
+  "Tells if the workspace is the current user default."
+  isDefault: Boolean!
+  "The location of this workspace."
+  location: DesWorkspaceLocation!
 }
 
 type DesWorkspaceLocation {
@@ -3298,6 +3321,8 @@ input DesWorkspaceFilterInput {
   name: StringOperationFilterInput
   "The web address of this workspace."
   url: StringOperationFilterInput
+  "The ID of this workspace used for authorization."
+  authId: StringOperationFilterInput
   "The summary of this workspace content or purpose."
   description: StringOperationFilterInput
   "Tells if the workspace is the current user default."
@@ -3818,6 +3843,15 @@ type SupCategoryBucket {
   count: Int
 }
 
+"Internal part information for use by CircuitMaker."
+type SupCircuitMakerPartInfo {
+  comments: Int!
+  fabrications: Int!
+  projects: Int!
+  rates: Int!
+  releases: Int!
+}
+
 "A company record represents a manufacturer or distributor, depending on context."
 type SupCompany {
   "Octopart internal id"
@@ -3997,8 +4031,10 @@ type SupPart {
   estimatedFactoryLeadDays: Int
   "This part might be known by these alternate MPNs"
   akaMpns: [String!]!
-  "Altium Internal Id"
+  "Altium internal id."
   altiumInternalId: String!
+  "Internal part information for use by CircuitMaker."
+  circuitMakerInternal: SupCircuitMakerPartInfo
   "Nexar supply part data for internal use only."
   extras: SupPartExtras
 }
@@ -4029,6 +4065,12 @@ type SupPartMatch {
   parts: [SupPart!]!
   "Possible error message"
   error: String
+}
+
+"An individual part offer."
+type SupPartOffer {
+  partId: String!
+  offer: SupOffer!
 }
 
 type SupPartResult {
@@ -4222,6 +4264,12 @@ input SupApiCredentials {
   password: String
   "Authentication details. `apiKey` should be given when an API requires it."
   apiKey: String
+}
+
+"A reference to a part offer."
+input SupOfferReference {
+  partId: String!
+  offerId: String!
 }
 
 input SupPartMatchOptions {
