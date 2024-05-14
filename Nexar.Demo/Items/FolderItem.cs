@@ -46,7 +46,7 @@ public sealed class FolderItem(NodeTreeItem parent, FolderTreeNode node) : NodeT
         var res = await Client.FolderExtras.ExecuteAsync(Tag.Id);
         res.AssertNoErrors();
 
-        Extras = res.Data.Node as IMyFolderExtras
+        Extras = res.Data.DesFolderById
             ?? throw new Exception("Cannot get folder extras.");
     }
 }
