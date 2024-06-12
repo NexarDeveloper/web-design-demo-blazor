@@ -34,6 +34,8 @@ public static class AppData
     /// </summary>
     public static string KeyToken { get; private set; }
 
+    public static bool IsRegionApi { get; private set; }
+
     /// <summary>
     /// Sets the application mode and optional custom service.
     /// </summary>
@@ -42,7 +44,10 @@ public static class AppData
         Mode = mode;
 
         if (!string.IsNullOrEmpty(apiEndpoint))
+        {
             ApiEndpoint = apiEndpoint;
+            IsRegionApi = true;
+        }
 
         switch (Mode)
         {

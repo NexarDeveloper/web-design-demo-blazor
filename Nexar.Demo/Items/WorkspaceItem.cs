@@ -14,7 +14,7 @@ public sealed class WorkspaceItem(IMyWorkspace tag) : TreeItem
     public override string Icon => Icons.Material.Filled.FolderOpen;
 
     public override NexarClient Client =>
-        NexarClientFactory.GetClient(AppData.ApiEndpoint.Contains("localhost") ? AppData.ApiEndpoint : Tag.Location.ApiServiceUrl);
+        NexarClientFactory.GetClient(AppData.IsRegionApi || AppData.ApiEndpoint.Contains("localhost") ? AppData.ApiEndpoint : Tag.Location.ApiServiceUrl);
 
     public override Task<HashSet<TreeItem>> ServerData()
     {

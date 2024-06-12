@@ -8,6 +8,7 @@ query Workspaces {
 # This fragment becomes IMyWorkspace in C#.
 fragment MyWorkspace on DesWorkspaceInfo {
   workspaceId
+  authId
   url
   name
   description
