@@ -15,5 +15,6 @@ fragment MyWorkspace on DesWorkspaceInfo {
   location {
     name
     apiServiceUrl
+    filesServiceUrl
   }
 }

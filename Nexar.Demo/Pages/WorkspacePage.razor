@@ -19,7 +19,7 @@
 
 <TextFieldText Label="Description" Text=@Data.Current.Tag.Description />
 
-<TextField Label="Location (Name / ApiServiceUrl)" Text=@Location />
+<TextField Label="Location (Name / ApiServiceUrl / FilesServiceUrl)" Text=@Location />
 
 <br />
 <AlertGraphQL Files="Workspaces.graphql" />
@@ -36,5 +36,5 @@
     }
 
     string Location =>
-        $"{Data.Current.Tag.Location.Name} / {Data.Current.Tag.Location.ApiServiceUrl}";
+        $"{Data.Current.Tag.Location.Name} / {Data.Current.Tag.Location.ApiServiceUrl} / {Data.Current.Tag.Location.FilesServiceUrl}";
 }

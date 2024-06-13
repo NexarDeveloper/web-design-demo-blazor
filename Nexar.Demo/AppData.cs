@@ -20,19 +20,9 @@ public static class AppData
     public static string ApiEndpoint { get; private set; }
 
     /// <summary>
-    /// The identity server endpoint.
-    /// </summary>
-    public static string Authority { get; private set; }
-
-    /// <summary>
     /// The Nexar home page.
     /// </summary>
     public static string NexarDotCom { get; private set; }
-
-    /// <summary>
-    /// The local storage key for token.
-    /// </summary>
-    public static string KeyToken { get; private set; }
 
     public static bool IsRegionApi { get; private set; }
 
@@ -53,9 +43,7 @@ public static class AppData
         {
             case AppMode.Prod:
                 ApiEndpoint ??= "https://api.nexar.com/graphql";
-                Authority = "https://identity.nexar.com";
                 NexarDotCom = "https://nexar.com";
-                KeyToken = "_210528_p1";
                 break;
             default:
                 throw new Exception();
