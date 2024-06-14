@@ -8,13 +8,29 @@ Blazor WebAssembly with design queries powered by Nexar.
 
 Live demo: <https://web-design-demo.nexar.com>
 
-It is:
+## How to use
+
+If you have not done this already, please register at [nexar.com] and create a
+Nexar application with the Design domain enabled.
+
+In order to see anything useful in the demo, you also need your Altium Live
+credentials and have to be a member of at least one Altium 365 workspace.
+
+The demo requires an access token. Go to [nexar.com] application details, click
+"Generate token". Alternatively, you may get a token using one of the tools:
+[nexar-token-cs], [nexar-token-py].
+
+Having got a token, copy it to the clipboard and open the app in a browser.
+Paste the token at the `Connect` page and click `CONNECT`. The browser keeps
+and restores the token on next runs. The token may be used until it expires.
+
+## Features
 
 - Altium 365 hierarchical data tree with some notable branches.
 - Example of using various Nexar queries in .NET applications.
 - Example of using workspace region specific endpoints.
 
-Covered Altium 365 data tree:
+Data tree structure:
 
 - Shared with Me
     - Projects
@@ -39,26 +55,9 @@ Covered Altium 365 data tree:
         - Revisions
     - Library
         - Folders
-            - Folders...
         - Component Templates
     - Tasks
     - Users
-
-## How to use
-
-If you have not done this already, please register at [nexar.com] and create a
-Nexar application with the Design domain enabled.
-
-In order to see anything useful in the demo, you also need your Altium Live
-credentials and have to be a member of at least one Altium 365 workspace.
-
-The demo requires an access token. Go to [nexar.com] application details, click
-"Generate token". Alternatively, you may get a token using one of the tools:
-[nexar-token-cs], [nexar-token-py].
-
-Having got a token, copy it to the clipboard and open the app in a browser.
-Paste the token at the `Connect` page and click `CONNECT`. The browser keeps
-and restores the token on next runs. The token may be used until it expires.
 
 ## Building blocks
 
