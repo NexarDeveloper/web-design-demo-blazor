@@ -6,25 +6,36 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class WorkspaceItem(IMyWorkspace tag) : TreeItem
+public sealed class WorkspaceItem(IMyWorkspace tag, bool hasData) : TreeItem
 {
+    private readonly bool _hasData = hasData;
     public IMyWorkspace Tag { get; } = tag;
     public override string Text => Tag.Name;
     public override string Path => Tag.Name;
-    public override string Icon => Icons.Material.Filled.FolderOpen;
+    public override bool CanExpand => _hasData;
+    public override string Icon => _hasData ? Icons.Material.Filled.FolderOpen : Icons.Material.Filled.FolderOff;
 
     public override NexarClient Client =>
         NexarClientFactory.GetClient(AppData.IsRegionApi || AppData.ApiEndpoint.Contains("localhost") ? AppData.ApiEndpoint : Tag.Location.ApiServiceUrl);
 
     public override Task<HashSet<TreeItem>> ServerData()
     {
-        return Task.FromResult(new HashSet<TreeItem>
+        HashSet<TreeItem> items;
+        if (_hasData)
         {
-            new WorkspaceProjectsItem(this),
-            new WorkspaceLibraryItem(this),
-            new WorkspaceTasksItem(this),
-            new WorkspaceUsersItem(this),
-        });
+            items =
+            [
+                new WorkspaceProjectsItem(this),
+                new WorkspaceLibraryItem(this),
+                new WorkspaceTasksItem(this),
+                new WorkspaceUsersItem(this),
+            ];
+        }
+        else
+        {
+            items = [];
+        }
+        return Task.FromResult(items);
     }
 
     public override string SetCurrent()

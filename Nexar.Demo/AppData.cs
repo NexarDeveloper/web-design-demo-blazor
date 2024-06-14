@@ -63,12 +63,36 @@ public static class AppData
     }
 
     public static HashSet<TreeItem> TreeItems { get; private set; }
-    public static void SetWorkspaces(IReadOnlyList<IMyWorkspace> source)
+    public static void SetWorkspaces(IReadOnlyList<IMyWorkspace> source, string workspaceAuthId)
     {
         TreeItems = [new SharedWithMeItem()];
 
-        foreach (var it in source)
-            TreeItems.Add(new WorkspaceItem(it));
+        // add workspaces depending on auth
+        if (workspaceAuthId is null)
+        {
+            // all workspaces allowed
+            foreach (var it in source)
+                TreeItems.Add(new WorkspaceItem(it, true));
+        }
+        else
+        {
+            // the allowed workspace
+            foreach (var it in source)
+            {
+                if (string.Equals(it.AuthId, workspaceAuthId, StringComparison.OrdinalIgnoreCase))
+                {
+                    TreeItems.Add(new WorkspaceItem(it, true));
+                    break;
+                }
+            }
+
+            // other workspaces
+            foreach (var it in source)
+            {
+                if (!string.Equals(it.AuthId, workspaceAuthId, StringComparison.OrdinalIgnoreCase))
+                    TreeItems.Add(new WorkspaceItem(it, false));
+            }
+        }
 
         OnChange?.Invoke();
     }

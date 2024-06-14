@@ -3,12 +3,16 @@ using Microsoft.JSInterop;
 using MudBlazor;
 using Nexar.Client;
 using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Nexar.Demo.Pages;
 
 public partial class ConnectPage
 {
+    const string WorkspaceScopePrefix = "a365:workspace:";
+
     [Parameter]
     [SupplyParameterFromQuery(Name = "api")]
     public string ApiParameter { get; init; }
@@ -35,8 +39,14 @@ public partial class ConnectPage
         var res = await client.Workspaces.ExecuteAsync();
         res.AssertNoErrors();
 
+        // workspace scope
+        JwtSecurityToken securityToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
+        var workspaceAuthId = securityToken.Claims
+            .FirstOrDefault(x => x.Type == "scope" && x.Value.StartsWith(WorkspaceScopePrefix))?
+            .Value[WorkspaceScopePrefix.Length..];
+
         // share workspaces
-        AppData.SetWorkspaces(res.Data.DesWorkspaceInfos);
+        AppData.SetWorkspaces(res.Data.DesWorkspaceInfos, workspaceAuthId);
     }
 
     /// <summary>
