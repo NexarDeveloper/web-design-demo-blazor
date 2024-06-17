@@ -10,11 +10,11 @@ Live demo: <https://web-design-demo.nexar.com>
 
 ## How to use
 
-If you have not done this already, please register at [nexar.com] and create a
-Nexar application with the Design domain enabled.
+If you have not done this, please register at [nexar.com] and create your Nexar
+application with the Design domain enabled.
 
-In order to see anything useful in the demo, you also need your Altium Live
-credentials and have to be a member of at least one Altium 365 workspace.
+In order to see anything useful, you also need your Altium Live credentials and
+have to be a member of at least one Altium 365 workspace.
 
 The demo requires an access token. Go to [nexar.com] application details, click
 "Generate token". Alternatively, you may get a token using one of the tools:
