@@ -11,7 +11,8 @@ namespace Nexar.Demo.Pages;
 
 public partial class ConnectPage
 {
-    const string WorkspaceScopePrefix = "a365:workspace:";
+    const string A365Scope = "a365";
+    const string A365WorkspaceScopePrefix = "a365:workspace:";
 
     [Parameter]
     [SupplyParameterFromQuery(Name = "api")]
@@ -42,8 +43,12 @@ public partial class ConnectPage
         // workspace scope
         JwtSecurityToken securityToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
         var workspaceAuthId = securityToken.Claims
-            .FirstOrDefault(x => x.Type == "scope" && x.Value.StartsWith(WorkspaceScopePrefix))?
-            .Value[WorkspaceScopePrefix.Length..];
+            .FirstOrDefault(x => x.Type == "scope" && x.Value.StartsWith(A365WorkspaceScopePrefix))?
+            .Value[A365WorkspaceScopePrefix.Length..];
+
+        // a365 scope
+        if (workspaceAuthId is null && securityToken.Claims.Any(x => x.Type == "scope" && x.Value == A365Scope))
+            workspaceAuthId = A365Scope;
 
         // share workspaces
         AppData.SetWorkspaces(res.Data.DesWorkspaceInfos, workspaceAuthId);
