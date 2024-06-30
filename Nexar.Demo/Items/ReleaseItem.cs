@@ -23,7 +23,7 @@ public sealed class ReleaseItem(IMyRelease tag, ProjectReleasesItem parent) : No
     public static event Action OnChange;
     public static ReleaseItem Current { get; private set; }
 
-    public override async Task<HashSet<TreeItem>> ServerData()
+    public override async Task<List<TreeItem>> ServerData()
     {
         try
         {
@@ -32,7 +32,7 @@ public sealed class ReleaseItem(IMyRelease tag, ProjectReleasesItem parent) : No
 
             return res.Data.DesReleaseById.Variants
                 .Select(x => (TreeItem)new ReleaseVariantItem(x, this))
-                .ToHashSet();
+                .ToList();
         }
         catch
         {

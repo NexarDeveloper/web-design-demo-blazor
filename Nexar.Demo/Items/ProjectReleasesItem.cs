@@ -12,7 +12,7 @@ public sealed class ProjectReleasesItem(ProjectItem parent) : NodeTreeItem(paren
     public override string Text => "Releases";
     public override string Icon => Icons.Material.Filled.Launch;
 
-    public override async Task<HashSet<TreeItem>> ServerData()
+    public override async Task<List<TreeItem>> ServerData()
     {
         var res = await Client.ProjectReleases.ExecuteAsync(Parent.Tag.Id);
         res.AssertNoErrors();
@@ -20,6 +20,6 @@ public sealed class ProjectReleasesItem(ProjectItem parent) : NodeTreeItem(paren
         return res.Data.DesProjectById.Design.Releases.Nodes
             .OrderByDescending(x => x.CreatedAt)
             .Select(x => (TreeItem)new ReleaseItem(x, this))
-            .ToHashSet();
+            .ToList();
     }
 }

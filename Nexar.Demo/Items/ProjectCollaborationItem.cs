@@ -11,9 +11,9 @@ public sealed class ProjectCollaborationItem(ProjectItem parent) : NodeTreeItem(
     public override string Text => "Collaboration";
     public override string Icon => Icons.Material.Filled.CompareArrows;
 
-    public override Task<HashSet<TreeItem>> ServerData()
+    public override Task<List<TreeItem>> ServerData()
     {
-        return Task.FromResult(new HashSet<TreeItem>
+        return Task.FromResult(new List<TreeItem>
         {
             new CollaborationDomainItem(this, DesCollaborationDomain.Ecad),
             new CollaborationDomainItem(this, DesCollaborationDomain.Mcad),

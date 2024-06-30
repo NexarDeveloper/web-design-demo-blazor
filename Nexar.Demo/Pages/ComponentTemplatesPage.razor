@@ -34,10 +34,10 @@
                 <MudButtonGroup>
                     <MudIconButton Icon=@Icons.Material.Outlined.Download
                                    Target="_blank"
-                                   Title="Download the latest revision"
+                                   title="Download the latest revision"
                                    Href=@context.LatestRevision.DownloadableFile.DownloadUrl />
                     <MudIconButton Icon=@Icons.Material.Filled.ContentCopy
-                                   Title="Copy component template ID"
+                                   title="Copy component template ID"
                                    OnClick=@(() => JS.InvokeVoidAsyncWithErrorHandling("navigator.clipboard.writeText", context.Id)) />
                 </MudButtonGroup>
             </MudTd>

@@ -40,7 +40,7 @@ public abstract class TreeItem
     /// <summary>
     /// Gets child items on the first expanding.
     /// </summary>
-    public abstract Task<HashSet<TreeItem>> ServerData();
+    public abstract Task<List<TreeItem>> ServerData();
 
     /// <summary>
     /// Sets this item current and tells to navigate to the returned page.
@@ -109,5 +109,5 @@ public abstract class NodeTreeItem(TreeItem parent) : TreeItem
 public abstract class LeafTreeItem(TreeItem parent) : NodeTreeItem(parent)
 {
     public sealed override bool CanExpand => false;
-    public sealed override Task<HashSet<TreeItem>> ServerData() => throw new NotImplementedException();
+    public sealed override Task<List<TreeItem>> ServerData() => throw new NotImplementedException();
 }

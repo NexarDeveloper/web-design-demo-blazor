@@ -10,9 +10,9 @@ public sealed class ProjectSimulationItem(ProjectItem parent) : NodeTreeItem(par
     public override string Text => "Simulation";
     public override string Icon => Icons.Material.Filled.CompareArrows;
 
-    public override Task<HashSet<TreeItem>> ServerData()
+    public override Task<List<TreeItem>> ServerData()
     {
-        return Task.FromResult(new HashSet<TreeItem>
+        return Task.FromResult(new List<TreeItem>
         {
             new SimulationDomainItem(this, "AnsysEDB"),
             new SimulationDomainItem(this, "PCBEDB"),

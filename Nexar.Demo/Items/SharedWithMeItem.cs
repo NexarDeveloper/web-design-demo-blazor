@@ -12,9 +12,9 @@ public sealed class SharedWithMeItem : TreeItem
     public override string Path => MyName;
     public override string Icon => Icons.Material.Filled.FolderShared;
 
-    public override Task<HashSet<TreeItem>> ServerData()
+    public override Task<List<TreeItem>> ServerData()
     {
-        return Task.FromResult(new HashSet<TreeItem>
+        return Task.FromResult(new List<TreeItem>
         {
             new SharedWithMeProjectsItem(this),
         });

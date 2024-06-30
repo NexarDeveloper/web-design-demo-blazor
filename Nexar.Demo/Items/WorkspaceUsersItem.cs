@@ -13,7 +13,7 @@ public sealed class WorkspaceUsersItem(WorkspaceItem parent) : NodeTreeItem(pare
     public override string Text => "Users";
     public override string Icon => Icons.Material.Filled.Person;
 
-    public override async Task<HashSet<TreeItem>> ServerData()
+    public override async Task<List<TreeItem>> ServerData()
     {
         var res = await Client.TeamUsers.ExecuteAsync(_parent.Tag.Url);
         res.AssertNoErrors();
@@ -21,6 +21,6 @@ public sealed class WorkspaceUsersItem(WorkspaceItem parent) : NodeTreeItem(pare
         return res.Data.DesTeam.Users
             .OrderBy(x => x.UserName, StringComparer.OrdinalIgnoreCase)
             .Select(x => (TreeItem)new UserItem(x, this))
-            .ToHashSet();
+            .ToList();
     }
 }

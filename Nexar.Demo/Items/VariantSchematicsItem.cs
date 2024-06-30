@@ -12,13 +12,13 @@ public sealed class VariantSchematicsItem(VariantItem parent) : NodeTreeItem(par
     public override string Text => "Schematics";
     public override string Icon => Icons.Material.Filled.Transform;
 
-    public override async Task<HashSet<TreeItem>> ServerData()
+    public override async Task<List<TreeItem>> ServerData()
     {
         var res = await Client.VariantSchematics.ExecuteAsync(_parent.Parent.Parent.Tag.Id, _parent.Tag.Name, SchematicItem.ItemsLimit);
         res.AssertNoErrors();
 
         return res.Data.DesProjectById.Design.Variants[0].Schematics
             .Select(x => (TreeItem)new SchematicItem(x, this))
-            .ToHashSet();
+            .ToList();
     }
 }

@@ -12,9 +12,9 @@ public sealed class WorkspaceLibraryItem(WorkspaceItem parent) : NodeTreeItem(pa
     public override string Icon => Icons.Material.Filled.FolderOpen;
     public new WorkspaceItem Parent => (WorkspaceItem)base.Parent;
 
-    public override Task<HashSet<TreeItem>> ServerData()
+    public override Task<List<TreeItem>> ServerData()
     {
-        return Task.FromResult(new HashSet<TreeItem>
+        return Task.FromResult(new List<TreeItem>
         {
             new FoldersItem(this),
             new ComponentTemplatesItem(this),

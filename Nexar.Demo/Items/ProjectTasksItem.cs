@@ -12,7 +12,7 @@ public sealed class ProjectTasksItem(ProjectItem parent) : NodeTreeItem(parent)
     public override string Text => "Tasks";
     public override string Icon => Icons.Material.Filled.Task;
 
-    public override async Task<HashSet<TreeItem>> ServerData()
+    public override async Task<List<TreeItem>> ServerData()
     {
         var res = await Client.ProjectTasks.ExecuteAsync(_parent.Tag.Id);
         res.AssertNoErrors();
@@ -20,6 +20,6 @@ public sealed class ProjectTasksItem(ProjectItem parent) : NodeTreeItem(parent)
         return res.Data.DesProjectTasks.Nodes
             .OrderByDescending(x => x.ModifiedAt)
             .Select(x => (TreeItem)new TaskItem(x, this))
-            .ToHashSet();
+            .ToList();
     }
 }

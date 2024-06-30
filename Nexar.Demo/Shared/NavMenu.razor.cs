@@ -2,6 +2,7 @@
 using MudBlazor;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Nexar.Demo.Shared;
@@ -25,12 +26,12 @@ public partial class NavMenu : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    async Task<HashSet<TreeItem>> ServerData(TreeItem node)
+    async Task<IReadOnlyCollection<TreeItemData<TreeItem>>> ServerData(TreeItem node)
     {
         try
         {
             var items = await node.ServerData();
-            return items;
+            return items.Select(x => new MyTreeItemData(x)).ToList();
         }
         catch (Exception ex)
         {

@@ -12,7 +12,7 @@ public sealed class FoldersItem(WorkspaceLibraryItem parent) : NodeTreeItem(pare
     public override string Text => "Folders";
     public override string Icon => Icons.Material.Outlined.SnippetFolder;
 
-    public override async Task<HashSet<TreeItem>> ServerData()
+    public override async Task<List<TreeItem>> ServerData()
     {
         var res = await Client.Folders.ExecuteAsync(Parent.Tag.Url);
         res.AssertNoErrors();
@@ -21,6 +21,6 @@ public sealed class FoldersItem(WorkspaceLibraryItem parent) : NodeTreeItem(pare
 
         return roots
             .Select(x => (TreeItem)new FolderItem(this, x))
-            .ToHashSet();
+            .ToList();
     }
 }

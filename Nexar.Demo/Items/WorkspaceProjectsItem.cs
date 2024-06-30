@@ -13,7 +13,7 @@ public sealed class WorkspaceProjectsItem(WorkspaceItem parent) : NodeTreeItem(p
     public override string Text => "Projects";
     public override string Icon => Icons.Material.Filled.Memory;
 
-    public override async Task<HashSet<TreeItem>> ServerData()
+    public override async Task<List<TreeItem>> ServerData()
     {
         var res = await Client.Projects.ExecuteAsync(Parent.Tag.Url);
         res.AssertNoErrors();
@@ -21,6 +21,6 @@ public sealed class WorkspaceProjectsItem(WorkspaceItem parent) : NodeTreeItem(p
         return res.Data.DesProjects.Nodes
             .OrderBy(x => x.Name, StringComparer.OrdinalIgnoreCase)
             .Select(x => (TreeItem)new ProjectItem(x, this))
-            .ToHashSet();
+            .ToList();
     }
 }

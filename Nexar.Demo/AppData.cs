@@ -1,3 +1,4 @@
+using MudBlazor;
 using Nexar.Client;
 using System;
 using System.Collections.Generic;
@@ -62,17 +63,17 @@ public static class AppData
         OnChange?.Invoke();
     }
 
-    public static HashSet<TreeItem> TreeItems { get; private set; }
+    public static List<TreeItemData<TreeItem>> TreeItems { get; private set; }
     public static void SetWorkspaces(IReadOnlyList<IMyWorkspace> source, string workspaceAuthId)
     {
-        TreeItems = [new SharedWithMeItem()];
+        TreeItems = [new MyTreeItemData(new SharedWithMeItem())];
 
         // add workspaces depending on auth
         if (workspaceAuthId is null)
         {
             // all workspaces allowed
             foreach (var it in source)
-                TreeItems.Add(new WorkspaceItem(it, true));
+                TreeItems.Add(new MyTreeItemData(new WorkspaceItem(it, true)));
         }
         else
         {
@@ -81,7 +82,7 @@ public static class AppData
             {
                 if (string.Equals(it.AuthId, workspaceAuthId, StringComparison.OrdinalIgnoreCase))
                 {
-                    TreeItems.Add(new WorkspaceItem(it, true));
+                    TreeItems.Add(new MyTreeItemData(new WorkspaceItem(it, true)));
                     break;
                 }
             }
@@ -90,7 +91,7 @@ public static class AppData
             foreach (var it in source)
             {
                 if (!string.Equals(it.AuthId, workspaceAuthId, StringComparison.OrdinalIgnoreCase))
-                    TreeItems.Add(new WorkspaceItem(it, false));
+                    TreeItems.Add(new MyTreeItemData(new WorkspaceItem(it, false)));
             }
         }
 

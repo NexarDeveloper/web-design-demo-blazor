@@ -15,9 +15,9 @@ public sealed class ProjectItem(IMyProject tag, WorkspaceProjectsItem parent) : 
     public override string Text => Tag.Name;
     public override string Icon => Icons.Material.Filled.Memory;
 
-    public override Task<HashSet<TreeItem>> ServerData()
+    public override Task<List<TreeItem>> ServerData()
     {
-        return Task.FromResult(new HashSet<TreeItem>
+        return Task.FromResult(new List<TreeItem>
         {
             new ProjectDesignItem(this),
             new ProjectReleasesItem(this),

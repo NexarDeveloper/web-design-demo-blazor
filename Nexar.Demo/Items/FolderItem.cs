@@ -19,11 +19,11 @@ public sealed class FolderItem(NodeTreeItem parent, FolderTreeNode node) : NodeT
 
     public override bool CanExpand => _node.Nodes.Count > 0;
 
-    public override Task<HashSet<TreeItem>> ServerData()
+    public override Task<List<TreeItem>> ServerData()
     {
         var items = _node.Nodes
             .Select(x => (TreeItem)new FolderItem(this, x))
-            .ToHashSet();
+            .ToList();
 
         return Task.FromResult(items);
     }

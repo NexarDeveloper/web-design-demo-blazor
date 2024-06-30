@@ -12,9 +12,9 @@ public sealed class VariantItem(IMyWipVariant tag, ProjectDesignItem parent) : N
     public override string Icon => Icons.Material.Filled.Memory;
     public new ProjectDesignItem Parent => (ProjectDesignItem)base.Parent;
 
-    public override Task<HashSet<TreeItem>> ServerData()
+    public override Task<List<TreeItem>> ServerData()
     {
-        return Task.FromResult(new HashSet<TreeItem>
+        return Task.FromResult(new List<TreeItem>
         {
             new VariantBomItem(this),
             new VariantPcbItem(this),

@@ -12,7 +12,7 @@ public sealed class ProjectCommentsItem(ProjectItem parent) : NodeTreeItem(paren
     public override string Text => "Comments";
     public override string Icon => Icons.Material.Filled.ChatBubbleOutline;
 
-    public override async Task<HashSet<TreeItem>> ServerData()
+    public override async Task<List<TreeItem>> ServerData()
     {
         var res = await Client.CommentThreads.ExecuteAsync(_parent.Tag.Id);
         res.AssertNoErrors();
@@ -20,6 +20,6 @@ public sealed class ProjectCommentsItem(ProjectItem parent) : NodeTreeItem(paren
         return res.Data.DesCommentThreads
             .OrderByDescending(x => x.ThreadNumber)
             .Select(x => (TreeItem)new ThreadItem(x, this))
-            .ToHashSet();
+            .ToList();
     }
 }
