@@ -15,9 +15,15 @@
             <MudLink Href=@AppData.ApiEndpoint Color=Color.Inherit Target="_blank">@AppData.ApiEndpoint</MudLink>
         </MudHidden>
         <MudSpacer />
-        <MudIconButton Icon=@Icons.Custom.Brands.GitHub Color=Color.Inherit title="Source code" Href="https://github.com/NexarDeveloper/web-design-demo-blazor" Target="_blank" />
-        <MudIconButton Icon=@Icons.Material.Filled.AccountTree Color=Color.Inherit title="Nexar API" Href="https://api.nexar.com/ui/voyager" Target="_blank" />
-        <MudIconButton Icon=@Icons.Material.Filled.Home Color=Color.Inherit title="Nexar home page" Href=@AppData.NexarDotCom Target="_blank" />
+        <MudTooltip Text="Source code">
+            <MudIconButton Icon=@Icons.Custom.Brands.GitHub Color=Color.Inherit Href="https://github.com/NexarDeveloper/web-design-demo-blazor" Target="_blank" />
+        </MudTooltip>
+        <MudTooltip Text="Nexar API">
+            <MudIconButton Icon=@Icons.Material.Filled.AccountTree Color=Color.Inherit Href="https://api.nexar.com/ui/voyager" Target="_blank" />
+        </MudTooltip>
+        <MudTooltip Text="Nexar home">
+            <MudIconButton Icon=@Icons.Material.Filled.Home Color=Color.Inherit Href=@AppData.NexarDotCom Target="_blank" />
+        </MudTooltip>
     </MudAppBar>
     <MudDrawer Width=500px @bind-Open=@_drawerOpen Elevation=1>
         <MudDrawerHeader Class="align-center">
