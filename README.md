@@ -55,6 +55,7 @@ Data tree structure:
         - Revisions
     - Library
         - Folders
+        - Component Search
         - Component Templates
     - Tasks
     - Users

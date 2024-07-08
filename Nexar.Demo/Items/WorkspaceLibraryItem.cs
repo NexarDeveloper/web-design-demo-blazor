@@ -17,6 +17,7 @@ public sealed class WorkspaceLibraryItem(WorkspaceItem parent) : NodeTreeItem(pa
         return Task.FromResult(new List<TreeItem>
         {
             new FoldersItem(this),
+            new ComponentSearchItem(this),
             new ComponentTemplatesItem(this),
         });
     }

@@ -188,6 +188,8 @@ type Mutation {
   desReleaseComponent(input: DesReleaseComponentInput!): DesReleaseComponentPayload!
   "Creates and releases the specified component template."
   desReleaseComponentTemplate(input: DesReleaseComponentTemplateInput!): DesReleaseComponentTemplatePayload!
+  "Adds part choices of the specified component."
+  desAddComponentPartChoices(input: DesAddComponentPartChoicesInput!): DesAddComponentPartChoicesPayload!
   "Removes part choices of the specified component."
   desRemoveComponentPartChoices(input: DesRemoveComponentPartChoicesInput!): DesRemoveComponentPartChoicesPayload!
   "Updates the specified component template."
@@ -310,6 +312,12 @@ type Subscription {
 "The node interface is implemented by entities that have a global unique identifier."
 interface Node {
   id: ID!
+}
+
+"Payload associated with adding part choices for a component."
+type DesAddComponentPartChoicesPayload {
+  "Payload errors."
+  errors: [DesPayloadError!]!
 }
 
 "Payload associated with adding users to group."
@@ -1029,6 +1037,10 @@ type DesComponent implements Node {
   comment: String!
   "The summary of function or other performance details for this component."
   description: String!
+  "The `DateTime` when this component was created."
+  createdAt: DateTime!
+  "The `DateTime` when this component was last modified."
+  modifiedAt: DateTime!
   "Gets true if the component is managed."
   isManaged: Boolean!
   "The component revision."
@@ -2147,6 +2159,10 @@ type DesRevisionDetails {
   description: String
   "Revision comment."
   comment: String
+  "The `DateTime` when this revision was created."
+  createdAt: DateTime!
+  "The `DateTime` when this revision was last modified."
+  modifiedAt: DateTime!
 }
 
 "Revision naming scheme details obtained by `desLibrary\/revisionNamingSchemes`. More information is available on revision naming schemes at: https:\/\/www.altium.com\/documentation\/altium-designer\/accessing-detailed-item-view#!revision_naming_scheme_dlg"
@@ -2896,6 +2912,14 @@ input DateTimeOperationFilterInput {
   nlt: DateTime
   lte: DateTime
   nlte: DateTime
+}
+
+"Input to add component part choices."
+input DesAddComponentPartChoicesInput {
+  "Component identifier."
+  componentId: ID!
+  "Manufacturer part choices to add."
+  manufacturerParts: [DesPartChoiceInput!]!
 }
 
 "Input for adding users to a group."
@@ -3854,8 +3878,10 @@ input DesReleaseComponentFileInput {
 input DesReleaseComponentInput {
   "Workspace URL for releasing a component."
   workspaceUrl: String!
-  "Destination folder for releasing a component."
-  componentReleaseFolder: String!
+  "Destination parent folder identifier for releasing a component. If omitted or empty, `componentReleaseFolder` is required."
+  componentParentFolderId: ID
+  "New child folder name for releasing a component. If omitted or empty, `ComponentParentFolderId` is required."
+  componentReleaseFolder: String
   "Name of component item."
   componentItemName: String!
   "Revision naming scheme identifier for component."

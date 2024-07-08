@@ -1,0 +1,50 @@
+# Gets the component by ID.
+query ComponentById($componentId: ID!) {
+  desComponentById(id: $componentId) {
+    ...MyComponent
+  }
+}
+
+# Gets the component by name.
+query LibraryComponentsByName($workspaceUrl: String! $name: String!) {
+  desLibrary(workspaceUrl: $workspaceUrl) {
+    components(where: {name: {eq: $name}}) {
+      nodes {
+        ...MyComponent
+      }
+    }
+  }
+}
+
+# Gets the component of the specified design item.
+query ComponentByDesignItemId($designItemId: ID!) {
+  desDesignItemById(id: $designItemId) {
+    component {
+      ...MyComponent
+    }
+  }
+}
+
+# This fragment becomes IMyComponent in C#.
+fragment MyComponent on DesComponent {
+  id
+  name
+  comment
+  description
+  createdAt
+  modifiedAt
+  folder {
+    path
+  }
+  revision {
+    id
+    details {
+      comment
+      description
+      createdAt
+      modifiedAt
+      childCount
+      parentCount
+    }
+  }
+}

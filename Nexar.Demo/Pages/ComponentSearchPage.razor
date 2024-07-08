@@ -1,0 +1,139 @@
+﻿@page "/ComponentSearch"
+@inherits AbstractPage
+@using Data = ComponentSearchItem
+
+<ItemPageHeader Text="Component Search" Item=@Data.Current />
+
+@if (Data.Current is null)
+{
+    return;
+}
+
+<MudCard>
+    <MudCardContent>
+        <MudSelect @bind-Value="_what" Label="Subject" Variant="Variant.Filled">
+            <MudSelectItem Value=WhatComponentId />
+            <MudSelectItem Value=WhatDesignItemId />
+            <MudSelectItem Value=WhatComponentName />
+        </MudSelect>
+
+        <MudTextField @bind-Value=@_search
+                      Label="Search"
+                      Variant=Variant.Outlined
+                      Adornment=Adornment.Start
+                      AdornmentIcon=@Icons.Material.Filled.ContentPaste
+                      OnAdornmentClick="Paste" />
+    </MudCardContent>
+    <MudCardActions>
+        <MudButton Color="Color.Primary" OnClick="@SearchAsync">Search</MudButton>
+    </MudCardActions>
+</MudCard>
+<br />
+
+@if (_loading)
+{
+    <MudProgressLinear Indeterminate="true" />
+}
+
+@if (Data.Current.Components?.Count > 0)
+{
+    foreach (var component in Data.Current.Components)
+    {
+        <MudCard>
+            <MudCardContent>
+                <TextFieldCopy Label="Id" Text=@component.Id />
+
+                <TextField Label="Name" Text=@component.Name />
+
+                <TextField Label="Comment" Text=@component.Comment />
+
+                <TextField Label="Description" Text=@component.Description />
+
+                <TextField Label="Folder" Text=@component.Folder?.Path />
+
+                <TextField Label="CreatedAt / ModifiedAt"
+                           Text=@($"{component.CreatedAt} / {component.ModifiedAt}") />
+
+                <MudCard>
+                    <MudCardContent>
+                        <TextFieldCopy Label="Revision.Id" Text=@component.Revision.Id />
+
+                        @if (component.Revision.Details is { })
+                        {
+                            <TextField Label="Revision.Details.Comment" Text=@component.Revision.Details.Comment />
+
+                            <TextField Label="Revision.Details.Description" Text=@component.Revision.Details.Description />
+
+                            <TextField Label="Revision.Details.ChildCount / ParentCount"
+                                       Text=@($"{component.Revision.Details.ChildCount} / {component.Revision.Details.ParentCount}") />
+
+                            <TextField Label="Revision.Details.CreatedAt / ModifiedAt"
+                                       Text=@($"{component.Revision.Details.CreatedAt} / {component.Revision.Details.ModifiedAt}") />
+                        }
+                    </MudCardContent>
+                </MudCard>
+            </MudCardContent>
+        </MudCard>
+        <br />
+    }
+}
+
+<AlertGraphQL Files="ComponentSearch.graphql" />
+
+@code {
+    const string WhatComponentId = "Component ID";
+    const string WhatDesignItemId = "Design item ID";
+    const string WhatComponentName = "Component name";
+    const string KeyWhat = "Design.Demo.ComponentSearch.what";
+    const string KeySearch = "Design.Demo.ComponentSearch.search";
+
+    string _what;
+    string _search;
+
+    bool _loading;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _what = await JS.InvokeAsync<string>("window.localStorage.getItem", [KeyWhat]) ?? WhatComponentId;
+        _search = await JS.InvokeAsync<string>("window.localStorage.getItem", [KeySearch]) ?? string.Empty;
+    }
+
+    private async Task Paste()
+    {
+        var (ok, value) = await JS.InvokeAsyncWithErrorHandling<string>("navigator.clipboard.readText");
+        if (ok)
+            _search = value;
+    }
+
+    async Task SearchAsync()
+    {
+        Data.Current.Components = null;
+        _loading = true;
+        try
+        {
+            await JS.InvokeAsync<string>("window.localStorage.setItem", [KeyWhat, _what]);
+            await JS.InvokeAsync<string>("window.localStorage.setItem", [KeySearch, _search]);
+
+            switch (_what)
+            {
+                case WhatComponentId:
+                    await Data.Current.SearchById(_search);
+                    break;
+                case WhatComponentName:
+                    await Data.Current.SearchByName(_search);
+                    break;
+                case WhatDesignItemId:
+                    await Data.Current.SearchByDesignItemId(_search);
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+            Data.Current.Error = ex;
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+}
