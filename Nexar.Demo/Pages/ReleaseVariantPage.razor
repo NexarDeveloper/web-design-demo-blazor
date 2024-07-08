@@ -13,13 +13,13 @@
 
 <br />
 <MudText Typo=Typo.h6>PCB Assembly</MudText>
-<TextField Label="Version" Text=@Data.Current.Tag.PcbAssembly.Version />
-<TextField Label="LifeCycleStateName" Text=@Data.Current.Tag.PcbAssembly.LifeCycleStateName />
+<TextField Label="Version" Text=@Data.Current.Tag.PcbAssembly?.Version />
+<TextField Label="LifeCycleStateName" Text=@Data.Current.Tag.PcbAssembly?.LifeCycleStateName />
 
 <br />
 <MudText Typo=Typo.h6>PCB Fabrication</MudText>
-<TextField Label="Version" Text=@Data.Current.Tag.PcbFabrication.Version />
-<TextField Label="LifeCycleStateName" Text=@Data.Current.Tag.PcbFabrication.LifeCycleStateName />
+<TextField Label="Version" Text=@Data.Current.Tag.PcbFabrication?.Version />
+<TextField Label="LifeCycleStateName" Text=@Data.Current.Tag.PcbFabrication?.LifeCycleStateName />
 
 <br />
 <MudTable Items=@Downloads() Dense=true>
@@ -52,20 +52,20 @@
         Data.OnChange -= StateHasChanged;
     }
 
-    (string, string, string)[] Downloads()
+    (string, string?, string?)[] Downloads()
     {
-        var assembly = Data.Current.Tag.PcbAssembly;
+        var assembly = Data.Current!.Tag.PcbAssembly;
         var fabrication = Data.Current.Tag.PcbFabrication;
-        return new (string, string, string)[]
+        return new (string, string?, string?)[]
         {
-            ("Assembly", assembly.PackageName, assembly.DownloadUrl),
-            ("Fabrication", fabrication.PackageName, fabrication.DownloadUrl),
-            ("ODB", fabrication.Odb.PackageName, fabrication.Odb.DownloadUrl),
-            ("IPC2581", fabrication.Ipc2581.PackageName, fabrication.Ipc2581.DownloadUrl),
-            ("Gerber", fabrication.Gerber.PackageName, fabrication.Gerber.DownloadUrl),
-            ("GerberX2", fabrication.GerberX2.PackageName, fabrication.GerberX2.DownloadUrl),
-            ("NC Drill", fabrication.NcDrill.PackageName, fabrication.NcDrill.DownloadUrl),
-            ("Test Points", fabrication.TestPoints.PackageName, fabrication.TestPoints.DownloadUrl),
+            ("Assembly", assembly?.PackageName, assembly?.DownloadUrl),
+            ("Fabrication", fabrication?.PackageName, fabrication?.DownloadUrl),
+            ("ODB", fabrication?.Odb.PackageName, fabrication?.Odb.DownloadUrl),
+            ("IPC2581", fabrication?.Ipc2581.PackageName, fabrication?.Ipc2581.DownloadUrl),
+            ("Gerber", fabrication?.Gerber.PackageName, fabrication?.Gerber.DownloadUrl),
+            ("GerberX2", fabrication?.GerberX2.PackageName, fabrication?.GerberX2.DownloadUrl),
+            ("NC Drill", fabrication?.NcDrill.PackageName, fabrication?.NcDrill.DownloadUrl),
+            ("Test Points", fabrication?.TestPoints.PackageName, fabrication?.TestPoints.DownloadUrl),
         };
     }
 }

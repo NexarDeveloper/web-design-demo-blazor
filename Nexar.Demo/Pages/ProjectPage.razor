@@ -65,6 +65,6 @@
     string Revision(Data item)
     {
         var rev = item.Revision;
-        return $"{rev.CreatedAt.ToString("yyyy-MM-dd")} / {rev.Author} / {rev.Message} / {rev.RevisionId}";
+        return $"{rev?.CreatedAt.ToString("yyyy-MM-dd")} / {rev?.Author} / {rev?.Message} / {rev?.RevisionId}";
     }
 }

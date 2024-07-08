@@ -17,6 +17,6 @@ public sealed class ReleaseVariantItem(IMyReleaseVariant tag, ReleaseItem parent
         return "ReleaseVariant";
     }
 
-    public static event Action OnChange;
-    public static ReleaseVariantItem Current { get; private set; }
+    public static event Action? OnChange;
+    public static ReleaseVariantItem? Current { get; private set; }
 }

@@ -17,6 +17,6 @@ public sealed class RevisionItem(IMyRelease tag, ProjectRevisionsItem parent) : 
         return "revision";
     }
 
-    public static event Action OnChange;
-    public static RevisionItem Current { get; private set; }
+    public static event Action? OnChange;
+    public static RevisionItem? Current { get; private set; }
 }

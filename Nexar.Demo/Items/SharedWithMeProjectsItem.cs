@@ -9,7 +9,7 @@ namespace Nexar.Demo;
 
 public sealed class SharedWithMeProjectsItem(SharedWithMeItem parent) : NodeTreeItem(parent)
 {
-    public List<TreeItem> Items { get; private set; }
+    public List<TreeItem>? Items { get; private set; }
 
     public override string Text => "Projects";
     public override string Icon => Icons.Material.Filled.Memory;
@@ -21,15 +21,15 @@ public sealed class SharedWithMeProjectsItem(SharedWithMeItem parent) : NodeTree
         return "SharedWithMeProjects";
     }
 
-    public static event Action OnChange;
-    public static SharedWithMeProjectsItem Current { get; private set; }
+    public static event Action? OnChange;
+    public static SharedWithMeProjectsItem? Current { get; private set; }
 
     public override async Task<List<TreeItem>> ServerData()
     {
         var res = await Client.SharedWithMeProjects.ExecuteAsync();
-        res.AssertNoErrors();
+        var data = res.AssertNoErrors();
 
-        Items = res.Data.DesSharedWithMe.Projects.Nodes
+        Items = data.DesSharedWithMe.Projects!.Nodes!
             .OrderBy(x => x.Name, StringComparer.OrdinalIgnoreCase)
             .Select(x => (TreeItem)new SharedWithMeProjectItem(x.ProjectId, x.Name, this))
             .ToList();

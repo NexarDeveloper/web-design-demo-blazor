@@ -15,9 +15,9 @@ public sealed class ProjectCommentsItem(ProjectItem parent) : NodeTreeItem(paren
     public override async Task<List<TreeItem>> ServerData()
     {
         var res = await Client.CommentThreads.ExecuteAsync(_parent.Tag.Id);
-        res.AssertNoErrors();
+        var data = res.AssertNoErrors();
 
-        return res.Data.DesCommentThreads
+        return data.DesCommentThreads
             .OrderByDescending(x => x.ThreadNumber)
             .Select(x => (TreeItem)new ThreadItem(x, this))
             .ToList();

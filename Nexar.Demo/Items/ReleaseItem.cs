@@ -20,17 +20,17 @@ public sealed class ReleaseItem(IMyRelease tag, ProjectReleasesItem parent) : No
         return "Release";
     }
 
-    public static event Action OnChange;
-    public static ReleaseItem Current { get; private set; }
+    public static event Action? OnChange;
+    public static ReleaseItem? Current { get; private set; }
 
     public override async Task<List<TreeItem>> ServerData()
     {
         try
         {
             var res = await Client.ProjectReleaseById.ExecuteAsync(Tag.Id);
-            res.AssertNoErrors();
+            var data = res.AssertNoErrors();
 
-            return res.Data.DesReleaseById.Variants
+            return data.DesReleaseById!.Variants
                 .Select(x => (TreeItem)new ReleaseVariantItem(x, this))
                 .ToList();
         }

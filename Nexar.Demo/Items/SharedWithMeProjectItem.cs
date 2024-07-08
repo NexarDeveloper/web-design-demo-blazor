@@ -10,7 +10,7 @@ public sealed class SharedWithMeProjectItem(string projectId, string projectName
     public string ProjectId { get; } = projectId;
     readonly string _projectName = projectName;
 
-    public IMySharedWithMeProject Tag { get; private set; }
+    public IMySharedWithMeProject? Tag { get; private set; }
     public override string Text => _projectName;
     public override string Icon => Icons.Material.Filled.Memory;
 
@@ -24,16 +24,15 @@ public sealed class SharedWithMeProjectItem(string projectId, string projectName
         return "SharedWithMeProject";
     }
 
-    public static event Action OnChange;
-    public static SharedWithMeProjectItem Current { get; private set; }
+    public static event Action? OnChange;
+    public static SharedWithMeProjectItem? Current { get; private set; }
 
     protected override async Task UpdateAsync()
     {
         var res = await Client.SharedWithMeProject.ExecuteAsync(ProjectId);
-        res.AssertNoErrors();
+        var data = res.AssertNoErrors();
 
-        Tag = res.Data.DesProjectById;
-        if (Tag is null)
-            throw new Exception("Cannot get project data.");
+        Tag = data.DesProjectById
+            ?? throw new Exception("Cannot get project data.");
     }
 }

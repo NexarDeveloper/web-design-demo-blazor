@@ -14,7 +14,7 @@ public static class NexarClientFactory
     /// <summary>
     /// Nexar access token, must be assigned.
     /// </summary>
-    public static string AccessToken { get; set; }
+    public static string? AccessToken { get; set; }
 
     /// <summary>
     /// Gets the specified client.

@@ -15,9 +15,9 @@ public sealed class ProjectDesignItem(ProjectItem parent) : NodeTreeItem(parent)
     public override async Task<List<TreeItem>> ServerData()
     {
         var res = await Client.ProjectVariants.ExecuteAsync(Parent.Tag.Id);
-        res.AssertNoErrors();
+        var data = res.AssertNoErrors();
 
-        return res.Data.DesProjectById.Design.Variants
+        return data.DesProjectById!.Design.Variants
             .Select(x => (TreeItem)new VariantItem(x, this))
             .ToList();
     }

@@ -19,7 +19,7 @@
 {
     <TextField Label="DocumentId" Text=@Data.Current.Tag.DocumentId />
 
-    <TextField Label="DesignItems.TotalCount" Text=@Data.Current.Tag.DesignItems.TotalCount.ToString() />
+    <TextField Label="DesignItems.TotalCount" Text=@Data.Current.Tag.DesignItems!.TotalCount.ToString() />
 
     @if (Data.Current.Tag.DesignItems.TotalCount > Data.ItemsLimit)
     {

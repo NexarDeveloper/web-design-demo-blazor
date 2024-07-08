@@ -15,19 +15,19 @@ public class AbstractPage : ComponentBase, IDisposable
     /// Common JS interop.
     /// </summary>
     [Inject]
-    public IJSRuntime JS { get; init; }
+    public IJSRuntime JS { get; init; } = null!;
 
     /// <summary>
     /// Common navigation manager.
     /// </summary>
     [Inject]
-    public NavigationManager Navigation { get; init; }
+    public NavigationManager Navigation { get; init; } = null!;
 
     /// <summary>
     /// Message boxes.
     /// </summary>
     [Inject]
-    private IDialogService DialogService { get; init; }
+    private IDialogService DialogService { get; init; } = null!;
 
     /// <summary>
     /// Show the message, logout, navigate to login page.

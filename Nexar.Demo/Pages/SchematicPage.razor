@@ -13,7 +13,7 @@
 
 <TextField Label="Name" Text=@Data.Current.Tag.DocumentName />
 
-<TextField Label="DesignItems.TotalCount" Text=@Data.Current.Tag.DesignItems.TotalCount.ToString() />
+<TextField Label="DesignItems.TotalCount" Text=@Data.Current.Tag.DesignItems!.TotalCount.ToString() />
 
 @if (Data.Current.Tag.DesignItems.TotalCount > Data.ItemsLimit)
 {
@@ -22,7 +22,7 @@
     </MudAlert>
 }
 
-@if (Data.Current.Tag.DesignItems.Nodes.Count > 0)
+@if (Data.Current.Tag.DesignItems.Nodes!.Count > 0)
 {
     <br />
     <MudTable Items=@Data.Current.Tag.DesignItems.Nodes Dense=true>

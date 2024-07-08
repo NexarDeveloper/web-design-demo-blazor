@@ -9,7 +9,7 @@ namespace Nexar.Demo;
 
 public sealed class TaskItem(IMyTask tag, NodeTreeItem parent) : LeafTreeItem(parent)
 {
-    public IReadOnlyList<IMyComment> Comments { get; private set; }
+    public IReadOnlyList<IMyComment>? Comments { get; private set; }
 
     public IMyTask Tag { get; } = tag;
     public override string Text => Tag.Name;
@@ -25,15 +25,15 @@ public sealed class TaskItem(IMyTask tag, NodeTreeItem parent) : LeafTreeItem(pa
         return "Task";
     }
 
-    public static event Action OnChange;
-    public static TaskItem Current { get; private set; }
+    public static event Action? OnChange;
+    public static TaskItem? Current { get; private set; }
 
     protected override async Task UpdateAsync()
     {
         var res = await Client.TaskComments.ExecuteAsync(Tag.Id);
-        res.AssertNoErrors();
+        var data = res.AssertNoErrors();
 
-        Comments = ((IMyTaskComments)res.Data.Node).Comments
+        Comments = ((IMyTaskComments)data.Node!).Comments
             .OrderBy(x => x.CreatedAt)
             .ToList();
     }

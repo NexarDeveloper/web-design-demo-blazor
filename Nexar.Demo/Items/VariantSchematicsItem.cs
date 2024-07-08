@@ -15,9 +15,9 @@ public sealed class VariantSchematicsItem(VariantItem parent) : NodeTreeItem(par
     public override async Task<List<TreeItem>> ServerData()
     {
         var res = await Client.VariantSchematics.ExecuteAsync(_parent.Parent.Parent.Tag.Id, _parent.Tag.Name, SchematicItem.ItemsLimit);
-        res.AssertNoErrors();
+        var data = res.AssertNoErrors();
 
-        return res.Data.DesProjectById.Design.Variants[0].Schematics
+        return data.DesProjectById!.Design.Variants[0].Schematics
             .Select(x => (TreeItem)new SchematicItem(x, this))
             .ToList();
     }

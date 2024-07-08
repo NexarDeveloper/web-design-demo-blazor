@@ -8,13 +8,22 @@ namespace Nexar.Client;
 public static class IOperationResult_AssertNoErrors
 {
     /// <summary>
-    /// Checks the operation result and throws an exception on errors.
+    /// Checks the operation result for no errors and returns its data, never null.
     /// </summary>
     [DebuggerHidden]
-    public static void AssertNoErrors(this IOperationResult result)
+    public static T AssertNoErrors<T>(this IOperationResult<T> result) where T : class
+    {
+        return AssertNoErrorsAnyData(result) ?? throw new Exception("Unexpected null data.");
+    }
+
+    /// <summary>
+    /// Checks the operation result for no errors and returns its data, maybe null.
+    /// </summary>
+    [DebuggerHidden]
+    public static T? AssertNoErrorsAnyData<T>(this IOperationResult<T> result) where T : class
     {
         if (result.Errors.Count == 0)
-            return;
+            return result.Data;
 
         var sb = new StringBuilder();
 
@@ -24,7 +33,7 @@ public static class IOperationResult_AssertNoErrors
         var error = result.Errors[0];
         sb.AppendLine($"Message: {error.Message}");
 
-        if (error.Path != null && error.Path.Count > 0)
+        if (error.Path?.Count > 0)
         {
             sb.Append($"Path: ");
             foreach (var item in error.Path)
@@ -32,7 +41,7 @@ public static class IOperationResult_AssertNoErrors
             sb.AppendLine();
         }
 
-        if (result.Extensions is { } ext && ext.TryGetValue("requestId", out object requestId))
+        if (result.Extensions is { } ext && ext.TryGetValue("requestId", out object? requestId))
             sb.AppendLine($"requestId: {requestId}");
 
         var message = sb.ToString();

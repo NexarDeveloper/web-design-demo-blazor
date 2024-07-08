@@ -10,10 +10,10 @@ namespace Nexar.Demo.Shared;
 public partial class NavMenu : IDisposable
 {
     [Inject]
-    NavigationManager NavManager { get; init; }
+    NavigationManager NavManager { get; init; } = null!;
 
     [Inject]
-    private IDialogService DialogService { get; init; }
+    private IDialogService DialogService { get; init; } = null!;
 
     protected override void OnInitialized()
     {
@@ -26,7 +26,7 @@ public partial class NavMenu : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    async Task<IReadOnlyCollection<TreeItemData<TreeItem>>> ServerData(TreeItem node)
+    async Task<IReadOnlyCollection<TreeItemData<TreeItem>>?> ServerData(TreeItem node)
     {
         try
         {

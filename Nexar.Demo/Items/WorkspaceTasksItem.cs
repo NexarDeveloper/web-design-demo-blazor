@@ -15,9 +15,9 @@ public sealed class WorkspaceTasksItem(WorkspaceItem parent) : NodeTreeItem(pare
     public override async Task<List<TreeItem>> ServerData()
     {
         var res = await Client.WorkspaceTasks.ExecuteAsync(_parent.Tag.Url);
-        res.AssertNoErrors();
+        var data = res.AssertNoErrors();
 
-        return res.Data.DesWorkspaceTasks.Nodes
+        return data.DesWorkspaceTasks!.Nodes!
             .OrderByDescending(x => x.ModifiedAt)
             .Select(x => (TreeItem)new TaskItem(x, this))
             .ToList();

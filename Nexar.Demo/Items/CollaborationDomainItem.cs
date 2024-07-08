@@ -10,8 +10,8 @@ namespace Nexar.Demo;
 public sealed class CollaborationDomainItem(ProjectCollaborationItem parent, DesCollaborationDomain domain) : LeafTreeItem(parent)
 {
     public DesCollaborationDomain Domain { get; private set; } = domain;
-    public IMyCollaborationRevision LatestRevision { get; private set; }
-    public IReadOnlyList<IMyCollaborationRevision> Revisions { get; private set; }
+    public IMyCollaborationRevision? LatestRevision { get; private set; }
+    public IReadOnlyList<IMyCollaborationRevision>? Revisions { get; private set; }
 
     public new ProjectCollaborationItem Parent { get; } = parent;
     public override string Text => Domain.ToString().ToUpper();
@@ -27,15 +27,15 @@ public sealed class CollaborationDomainItem(ProjectCollaborationItem parent, Des
         return "CollaborationDomain";
     }
 
-    public static event Action OnChange;
-    public static CollaborationDomainItem Current { get; private set; }
+    public static event Action? OnChange;
+    public static CollaborationDomainItem? Current { get; private set; }
 
     protected override async Task UpdateAsync()
     {
         var res = await Client.ProjectCollaboration.ExecuteAsync(Parent.Parent.Tag.Id, Domain);
-        res.AssertNoErrors();
+        var data = res.AssertNoErrors();
 
-        LatestRevision = res.Data.LatestRevision;
-        Revisions = res.Data.Revisions.Nodes.Reverse().ToList();
+        LatestRevision = data.LatestRevision;
+        Revisions = data.Revisions?.Nodes?.Reverse().ToList();
     }
 }

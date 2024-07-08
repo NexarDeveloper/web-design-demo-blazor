@@ -24,6 +24,6 @@ public sealed class ThreadItem : LeafTreeItem
         return "Thread";
     }
 
-    public static event Action OnChange;
-    public static ThreadItem Current { get; private set; }
+    public static event Action? OnChange;
+    public static ThreadItem? Current { get; private set; }
 }

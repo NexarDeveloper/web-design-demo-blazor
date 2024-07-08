@@ -43,7 +43,7 @@
                 </MudButtonGroup>
             </MudTd>
             <MudTd DataLabel="Name">@context.Name</MudTd>
-            <MudTd DataLabel="Value">@context.Folder.Name</MudTd>
+            <MudTd DataLabel="Value">@context.Folder?.Name</MudTd>
             <MudTd DataLabel="Value">@context.LatestRevision.Comment</MudTd>
             <MudTd DataLabel="Value">@context.LatestRevision.Description</MudTd>
         </RowTemplate>

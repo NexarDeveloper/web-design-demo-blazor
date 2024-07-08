@@ -15,7 +15,7 @@
     return;
 }
 
-@if (Data.Current.Revisions.Count > 0)
+@if (Data.Current.Revisions?.Count > 0)
 {
     <MudTable Items=@Data.Current.Revisions>
         <HeaderContent>

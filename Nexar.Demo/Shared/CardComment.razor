@@ -33,7 +33,7 @@
 
 @code {
     [Parameter]
-    public IMyComment Comment { get; init; }
+    public IMyComment Comment { get; init; } = null!;
 
     string MentionsText =>
         string.Join(", ", Comment.Mentions.Select(x => x.User.Email ?? x.User.UserId));

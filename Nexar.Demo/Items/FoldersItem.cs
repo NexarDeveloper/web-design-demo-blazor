@@ -15,9 +15,9 @@ public sealed class FoldersItem(WorkspaceLibraryItem parent) : NodeTreeItem(pare
     public override async Task<List<TreeItem>> ServerData()
     {
         var res = await Client.Folders.ExecuteAsync(Parent.Tag.Url);
-        res.AssertNoErrors();
+        var data = res.AssertNoErrors();
 
-        var roots = FolderTreeNode.GetRootNodes(res.Data.DesLibrary.Folders);
+        var roots = FolderTreeNode.GetRootNodes(data.DesLibrary.Folders);
 
         return roots
             .Select(x => (TreeItem)new FolderItem(this, x))

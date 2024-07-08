@@ -16,17 +16,17 @@ public partial class ConnectPage
 
     [Parameter]
     [SupplyParameterFromQuery(Name = "api")]
-    public string ApiParameter { get; init; }
+    public string? ApiParameter { get; init; }
 
     [Parameter]
     [SupplyParameterFromQuery(Name = "mode")]
-    public string ModeParameter { get; init; }
+    public string? ModeParameter { get; init; }
 
     [Parameter]
     [SupplyParameterFromQuery(Name = "token")]
-    public string TokenParameter { get; init; }
+    public string? TokenParameter { get; init; }
 
-    string _token;
+    string? _token;
     bool _loading;
     bool _connecting;
 
@@ -38,7 +38,7 @@ public partial class ConnectPage
         // fetch workspaces
         var client = NexarClientFactory.GetClient(AppData.ApiEndpoint);
         var res = await client.Workspaces.ExecuteAsync();
-        res.AssertNoErrors();
+        var data = res.AssertNoErrors();
 
         // workspace scope
         JwtSecurityToken securityToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
@@ -51,7 +51,7 @@ public partial class ConnectPage
             workspaceAuthId = A365Scope;
 
         // share workspaces
-        AppData.SetWorkspaces(res.Data.DesWorkspaceInfos, workspaceAuthId);
+        AppData.SetWorkspaces(data.DesWorkspaceInfos, workspaceAuthId);
     }
 
     /// <summary>

@@ -94,8 +94,8 @@
     const string KeyWhat = "Design.Demo.ComponentSearch.what";
     const string KeySearch = "Design.Demo.ComponentSearch.search";
 
-    string _what;
-    string _search;
+    string _what = string.Empty;
+    string _search = string.Empty;
 
     bool _loading;
 
@@ -114,8 +114,8 @@
 
     async Task SearchAsync()
     {
-        Data.Current.Components = null;
-        Data.Current.Error = null;
+        Data.Current!.Components = null;
+        Data.Current!.Error = null;
         _loading = true;
         try
         {

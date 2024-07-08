@@ -16,9 +16,9 @@ public sealed class WorkspaceUsersItem(WorkspaceItem parent) : NodeTreeItem(pare
     public override async Task<List<TreeItem>> ServerData()
     {
         var res = await Client.TeamUsers.ExecuteAsync(_parent.Tag.Url);
-        res.AssertNoErrors();
+        var data = res.AssertNoErrors();
 
-        return res.Data.DesTeam.Users
+        return data.DesTeam.Users
             .OrderBy(x => x.UserName, StringComparer.OrdinalIgnoreCase)
             .Select(x => (TreeItem)new UserItem(x, this))
             .ToList();

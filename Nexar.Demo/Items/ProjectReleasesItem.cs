@@ -15,9 +15,9 @@ public sealed class ProjectReleasesItem(ProjectItem parent) : NodeTreeItem(paren
     public override async Task<List<TreeItem>> ServerData()
     {
         var res = await Client.ProjectReleases.ExecuteAsync(Parent.Tag.Id);
-        res.AssertNoErrors();
+        var data = res.AssertNoErrors();
 
-        return res.Data.DesProjectById.Design.Releases.Nodes
+        return data.DesProjectById!.Design.Releases!.Nodes!
             .OrderByDescending(x => x.CreatedAt)
             .Select(x => (TreeItem)new ReleaseItem(x, this))
             .ToList();

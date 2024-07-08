@@ -45,6 +45,6 @@ public sealed class WorkspaceItem(IMyWorkspace tag, bool hasData) : TreeItem
         return "Workspace";
     }
 
-    public static event Action OnChange;
-    public static WorkspaceItem Current { get; private set; }
+    public static event Action? OnChange;
+    public static WorkspaceItem? Current { get; private set; }
 }

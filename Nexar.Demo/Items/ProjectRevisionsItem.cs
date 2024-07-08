@@ -8,7 +8,7 @@ namespace Nexar.Demo;
 
 public sealed class ProjectRevisionsItem(ProjectItem parent) : LeafTreeItem(parent)
 {
-    public IReadOnlyList<IMyRevision> Revisions { get; private set; }
+    public IReadOnlyList<IMyRevision>? Revisions { get; private set; }
 
     public new ProjectItem Parent { get; } = parent;
     public override string Text => "Revisions";
@@ -24,14 +24,14 @@ public sealed class ProjectRevisionsItem(ProjectItem parent) : LeafTreeItem(pare
         return "Revisions";
     }
 
-    public static event Action OnChange;
-    public static ProjectRevisionsItem Current { get; private set; }
+    public static event Action? OnChange;
+    public static ProjectRevisionsItem? Current { get; private set; }
 
     protected override async Task UpdateAsync()
     {
         var res = await Client.ProjectRevisions.ExecuteAsync(Parent.Tag.Id);
-        res.AssertNoErrors();
+        var data = res.AssertNoErrors();
 
-        Revisions = res.Data.DesProjectById.Revisions.Nodes;
+        Revisions = data.DesProjectById!.Revisions?.Nodes;
     }
 }

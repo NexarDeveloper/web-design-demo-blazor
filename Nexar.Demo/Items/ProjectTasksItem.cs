@@ -15,9 +15,9 @@ public sealed class ProjectTasksItem(ProjectItem parent) : NodeTreeItem(parent)
     public override async Task<List<TreeItem>> ServerData()
     {
         var res = await Client.ProjectTasks.ExecuteAsync(_parent.Tag.Id);
-        res.AssertNoErrors();
+        var data = res.AssertNoErrors();
 
-        return res.Data.DesProjectTasks.Nodes
+        return data.DesProjectTasks!.Nodes!
             .OrderByDescending(x => x.ModifiedAt)
             .Select(x => (TreeItem)new TaskItem(x, this))
             .ToList();

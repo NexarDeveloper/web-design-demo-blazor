@@ -19,6 +19,6 @@ public sealed class SchematicItem(IMySchematic tag, VariantSchematicsItem parent
         return "Schematic";
     }
 
-    public static event Action OnChange;
-    public static SchematicItem Current { get; private set; }
+    public static event Action? OnChange;
+    public static SchematicItem? Current { get; private set; }
 }

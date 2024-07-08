@@ -8,11 +8,11 @@ namespace Nexar.Demo;
 
 public sealed class ProjectItem(IMyProject tag, WorkspaceProjectsItem parent) : NodeTreeItem(parent)
 {
-    public IMyProjectRevision Revision { get; private set; }
-    public IReadOnlyList<IMyProjectParameter> Parameters { get; private set; }
+    public IMyProjectRevision? Revision { get; private set; }
+    public IReadOnlyList<IMyProjectParameter>? Parameters { get; private set; }
 
     public IMyProject Tag { get; } = tag;
-    public override string Text => Tag.Name;
+    public override string Text => Tag.Name ?? string.Empty;
     public override string Icon => Icons.Material.Filled.Memory;
 
     public override Task<List<TreeItem>> ServerData()
@@ -39,15 +39,15 @@ public sealed class ProjectItem(IMyProject tag, WorkspaceProjectsItem parent) : 
         return "Project";
     }
 
-    public static event Action OnChange;
-    public static ProjectItem Current { get; private set; }
+    public static event Action? OnChange;
+    public static ProjectItem? Current { get; private set; }
 
     protected override async Task UpdateAsync()
     {
         var res = await Client.ProjectExtras.ExecuteAsync(Tag.Id);
-        res.AssertNoErrors();
+        var data = res.AssertNoErrors();
 
-        Revision = res.Data.DesProjectById.LatestRevision;
-        Parameters = res.Data.DesProjectById.Parameters;
+        Revision = data.DesProjectById?.LatestRevision;
+        Parameters = data.DesProjectById?.Parameters;
     }
 }

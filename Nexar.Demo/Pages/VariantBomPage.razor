@@ -19,7 +19,7 @@
 {
     <TextFieldCopy Label="Id" Text=@Data.Current.Tag.Id />
 
-    <TextField Label="Items.TotalCount" Text=@Data.Current.Tag.Items.TotalCount.ToString() />
+    <TextField Label="Items.TotalCount" Text=@Data.Current.Tag.Items!.TotalCount.ToString() />
 
     @if (Data.Current.Tag.Items.TotalCount > Data.ItemsLimit)
     {
