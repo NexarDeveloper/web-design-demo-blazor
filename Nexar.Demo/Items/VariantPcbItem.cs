@@ -5,14 +5,13 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class VariantPcbItem(VariantItem parent) : LeafTreeItem(parent)
+public sealed class VariantPcbItem(NodeTreeItem parent) : LeafTreeItem(parent)
 {
     public const int ItemsLimit = 100;
 
     public IMyPcb? Tag { get; private set; }
     public override string Text => "PCB";
     public override string Icon => Icons.Material.Filled.List;
-    public new VariantItem Parent => (VariantItem)base.Parent;
 
     public override string SetCurrent()
     {
@@ -29,9 +28,23 @@ public sealed class VariantPcbItem(VariantItem parent) : LeafTreeItem(parent)
 
     protected override async Task UpdateAsync()
     {
-        var res = await Client.VariantPcb.ExecuteAsync(Parent.Parent.Parent.Tag.Id, Parent.Tag.Name, ItemsLimit);
-        var data = res.AssertNoErrors();
+        if (Parent is VariantItem variantItem)
+        {
+            var res = await Client.VariantPcb.ExecuteAsync(variantItem.Parent.Parent.Tag.Id, variantItem.Tag.Name, ItemsLimit);
+            var data = res.AssertNoErrors();
 
-        Tag = data.DesProjectById!.Design.Variants[0].Pcb;
+            Tag = data.DesProjectById!.Design.Variants[0].Pcb;
+        }
+        else if (Parent is ReleaseVariantItem releaseVariantItem)
+        {
+            var res = await Client.ReleaseVariantPcb.ExecuteAsync(releaseVariantItem.Parent.Tag.Id, releaseVariantItem.Tag.Name, ItemsLimit);
+            var data = res.AssertNoErrors();
+
+            Tag = data.DesReleaseById?.Variants[0].Pcb;
+        }
+        else
+        {
+            throw new NotImplementedException();
+        }
     }
 }

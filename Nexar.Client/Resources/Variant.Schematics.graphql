@@ -1,4 +1,4 @@
-﻿# Gets the project design variant scgematics.
+﻿# Gets the project design variant schematics.
 query VariantSchematics($projectId: ID!, $variantName: String!, $limit: Int!) {
   desProjectById(id: $projectId) {
     design {
@@ -6,6 +6,17 @@ query VariantSchematics($projectId: ID!, $variantName: String!, $limit: Int!) {
         schematics {
           ...MySchematic
         }
+      }
+    }
+  }
+}
+
+# Gets the project release variant schematics.
+query ReleaseVariantSchematics($releaseId: ID!, $variantName: String!, $limit: Int!) {
+  desReleaseById(id: $releaseId) {
+    variants(where: {name: {eq: $variantName}}) {
+      schematics {
+        ...MySchematic
       }
     }
   }

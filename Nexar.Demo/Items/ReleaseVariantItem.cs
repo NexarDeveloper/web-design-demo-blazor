@@ -28,6 +28,8 @@ public sealed class ReleaseVariantItem(IMyReleaseVariant tag, ReleaseItem parent
         return Task.FromResult(new List<TreeItem>
         {
             new VariantBomItem(this),
+            new VariantPcbItem(this),
+            new VariantSchematicsItem(this),
         });
     }
 }

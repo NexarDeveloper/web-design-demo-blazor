@@ -11,6 +11,17 @@ query VariantPcb($projectId: ID!, $variantName: String!, $limit: Int!) {
   }
 }
 
+# Gets the project release variant design items.
+query ReleaseVariantPcb($releaseId: ID!, $variantName: String!, $limit: Int!) {
+  desReleaseById(id: $releaseId) {
+    variants(where: {name: {eq: $variantName}}) {
+      pcb {
+        ...MyPcb
+      }
+    }
+  }
+}
+
 # This fragment becomes IMyPcb in C#.
 fragment MyPcb on DesPcb {
   documentId

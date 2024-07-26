@@ -45,6 +45,10 @@ public sealed class VariantBomItem(NodeTreeItem parent) : LeafTreeItem(parent)
 
             Tag = data.DesReleaseById?.Variants[0].Bom;
         }
+        else
+        {
+            throw new NotImplementedException();
+        }
 
         Items = Tag?.Items?.Nodes!
         .Select(x => new MyData
