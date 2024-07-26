@@ -11,6 +11,17 @@ query VariantBom($projectId: ID!, $variantName: String!, $limit: Int!) {
   }
 }
 
+# Gets the project release variant BOM.
+query ReleaseVariantBom($releaseId: ID!, $variantName: String!, $limit: Int!) {
+  desReleaseById(id: $releaseId) {
+    variants(where: {name: {eq: $variantName}}) {
+      bom {
+        ...MyBom
+      }
+    }
+  }
+}
+
 # This fragment becomes IMyBom in C#.
 fragment MyBom on DesBom {
   id

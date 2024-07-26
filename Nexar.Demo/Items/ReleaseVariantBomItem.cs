@@ -11,7 +11,7 @@ public sealed class ReleaseVariantBomItem(ReleaseVariantItem parent) : LeafTreeI
 {
     public const int ItemsLimit = 100;
 
-    public IMyReleaseBom? Tag { get; private set; }
+    public IMyBom? Tag { get; private set; }
     public List<MyData>? Items { get; private set; }
     public override string Text => "BOM";
     public override string Icon => Icons.Material.Filled.List;
@@ -54,6 +54,6 @@ public sealed class ReleaseVariantBomItem(ReleaseVariantItem parent) : LeafTreeI
         public string? Name { get; set; }
         public bool IsManaged { get; set; }
         public int Quantity { get; set; }
-        public IReadOnlyList<IMyReleaseBomItemInstance>? Instances { get; set; }
+        public IReadOnlyList<IMyBomItemInstance>? Instances { get; set; }
     }
 }
