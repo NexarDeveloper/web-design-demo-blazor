@@ -1,0 +1,92 @@
+﻿@page "/ReleaseVariantBom"
+@inherits AbstractPage
+@using Data = ReleaseVariantBomItem
+
+<ItemPageHeader Text="BOM" Item=@Data.Current />
+
+@if (Data.Current is null)
+{
+    return;
+}
+
+@if (Data.Current.IsUpdating)
+{
+    <MudProgressLinear Indeterminate=true />
+    return;
+}
+
+@if (Data.Current.Tag is not null)
+{
+    <TextFieldCopy Label="Id" Text=@Data.Current.Tag.Id />
+
+    <TextField Label="Items.TotalCount" Text=@Data.Current.Tag.Items!.TotalCount.ToString() />
+
+    @if (Data.Current.Tag.Items.TotalCount > Data.ItemsLimit)
+    {
+        <MudAlert Severity="Severity.Warning">
+            Limited to the first @(Data.ItemsLimit) items.
+        </MudAlert>
+    }
+
+    <br />
+    <MudTable Items=@Data.Current.Items Dense=true>
+        <HeaderContent>
+            <MudTh>Component.Name</MudTh>
+            <MudTh>Component.IsManaged</MudTh>
+            <MudTh>Quantity</MudTh>
+            <MudTh></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Name">@context.Name</MudTd>
+            <MudTd DataLabel="IsManaged">@context.IsManaged</MudTd>
+            <MudTd DataLabel="Quantity">@context.Quantity</MudTd>
+            <MudTd><MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => ToggleDetails(context))">@((context.ShowDetails == true) ? "Hide" : "Show") instances</MudButton></MudTd>
+        </RowTemplate>
+        <ChildRowContent>
+            @if (context.ShowDetails)
+            {
+                <MudTr>
+                    <MudCard Elevation="0">
+                        <MudCardContent>
+                            <MudTable Items=@context.Instances Context="Instance" Dense=true>
+                                <HeaderContent>
+                                    <MudTh>Designator</MudTh>
+                                    <MudTh>IsFitted</MudTh>
+                                    <MudTh>Alternate</MudTh>
+                                </HeaderContent>
+                                <RowTemplate>
+                                    <MudTd DataLabel="Designator">@Instance.Designator</MudTd>
+                                    <MudTd DataLabel="IsFitted">@Instance.IsFitted</MudTd>
+                                    <MudTd DataLabel="Alternate">@Instance.AlternateComponent?.Name</MudTd>
+                                </RowTemplate>
+                            </MudTable>
+                        </MudCardContent>
+                    </MudCard>
+                </MudTr>
+            }
+        </ChildRowContent>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+}
+
+<br />
+<AlertGraphQL Files="Project.Releases.graphql ReleaseVariant.Bom.graphql" />
+
+@code {
+    protected override void OnInitialized()
+    {
+        Data.OnChange += StateHasChanged;
+    }
+
+    protected override void Disposing()
+    {
+        Data.OnChange -= StateHasChanged;
+    }
+
+    private void ToggleDetails(Data.MyData data)
+    {
+        data.ShowDetails = !data.ShowDetails;
+    }
+}

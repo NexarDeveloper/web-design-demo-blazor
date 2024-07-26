@@ -44,6 +44,7 @@ Data tree structure:
                 - Schematics
         - Releases
             - Variants
+                - BOM
         - Collaboration
             - ECAD
             - MCAD
