@@ -27,7 +27,7 @@ public sealed class ReleaseVariantItem(IMyReleaseVariant tag, ReleaseItem parent
     {
         return Task.FromResult(new List<TreeItem>
         {
-            new ReleaseVariantBomItem(this),
+            new VariantBomItem(this),
         });
     }
 }

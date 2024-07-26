@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class VariantBomItem(VariantItem parent) : LeafTreeItem(parent)
+public sealed class VariantBomItem(NodeTreeItem parent) : LeafTreeItem(parent)
 {
     public const int ItemsLimit = 100;
 
@@ -15,7 +15,6 @@ public sealed class VariantBomItem(VariantItem parent) : LeafTreeItem(parent)
     public List<MyData>? Items { get; private set; }
     public override string Text => "BOM";
     public override string Icon => Icons.Material.Filled.List;
-    public new VariantItem Parent => (VariantItem)base.Parent;
 
     public override string SetCurrent()
     {
@@ -32,20 +31,30 @@ public sealed class VariantBomItem(VariantItem parent) : LeafTreeItem(parent)
 
     protected override async Task UpdateAsync()
     {
-        var res = await Client.VariantBom.ExecuteAsync(Parent.Parent.Parent.Tag.Id, Parent.Tag.Name, ItemsLimit);
-        var data = res.AssertNoErrors();
+        if (Parent is VariantItem variantItem)
+        {
+            var res = await Client.VariantBom.ExecuteAsync(variantItem.Parent.Parent.Tag.Id, variantItem.Tag.Name, ItemsLimit);
+            var data = res.AssertNoErrors();
 
-        Tag = data.DesProjectById?.Design.Variants[0].Bom;
+            Tag = data.DesProjectById?.Design.Variants[0].Bom;
+        }
+        else if (Parent is ReleaseVariantItem releaseVariantItem)
+        {
+            var res = await Client.ReleaseVariantBom.ExecuteAsync(releaseVariantItem.Parent.Tag.Id, releaseVariantItem.Tag.Name, ItemsLimit);
+            var data = res.AssertNoErrors();
+
+            Tag = data.DesReleaseById?.Variants[0].Bom;
+        }
 
         Items = Tag?.Items?.Nodes!
-            .Select(x => new MyData
-            {
-                Name = x.Component.Name,
-                IsManaged = x.Component.IsManaged,
-                Quantity = x.Quantity,
-                Instances = x.BomItemInstances.OrderBy(x => x.Designator).ToList()
-            })
-            .ToList();
+        .Select(x => new MyData
+        {
+            Name = x.Component.Name,
+            IsManaged = x.Component.IsManaged,
+            Quantity = x.Quantity,
+            Instances = x.BomItemInstances.OrderBy(x => x.Designator).ToList()
+        })
+        .ToList();
     }
 
     public class MyData
