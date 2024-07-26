@@ -102,6 +102,8 @@ type Query {
   supPartIdsFromCiivaIds(ciivaIds: [String!]!): [String]!
   "Nexar infrastructure, subject to change."
   supCiivaIdFromPartId(partId: String!): String
+  "Nexar infrastructure, subject to change."
+  supCiivaIdsFromPartIds(partIds: [String!]!): [String]!
   "Nexar supply part data for internal use only."
   supPartExtrasByPartId(partId: String!): SupPartExtras
   "Nexar supply part data for internal use only."
@@ -1615,6 +1617,10 @@ type DesLifeCycleState {
   backgroundColor: DesColor!
   "The foreground color for this life cycle state."
   foregroundColor: DesColor!
+  "Determines whether items in this life cycle state are allowed to be used in a design."
+  isAllowedInDesign: Boolean!
+  "Determines whether this life cycle state is visible in the Altium Designer vault panel."
+  isVisible: Boolean!
   "The `DateTime` this life cycle state was last updated at."
   updatedAt: DateTime!
 }
@@ -1629,6 +1635,12 @@ type DesLifeCycleStateTransition {
   lifeCycleStateBefore: DesLifeCycleState
   "The `DesLifeCycleState` after the transition is applied."
   lifeCycleStateAfter: DesLifeCycleState
+  "The controllers who are allowed to perform this transition. If using approvals, this will return null."
+  controllers: [DesLifeCycleStateTransitionController!]
+  "Determines whether the transition is publicly accessible."
+  isPublic: Boolean!
+  "The groups that must provide an approval for the transition to be applied. If using controlled transitions, this will return null."
+  approvals: [DesLifeCycleStateTransitionApprovalGroup!]
   "The reference ID for this life cycle state transition."
   lifeCycleStateTransitionId: String!
   "The name of this life cycle state transition."
@@ -1639,6 +1651,28 @@ type DesLifeCycleStateTransition {
   updatedAt: DateTime!
   "The format string for the transition menu in Altium Designer."
   menuTextFormat: String!
+  "Determines how the permissions for the state transition are managed."
+  transitionKind: DesLifeCycleStateTransitionKind!
+}
+
+"Information about the life cycle state transition approval groups."
+type DesLifeCycleStateTransitionApprovalGroup {
+  "The name of this life cycle state transition approval group."
+  name: String!
+  "The controllers that can provide an approval for this life cycle state transition approval group."
+  controllers: [DesLifeCycleStateTransitionController!]!
+}
+
+"Information about the life cycle state transition controllers."
+type DesLifeCycleStateTransitionController {
+  "The group this life cycle state transition controller is assigned to. It is null unless the scope is set to `GROUP`."
+  group: DesUserGroup
+  "The user this life cycle state transition controller is assigned to. It is null unless the scope is set to `USER`."
+  user: DesUser
+  "The name of this life cycle state transition controller."
+  name: String!
+  "The scope of this life cycle state transition controller."
+  scope: DesPermissionScope!
 }
 
 "Information about the manufacture package."
@@ -2394,6 +2428,11 @@ type DesSymbol {
   description: String!
 }
 
+type DesSystemDiagram {
+  "The downloadable file for the system diagram"
+  systemDiagramFile: DesDownloadableFile
+}
+
 "Task activities in Altium 365 workspace for workspace members."
 type DesTask implements Node {
   "The assigned user."
@@ -2716,6 +2755,8 @@ type DesWipVariant {
   designExchange: DesDesignExchange
   "The Bill of Materials (BOM) for this design variant."
   bom: DesBom
+  "The system diagram for this design variant."
+  systemDiagram: DesSystemDiagram
   "The PCB document for this design variant."
   pcb: DesPcb
   "The descriptive label for this design variant."
@@ -3882,12 +3923,18 @@ input DesReleaseComponentInput {
   componentParentFolderId: ID
   "New child folder name for releasing a component. If omitted or empty, `ComponentParentFolderId` is required."
   componentReleaseFolder: String
+  "When `componentReleaseFolder` is set, tells to use existing folder if any, otherwise create a new folder."
+  useExistingComponentReleaseFolder: Boolean
   "Name of component item."
   componentItemName: String!
-  "Revision naming scheme identifier for component."
+  "**DEPRECATED** Use `componentRevisionNamingSchemeNodeId` instead with a value from `DesRevisionNamingScheme.id`."
   componentRevisionNamingSchemeId: String
-  "Life cycle definition identifier for component."
+  "Revision naming scheme identifier for component."
+  componentRevisionNamingSchemeNodeId: ID
+  "**DEPRECATED** Use `componentLifeCycleDefinitionNodeId` instead with a value from `DesLifeCycleDefinition.id`."
   componentLifeCycleDefinitionId: String
+  "Life cycle definition identifier for component."
+  componentLifeCycleDefinitionNodeId: ID
   "Comment for component."
   componentComment: String
   "Description for component."
@@ -3900,20 +3947,28 @@ input DesReleaseComponentInput {
   symbolItemName: String
   "The symbol files."
   symbolFiles: [DesReleaseComponentFileInput!]!
-  "The symbol revision naming scheme identifier."
+  "**DEPRECATED** Use `symbolRevisionNamingSchemeNodeId` instead with a value from `DesRevisionNamingScheme.id`."
   symbolRevisionNamingSchemeId: String
-  "The symbol life cycle definition identifier."
+  "The symbol revision naming scheme identifier."
+  symbolRevisionNamingSchemeNodeId: ID
+  "**DEPRECATED** Use `symbolLifeCycleDefinitionNodeId` instead with a value from `DesLifeCycleDefinition.id`."
   symbolLifeCycleDefinitionId: String
+  "The symbol life cycle definition identifier."
+  symbolLifeCycleDefinitionNodeId: ID
   "The footprint folder path, existing or to be created."
   footprintReleaseFolder: String!
   "The footprint name. Use null to be generated."
   footprintItemName: String
   "The footprint files."
   footprintFiles: [DesReleaseComponentFileInput!]!
-  "The footprint revision naming scheme identifier."
+  "**DEPRECATED** Use `footprintRevisionNamingSchemeNodeId` instead with a value from `DesRevisionNamingScheme.id`."
   footprintRevisionNamingSchemeId: String
-  "The footprint life cycle definition identifier."
+  "The footprint revision naming scheme identifier."
+  footprintRevisionNamingSchemeNodeId: ID
+  "**DEPRECATED** Use `footprintLifeCycleDefinitionNodeId` instead with a value from `DesLifeCycleDefinition.id`."
   footprintLifeCycleDefinitionId: String
+  "The footprint life cycle definition identifier."
+  footprintLifeCycleDefinitionNodeId: ID
 }
 
 "Input for releasing a component template."
@@ -4681,6 +4736,13 @@ enum DesLayerType {
 enum DesLifeCycleManagementType {
   SIMPLE
   STRUCTURED
+}
+
+enum DesLifeCycleStateTransitionKind {
+  "The transition can be applied subject to default server permissions."
+  CONTROLLED
+  "The transition can be applied subject to receiving approvals granted by some approval groups."
+  APPROVALS
 }
 
 enum DesPadType {
