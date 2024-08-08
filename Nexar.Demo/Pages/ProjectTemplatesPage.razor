@@ -1,0 +1,78 @@
+﻿@page "/ProjectTemplates"
+@inherits AbstractPage
+@using Data = ProjectTemplatesItem
+
+<ItemPageHeader Text="Project Templates" Item=@Data.Current />
+
+@if (Data.Current is null)
+{
+    return;
+}
+
+@if (Data.Current.IsUpdating)
+{
+    <MudProgressLinear Indeterminate=true />
+    return;
+}
+
+@if (Data.Current.Templates is not null)
+{
+    <MudTable Items=@Data.Current.Templates Filter="FilterElement" Dense=true>
+        <ToolBarContent>
+            <MudSpacer />
+            <MudTextField @bind-Value="_filterString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh Style="width:1%"></MudTh>
+            <MudTh>Name</MudTh>
+            <MudTh>Folder</MudTh>
+            <MudTh>Comment</MudTh>
+            <MudTh>Description</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>
+                <MudButtonGroup>
+                    <MudTooltip Text="Download latest revision">
+                        <MudIconButton Icon=@Icons.Material.Outlined.Download
+                                       Target="_blank" Href=@context.LatestRevision.DownloadableFile.DownloadUrl />
+                    </MudTooltip>
+                    <MudTooltip Text="Copy project template ID">
+                        <MudIconButton Icon=@Icons.Material.Filled.ContentCopy
+                                       OnClick=@(() => JS.InvokeVoidAsyncWithErrorHandling("navigator.clipboard.writeText", context.Id)) />
+                    </MudTooltip>
+                </MudButtonGroup>
+            </MudTd>
+            <MudTd DataLabel="Name">@context.Name</MudTd>
+            <MudTd DataLabel="Value">@context.Folder?.Name</MudTd>
+            <MudTd DataLabel="Value">@context.LatestRevision.Comment</MudTd>
+            <MudTd DataLabel="Value">@context.LatestRevision.Description</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+}
+
+<br />
+<AlertGraphQL Files="ProjectTemplates.graphql" />
+
+@code {
+    string _filterString = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        Data.OnChange += StateHasChanged;
+    }
+
+    protected override void Disposing()
+    {
+        Data.OnChange -= StateHasChanged;
+    }
+
+    bool FilterElement(Nexar.Client.IMyProjectTemplate element)
+    {
+        return
+            string.IsNullOrWhiteSpace(_filterString) ||
+            element.Name.Contains(_filterString, StringComparison.OrdinalIgnoreCase);
+    }
+}

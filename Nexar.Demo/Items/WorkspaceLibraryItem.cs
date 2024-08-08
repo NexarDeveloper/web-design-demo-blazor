@@ -19,6 +19,7 @@ public sealed class WorkspaceLibraryItem(WorkspaceItem parent) : NodeTreeItem(pa
             new FoldersItem(this),
             new ComponentSearchItem(this),
             new ComponentTemplatesItem(this),
+            new ProjectTemplatesItem(this),
         });
     }
 }

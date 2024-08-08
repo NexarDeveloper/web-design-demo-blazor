@@ -62,6 +62,8 @@ type Query {
   desRevisionDetailsById("The node identifier for specific revision details." id: ID!): DesRevisionDetails
   "Searches for a specific template for a component by its unique identifier."
   desComponentTemplateById("The node identifier for a component template." id: ID!): DesComponentTemplate
+  "Searches for a specific template for a project by its unique identifier."
+  desProjectTemplateById("The node identifier for a project template." id: ID!): DesProjectTemplate
   "Searches for a specific folder by its unique identifier."
   desFolderById("The node identifier for a folder." id: ID!): DesFolder
   "Search for comment threads associated with a project."
@@ -1533,6 +1535,8 @@ type DesLibrary {
   components("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesComponentFilterInput): DesComponentConnection
   "Gets library component templates."
   componentTemplates("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesComponentTemplateConnection
+  "Gets library project templates."
+  projectTemplates("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesProjectTemplateConnection
   "Gets library reuse blocks."
   reuseBlocks("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesReuseBlockConnection
   "*PROTOTYPE, SUBJECT TO CHANGE*"
@@ -2033,6 +2037,54 @@ type DesProjectPermission {
   canDelete: Boolean!
   "The name of this permission."
   name: String!
+}
+
+"Information about a project template."
+type DesProjectTemplate implements Node {
+  "The node ID (used by `desProjectTemplateById`)."
+  id: ID!
+  "Project template name."
+  name: String!
+  "Project template description."
+  description: String!
+  "Project template folder."
+  folder: DesFolder
+  "Project template latest revision."
+  latestRevision: DesProjectTemplateRevision!
+}
+
+"A connection to a list of items."
+type DesProjectTemplateConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [DesProjectTemplateEdge!]
+  "A flattened list of the nodes."
+  nodes: [DesProjectTemplate!]
+  "Identifies the total count of items in the connection."
+  totalCount: Int!
+}
+
+"An edge in a connection."
+type DesProjectTemplateEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: DesProjectTemplate!
+}
+
+"Project template revision information."
+type DesProjectTemplateRevision {
+  "Project template revision name."
+  name: String!
+  "Creation date for project template revision."
+  createdAt: DateTime!
+  "Project template revision comment."
+  comment: String!
+  "Project template revision description."
+  description: String!
+  "Project template revision downloadable file."
+  downloadableFile: DesDownloadableFile!
 }
 
 "Rectangle positional information."

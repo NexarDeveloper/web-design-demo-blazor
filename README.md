@@ -60,6 +60,7 @@ Data tree structure:
         - Folders
         - Component Search
         - Component Templates
+        - Project Templates
     - Tasks
     - Users
 
