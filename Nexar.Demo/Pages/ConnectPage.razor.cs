@@ -14,15 +14,12 @@ public partial class ConnectPage
     const string A365Scope = "a365";
     const string A365WorkspaceScopePrefix = "a365:workspace:";
 
-    [Parameter]
     [SupplyParameterFromQuery(Name = "api")]
     public string? ApiParameter { get; init; }
 
-    [Parameter]
     [SupplyParameterFromQuery(Name = "mode")]
     public string? ModeParameter { get; init; }
 
-    [Parameter]
     [SupplyParameterFromQuery(Name = "token")]
     public string? TokenParameter { get; init; }
 
