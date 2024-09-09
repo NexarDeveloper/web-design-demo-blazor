@@ -1,0 +1,53 @@
+﻿@page "/Variant"
+@inherits AbstractPage
+@using Data = VariantItem
+
+<ItemPageHeader Text="Design Variant" Item=@Data.Current />
+
+@if (Data.Current is null)
+{
+    return;
+}
+
+<TextField Label="Name" Text=@Data.Current.Tag.Name />
+
+<br />
+<MudTable Items=@Downloads() Dense=true>
+    <ToolBarContent>
+        <MudText Typo=Typo.h6>Downloads</MudText>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Item</MudTh>
+        <MudTh>Download</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Package">@context.Item1</MudTd>
+        <MudTd DataLabel="Download">
+            <MudLink Href=@context.Item3 Target="_blank">@context.Item2</MudLink>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+<br />
+<AlertGraphQL Files="Project.Variants.graphql" />
+
+@code {
+    protected override void OnInitialized()
+    {
+        Data.OnChange += StateHasChanged;
+    }
+
+    protected override void Disposing()
+    {
+        Data.OnChange -= StateHasChanged;
+    }
+
+    (string, string?, string?)[] Downloads()
+    {
+        var diagram = Data.Current!.Tag?.SystemDiagram?.SystemDiagramFile;
+        return new (string, string?, string?)[]
+        {
+            ("SystemDiagram", diagram?.FileName, diagram?.DownloadUrl),
+        };
+    }
+}

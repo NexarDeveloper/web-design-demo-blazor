@@ -1,5 +1,6 @@
 ﻿using MudBlazor;
 using Nexar.Client;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,6 +12,16 @@ public sealed class VariantItem(IMyWipVariant tag, ProjectDesignItem parent) : N
     public override string Text => Tag.Name;
     public override string Icon => Icons.Material.Filled.Memory;
     public new ProjectDesignItem Parent => (ProjectDesignItem)base.Parent;
+
+    public override string SetCurrent()
+    {
+        Current = this;
+        OnChange?.Invoke();
+        return "Variant";
+    }
+
+    public static event Action? OnChange;
+    public static VariantItem? Current { get; private set; }
 
     public override Task<List<TreeItem>> ServerData()
     {

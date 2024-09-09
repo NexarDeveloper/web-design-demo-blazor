@@ -12,4 +12,10 @@ query ProjectVariants($projectId: ID!) {
 # This fragment becomes IMyWipVariant in C#.
 fragment MyWipVariant on DesWipVariant {
   name
+  systemDiagram {
+    systemDiagramFile {
+      fileName
+      downloadUrl
+    }
+  }
 }
