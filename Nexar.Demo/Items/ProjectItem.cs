@@ -10,6 +10,7 @@ public sealed class ProjectItem(IMyProject tag, WorkspaceProjectsItem parent) : 
 {
     public IMyProjectRevision? Revision { get; private set; }
     public IReadOnlyList<IMyProjectParameter>? Parameters { get; private set; }
+    public IReadOnlyList<IMyProjectPermission>? Permissions { get; private set; }
 
     public IMyProject Tag { get; } = tag;
     public override string Text => Tag.Name ?? string.Empty;
@@ -49,5 +50,6 @@ public sealed class ProjectItem(IMyProject tag, WorkspaceProjectsItem parent) : 
 
         Revision = data.DesProjectById?.LatestRevision;
         Parameters = data.DesProjectById?.Parameters;
+        Permissions = data.DesProjectById?.ProjectPermissions;
     }
 }

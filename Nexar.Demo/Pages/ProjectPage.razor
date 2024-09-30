@@ -25,12 +25,42 @@
     return;
 }
 
-@if (Data.Current.Revision is not null)
+@if (Data.Current.Revision is { })
 {
     <TextField Label="LatestRevision (CreatedAt / Author / Message / RevisionId)" Text=@Revision(Data.Current) />
 }
 
-@if (Data.Current.Parameters is not null)
+@if (Data.Current.Permissions is { })
+{
+    <br />
+    <MudTable Items=@Data.Current.Permissions Dense=true>
+        <ToolBarContent>
+            <MudText Typo=Typo.h6>Permissions</MudText>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Name</MudTh>
+            <MudTh>Scope</MudTh>
+            <MudTh>Group</MudTh>
+            <MudTh>User</MudTh>
+            <MudTh>CanRead</MudTh>
+            <MudTh>CanEdit</MudTh>
+            <MudTh>CanCreate</MudTh>
+            <MudTh>CanDelete</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Name">@context.Name</MudTd>
+            <MudTd DataLabel="Scope">@context.Scope</MudTd>
+            <MudTd DataLabel="Group">@context.Group?.Name</MudTd>
+            <MudTd DataLabel="User">@context.User?.UserName</MudTd>
+            <MudTd DataLabel="CanRead">@context.CanRead</MudTd>
+            <MudTd DataLabel="CanEdit">@context.CanEdit</MudTd>
+            <MudTd DataLabel="CanCreate">@context.CanCreate</MudTd>
+            <MudTd DataLabel="CanDelete">@context.CanDelete</MudTd>
+        </RowTemplate>
+    </MudTable>
+}
+
+@if (Data.Current.Parameters is { })
 {
     <br />
     <MudTable Items=@Data.Current.Parameters Dense=true>
