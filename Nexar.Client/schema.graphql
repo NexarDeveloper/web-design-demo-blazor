@@ -438,7 +438,7 @@ type DesCadBoard3DBodyModelData {
   color: Long
   "3D model opacity."
   opacity: Float
-  "The token for getting URL by `desLibrary\/downloadUrlsByTokens`."
+  "The token for getting URL by `DesLibrary.downloadUrlsByTokens`."
   downloadToken: String
 }
 
@@ -460,7 +460,7 @@ type DesCadBoardArea {
   restrictsTHPad: Boolean!
   "CAD board area placement."
   placement: DesCadBoardComponentPlacement!
-  "JSON serialized `GeometricShape`."
+  "JSON serialized *GeometricShape*."
   shapeJson: String
   "Board object type."
   objectType: DesCadBoardObjectType!
@@ -558,15 +558,15 @@ type DesCadBoardCopperRegion {
   layerName: String
   "CAD board copper region type."
   regionType: DesCadBoardCopperRegionType!
-  "JSON serialized array of `GeometricShape`."
+  "JSON serialized array of *GeometricShape*."
   outlineShapesJson: String
-  "JSON serialized array of `GeometricShape`."
+  "JSON serialized array of *GeometricShape*."
   holeShapesJson: String
 }
 
 "Information about a cutout on the CAD board."
 type DesCadBoardCutout {
-  "JSON serialized `GeometricShape`."
+  "JSON serialized *GeometricShape*."
   shapeJson: String
   "CAD board cut abstruct unique identifier."
   uniqueId: String
@@ -656,7 +656,7 @@ type DesCadBoardRegion {
   color: Long!
   "CAD board region internal point."
   internalPoint: DesCadPoint!
-  "JSON serialized `ComplexShape`."
+  "JSON serialized *ComplexShape*."
   shapeJson: String
   "CAD board region layers."
   layers: [DesCadBoardLayer!]
@@ -731,7 +731,7 @@ type DesCadComponentBodyShape {
   isHidden: Boolean!
   "True if CAD component is bodyless on ECAD."
   isBodylessOnEcad: Boolean!
-  "JSON serialized `GeometricShape`."
+  "JSON serialized *GeometricShape*."
   shapeJson: String
   "CAD component model data."
   modelData: DesCadBoard3DBodyModelData
@@ -803,7 +803,7 @@ type DesCadDesign {
   copperLayers: [DesCadBoardCopperLayer!]
   "CAD design copper regions."
   copperRegions: [DesCadBoardCopperRegion!]
-  "JSON serialized `ComplexShape`."
+  "JSON serialized *ComplexShape*."
   boardOutlineJson: String
   "CAD design board split lines."
   boardSplitLines: [DesCadSplitLine!]
@@ -849,7 +849,7 @@ type DesCadSplitLine {
   leftRegionName: String
   "CAD split line region name (right)."
   rightRegionName: String
-  "JSON serialized `ComplexShape`."
+  "JSON serialized *ComplexShape*."
   shapeJson: String
   "Line starting point."
   startPoint: DesCadPoint!
@@ -1303,7 +1303,7 @@ type DesDesignExchange {
 
 "A design item is a specific instance of a part used in the design."
 type DesDesignItem implements Node {
-  "The node identifier for this project (used by `DesDesignItemById`)."
+  "The node identifier for this project (used by `desDesignItemById`)."
   id: ID!
   "The detailed component information for this design item."
   component: DesComponent
@@ -1549,7 +1549,7 @@ type DesLibrary {
   updatedAt: DateTime!
 }
 
-"Revision naming scheme details obtained by `desLibrary\/lifeCycleDefinitions`."
+"Revision naming scheme details obtained by `desLifeCycleDefinitions`."
 type DesLifeCycleDefinition {
   "The user this life cycle definition was created by."
   createdBy: DesUser!
@@ -2251,7 +2251,7 @@ type DesRevisionDetails {
   modifiedAt: DateTime!
 }
 
-"Revision naming scheme details obtained by `desLibrary\/revisionNamingSchemes`. More information is available on revision naming schemes at: https:\/\/www.altium.com\/documentation\/altium-designer\/accessing-detailed-item-view#!revision_naming_scheme_dlg"
+"Revision naming scheme details obtained by `desRevisionNamingSchemes`. More information is available on revision naming schemes at: https:\/\/www.altium.com\/documentation\/altium-designer\/accessing-detailed-item-view#!revision_naming_scheme_dlg"
 type DesRevisionNamingScheme {
   "The user this revision naming scheme was created by."
   createdBy: DesUser!
@@ -2273,7 +2273,7 @@ type DesRevisionNamingScheme {
   levels: [DesRevisionNamingSchemeLevel!]!
   "The separator used between item ID and revision ID."
   itemRevisionSeparator: String!
-  "If true, the revision naming scheme is only applicable to objects of the content types specified by ContentTypes."
+  "If true, the revision naming scheme is only applicable to objects of the content types specified by `contentTypes`."
   isControlledPerContentType: Boolean!
 }
 
@@ -2334,7 +2334,7 @@ type DesSharedWithMe {
 
 "Information about a project that is shared with the user."
 type DesSharedWithMeProjectInfo {
-  "The project or null if its workspace is deleted. Avoid this field on getting many projects at once. Consider using `id` and `desProjectById`."
+  "The project or null if its workspace is deleted. Avoid this field on getting many projects at once. Consider using `projectId` and `desProjectById`."
   project: DesProject
   "The project node ID. Use it for getting the project by `desProjectById`."
   projectId: ID!
@@ -2434,9 +2434,9 @@ type DesSupplierPart {
   companyName: String!
   "The part number (SKU)."
   partNumber: String!
-  "Use `prices` and `stocks` with library components only, e.g. `desLibrary\/components`, `desComponentById`."
+  "Use `prices` and `stocks` with library components only, e.g. `DesLibrary.components`, `desComponentById`."
   prices: [DesSupplierPrice!]
-  "Use `prices` and `stocks` with library components only, e.g. `desLibrary\/components`, `desComponentById`."
+  "Use `prices` and `stocks` with library components only, e.g. `DesLibrary.components`, `desComponentById`."
   stocks: [DesSupplierStock!]
 }
 
@@ -2481,7 +2481,7 @@ type DesSymbol {
 }
 
 type DesSystemDiagram {
-  "The downloadable file for the system diagram"
+  "The downloadable file for the system diagram."
   systemDiagramFile: DesDownloadableFile
 }
 
@@ -2787,7 +2787,7 @@ type DesVia {
   name: String
   "Via hole diameter."
   holeDiameter: DesSize!
-  "Via pad diameter"
+  "Via pad diameter."
   padDiameter: DesSize!
   "Via shape."
   shape: DesPrimitiveShape
@@ -2879,7 +2879,7 @@ type DesWorkflowVariable {
 
 "A workspace provides a flexible and secure method for managing design, manufacturing and supply content."
 type DesWorkspace implements Node {
-  "The node identifier for the workspace (used by `DesWorkspaceById`)."
+  "The node identifier for the workspace (used by `desWorkspaceById`)."
   id: ID!
   "The location of this workspace."
   location: DesWorkspaceLocation!
@@ -2909,7 +2909,7 @@ type DesWorkspace implements Node {
 
 "A workspace provides a flexible and secure method for managing design, manufacturing and supply content."
 type DesWorkspaceInfo {
-  "The node identifier for the workspace (used by `DesWorkspaceById`)."
+  "The node identifier for the workspace (used by `desWorkspaceById`)."
   workspaceId: ID!
   "The descriptive label for this workspace."
   name: String!
@@ -3089,7 +3089,7 @@ input DesCadBoardAreaInput {
   restrictsTHPad: Boolean
   "CAD board area placement."
   placement: DesCadBoardComponentPlacement
-  "JSON serialized `GeometricShape`."
+  "JSON serialized *GeometricShape*."
   shapeJson: String
 }
 
@@ -3175,9 +3175,9 @@ input DesCadBoardCopperLayerInput {
 input DesCadBoardCopperRegionInput {
   "CAD board copper region layer name."
   layerName: String
-  "JSON serialized array of `GeometricShape`."
+  "JSON serialized array of *GeometricShape*."
   outlineShapesJson: String
-  "JSON serialized array of `GeometricShape`."
+  "JSON serialized array of *GeometricShape*."
   holeShapesJson: String
 }
 
@@ -3195,7 +3195,7 @@ input DesCadBoardCutoutInput {
   originalDesignator: String
   "CAD board cutout associated component designator."
   associatedComponentDesignator: String
-  "JSON serialized `GeometricShape`."
+  "JSON serialized *GeometricShape*."
   shapeJson: String
 }
 
@@ -3279,7 +3279,7 @@ input DesCadBoardRegionInput {
   color: Long
   "CAD board region internal point."
   internalPoint: DesCadBoardPointInput
-  "JSON serialized `ComplexShape`."
+  "JSON serialized *ComplexShape*."
   shapeJson: String
   "CAD board region layers."
   layers: [DesCadBoardLayerInput!]
@@ -3325,9 +3325,9 @@ input DesCadBoardViaInput {
   startLayerName: String
   "End layer name for CAD board via."
   endLayerName: String
-  "CAD board via copper diameter"
+  "CAD board via copper diameter."
   copperDiameter: Int
-  "CAD board via hole diameter"
+  "CAD board via hole diameter."
   holeDiameter: Int
   "CAD board via location."
   location: DesCadBoardPointInput
@@ -3363,7 +3363,7 @@ input DesCadComponentBodyShapeInput {
   isHidden: Boolean
   "Whether CAD component body shape is bodyless on ECAD."
   isBodylessOnEcad: Boolean
-  "JSON serialized `GeometricShape`."
+  "JSON serialized *GeometricShape*."
   shapeJson: String
   "Model data for CAD component body shape."
   modelData: DesCadBoard3DBodyModelDataInput
@@ -3435,7 +3435,7 @@ input DesCadDesignInput {
   copperLayers: [DesCadBoardCopperLayerInput!]
   "CAD design copper regions."
   copperRegions: [DesCadBoardCopperRegionInput!]
-  "JSON serialized `ComplexShape`."
+  "JSON serialized *ComplexShape*."
   boardOutlineJson: String
   "CAD design board split lines."
   boardSplitLines: [DesCadSplitLineInput!]
@@ -3475,7 +3475,7 @@ input DesCadSplitLineInput {
   leftRegionName: String
   "Right region name for CAD split line."
   rightRegionName: String
-  "JSON serialized `ComplexShape`."
+  "JSON serialized *ComplexShape*."
   shapeJson: String
 }
 
@@ -3602,13 +3602,13 @@ input DesCreateProjectExportJobInput {
   variantName: String
   "Tells to export any data specified by the input."
   exportAny: DesProjectExportAnyInput
-  "Tells to export Gerber and specifies the options."
+  "Tells to export *Gerber* and specifies the options."
   exportGerber: DesProjectExportGerberInput
-  "Tells to export GerberX2 and specifies the options."
+  "Tells to export *GerberX2* and specifies the options."
   exportGerberX2: DesProjectExportGerberX2Input
-  "Tells to export IDF and specifies the options."
+  "Tells to export *IDF* and specifies the options."
   exportIdf: DesProjectExportIdfInput
-  "Tells to export NCDrill and specifies the options."
+  "Tells to export *NCDrill* and specifies the options."
   exportNCDrill: DesProjectExportNCDrillInput
 }
 
@@ -3626,13 +3626,13 @@ input DesCreateRevisionNamingSchemeInput {
   workspaceUrl: String!
   "The name of this revision naming scheme."
   name: String!
-  "If true, the revision naming scheme is only applicable to objects of the content types specified by ContentTypes."
+  "If true, the revision naming scheme is only applicable to objects of the content types specified by `contentTypes`."
   isControlledPerContentType: Boolean
-  "If `IsControlledPerContentType` is true, the list of content types for which this revision naming scheme is applicable."
+  "If `isControlledPerContentType` is true, the list of content types for which this revision naming scheme is applicable."
   contentTypes: [DesContentTypeKind!]
   "The list of numbering levels for this revision naming scheme. Maximum of 3 levels."
   levels: [DesCreateRevisionNamingSchemeLevelInput!]!
-  "The separator used between item ID and revision ID. Allowed characters are:  ,.-_"
+  "The separator used between item ID and revision ID. Allowed characters are: ',', '.', '-', '_'."
   itemRevisionSeparator: String!
 }
 
@@ -3640,9 +3640,9 @@ input DesCreateRevisionNamingSchemeInput {
 input DesCreateRevisionNamingSchemeLevelInput {
   "The name of this revision naming level. In Altium Designer it is known as 'Caption'."
   name: String!
-  "The minimum character length allowed for this revision naming scheme level"
+  "The minimum character length allowed for this revision naming scheme level."
   minimumWidth: Int!
-  "The separator prefix character for this revision naming scheme level. Allowed characters are:  ,.-_"
+  "The separator prefix character for this revision naming scheme level. Allowed characters are: ',', '.', '-', '_'."
   levelSeparator: String!
   "The naming policy for this revision naming scheme level."
   revisionNamingPolicy: DesRevisionNamingPolicy!
@@ -3850,6 +3850,24 @@ input DesLifeCycleStateInput {
   foregroundColor: DesColorInput
 }
 
+"Input for the life cycle state transition approval group."
+input DesLifeCycleStateTransitionApprovalGroupInput {
+  "The name of this life cycle state transition approval group."
+  name: String!
+  "The controllers that can provide an approval for this life cycle state transition approval group."
+  controllers: [DesLifeCycleStateTransitionControllerInput!]!
+}
+
+"Input for life cycle state transition controller."
+input DesLifeCycleStateTransitionControllerInput {
+  "Scope of the transition controller."
+  scope: DesPermissionScope!
+  "User identifier."
+  userId: String
+  "Group identifier."
+  groupId: ID
+}
+
 "Input for life cycle state transition."
 input DesLifeCycleStateTransitionInput {
   "Name of life cycle state transition."
@@ -3860,6 +3878,10 @@ input DesLifeCycleStateTransitionInput {
   stateBefore: String!
   "The name of the life cycle state after the transition."
   stateAfter: String!
+  "Controllers of this life cycle definition transition. If controllers and approvals are omitted, the controllers will default to ANYONE."
+  controllers: [DesLifeCycleStateTransitionControllerInput!]
+  "Approval groups for this life cycle definition transition. Mutually exclusive with controllers, if approvals are set, controllers must be omitted."
+  approvals: [DesLifeCycleStateTransitionApprovalGroupInput!]
 }
 
 "Input for moving a folder."
@@ -3896,33 +3918,33 @@ input DesPosition2DInput {
 
 "Input for exporting project."
 input DesProjectExportAnyInput {
-  "The content of Altium Designer `OutJob` file."
+  "The content of Altium Designer *OutJob* file."
   outJobContent: String!
-  "A suggested result file name. Default: `Export.zip`."
+  "A suggested result file name. Default: *Export.zip*."
   fileName: String
 }
 
 "Input for exporting project Gerber file."
 input DesProjectExportGerberInput {
-  "A suggested result file name. Default: `Gerber.zip`."
+  "A suggested result file name. Default: *Gerber.zip*."
   fileName: String
 }
 
 "Input for exporting project Gerber X2 file."
 input DesProjectExportGerberX2Input {
-  "A suggested result file name. Default: `GerberX2.zip`."
+  "A suggested result file name. Default: *GerberX2.zip*."
   fileName: String
 }
 
 "Input for exporting project IDF file."
 input DesProjectExportIdfInput {
-  "A suggested result file name. Default: `IDF.zip`."
+  "A suggested result file name. Default: *IDF.zip*."
   fileName: String
 }
 
 "Input for exporting project NC Drill file."
 input DesProjectExportNCDrillInput {
-  "A suggested result file name. Default: `NCDrill.zip`."
+  "A suggested result file name. Default: *NCDrill.zip*."
   fileName: String
 }
 
@@ -3973,7 +3995,7 @@ input DesReleaseComponentInput {
   workspaceUrl: String!
   "Destination parent folder identifier for releasing a component. If omitted or empty, `componentReleaseFolder` is required."
   componentParentFolderId: ID
-  "New child folder name for releasing a component. If omitted or empty, `ComponentParentFolderId` is required."
+  "New child folder name for releasing a component. If omitted or empty, `componentParentFolderId` is required."
   componentReleaseFolder: String
   "When `componentReleaseFolder` is set, tells to use existing folder if any, otherwise create a new folder."
   useExistingComponentReleaseFolder: Boolean
@@ -4278,11 +4300,11 @@ input DesUpdateRevisionNamingSchemeInput {
   name: String
   "If true, the revision naming scheme is only applied to objects that are controlled by that content type. Otherwise, content types are ignored."
   isControlledPerContentType: Boolean
-  "If `IsControlledPerContentType` is true, the list of content types for which this revision naming scheme is applicable."
+  "If `isControlledPerContentType` is true, the list of content types for which this revision naming scheme is applicable."
   contentTypes: [DesContentTypeKind!]
   "The list of numbering levels for this revision naming scheme. Maximum of 3 levels."
   levels: [DesUpdateRevisionNamingSchemeLevelInput!]
-  "The separator used between item ID and revision ID. Allowed characters are:  ,.-_"
+  "The separator used between item ID and revision ID. Allowed characters are: ',', '.', '-', '_'."
   itemRevisionSeparator: String
 }
 
@@ -4290,9 +4312,9 @@ input DesUpdateRevisionNamingSchemeInput {
 input DesUpdateRevisionNamingSchemeLevelInput {
   "The name of this revision naming level. In Altium Designer it is known as 'Caption'."
   name: String
-  "The minimum character length allowed for this revision naming scheme level"
+  "The minimum character length allowed for this revision naming scheme level."
   minimumWidth: Int
-  "The separator prefix character for this revision naming scheme level. Allowed characters are:  ,.-_"
+  "The separator prefix character for this revision naming scheme level. Allowed characters are: ',', '.', '-', '_'."
   levelSeparator: String
   "The naming policy for this revision naming scheme level."
   revisionNamingPolicy: DesRevisionNamingPolicy
@@ -4859,15 +4881,15 @@ enum DesPrimitiveShape {
 }
 
 enum DesRevisionNamingPolicy {
-  "Number whose sequence starts at 0"
+  "Number whose sequence starts at 0."
   NUMERIC_ZERO
-  "Number whose sequence starts at 1"
+  "Number whose sequence starts at 1."
   NUMERIC_ONE
-  "Upper case letters"
+  "Upper case letters."
   ALPHA_UPPER
-  "Lower case letters"
+  "Lower case letters."
   ALPHA_LOWER
-  "Revision letters per ASME Y14.35M standard: ABCDEFGHJKLMNPRTUVWY"
+  "Revision letters per ASME Y14.35M standard: ABCDEFGHJKLMNPRTUVWY."
   ASME_Y14_35M
 }
 
