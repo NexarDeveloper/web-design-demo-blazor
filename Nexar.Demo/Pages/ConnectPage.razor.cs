@@ -23,19 +23,17 @@ public partial class ConnectPage
     [SupplyParameterFromQuery(Name = "token")]
     public string? TokenParameter { get; init; }
 
+    [SupplyParameterFromQuery(Name = "workspace")]
+    public string? WorkspaceUrl { get; init; }
+
     string? _token;
     bool _loading;
     bool _connecting;
 
-    static async Task SetTokenAndWorkspaces(string token)
+    async Task SetTokenAndWorkspaces(string token)
     {
         // share token for services
         NexarClientFactory.AccessToken = token;
-
-        // fetch workspaces
-        var client = NexarClientFactory.GetClient(AppData.ApiEndpoint);
-        var res = await client.Workspaces.ExecuteAsync();
-        var data = res.AssertNoErrors();
 
         // workspace scope
         JwtSecurityToken securityToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
@@ -47,8 +45,18 @@ public partial class ConnectPage
         if (workspaceAuthId is null && securityToken.Claims.Any(x => x.Type == "scope" && x.Value == A365Scope))
             workspaceAuthId = A365Scope;
 
-        // share workspaces
-        AppData.SetWorkspaces(data.DesWorkspaceInfos, workspaceAuthId);
+        // fetch and set workspaces or set pinned workspace
+        if (WorkspaceUrl is null)
+        {
+            var client = NexarClientFactory.GetClient(AppData.ApiEndpoint);
+            var res = await client.Workspaces.ExecuteAsync();
+            var data = res.AssertNoErrors();
+            AppData.SetWorkspaces(data.DesWorkspaceInfos, workspaceAuthId);
+        }
+        else
+        {
+            AppData.SetWorkspace(WorkspaceUrl);
+        }
     }
 
     /// <summary>
@@ -111,7 +119,7 @@ public partial class ConnectPage
             }
 
             // configure
-            AppData.Initialize(mode, ApiParameter);
+            AppData.Initialize(mode, ApiParameter, WorkspaceUrl);
 
             // token parameter?
             if (!string.IsNullOrEmpty(TokenParameter))

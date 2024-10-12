@@ -12,6 +12,10 @@
             <MudIconButton Icon=@Icons.Material.Filled.Menu Color=Color.Inherit Edge=Edge.Start OnClick=@(e => DrawerToggle()) />
         }
         <MudHidden Breakpoint=Breakpoint.Xs>
+            @if (AppData.WorkspaceUrl is { })
+            {
+                <MudIconButton Icon=@Icons.Material.Filled.FolderOpen Color=Color.Inherit Href="@AppData.WorkspaceUrl" Target="_blank" />
+            }
             <MudLink Href=@AppData.ApiEndpoint Color=Color.Inherit Target="_blank">@AppData.ApiEndpoint</MudLink>
         </MudHidden>
         <MudSpacer />

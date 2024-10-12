@@ -15,26 +15,24 @@ public sealed class WorkspaceItem(IMyWorkspace tag, bool hasData) : TreeItem
     public override bool CanExpand => _hasData;
     public override string Icon => _hasData ? Icons.Material.Filled.FolderOpen : Icons.Material.Filled.FolderOff;
 
-    public override NexarClient Client =>
-        NexarClientFactory.GetClient(AppData.IsRegionApi || AppData.ApiEndpoint.Contains("localhost") ? AppData.ApiEndpoint : Tag.Location.ApiServiceUrl);
+    public override NexarClient Client => NexarClientFactory.GetClient(
+        AppData.IsRegionApi || AppData.ApiEndpoint.Contains("localhost") || Tag.Location is null ?
+        AppData.ApiEndpoint :
+        Tag.Location.ApiServiceUrl);
+
+    public List<TreeItem> CreateChildItems()
+    {
+        return [
+            new WorkspaceProjectsItem(this),
+            new WorkspaceLibraryItem(this),
+            new WorkspaceTasksItem(this),
+            new WorkspaceUsersItem(this),
+        ];
+    }
 
     public override Task<List<TreeItem>> ServerData()
     {
-        List<TreeItem> items;
-        if (_hasData)
-        {
-            items =
-            [
-                new WorkspaceProjectsItem(this),
-                new WorkspaceLibraryItem(this),
-                new WorkspaceTasksItem(this),
-                new WorkspaceUsersItem(this),
-            ];
-        }
-        else
-        {
-            items = [];
-        }
+        var items = _hasData ? CreateChildItems() : [];
         return Task.FromResult(items);
     }
 

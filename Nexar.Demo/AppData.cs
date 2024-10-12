@@ -2,51 +2,56 @@ using MudBlazor;
 using Nexar.Client;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Nexar.Demo;
 
 /// <summary>
-/// The application parameters and state.
+/// Application parameters and state.
 /// </summary>
 public static class AppData
 {
     /// <summary>
-    /// The Nexar GraphQL API endpoint.
+    /// Nexar mode.
     /// </summary>
     public static AppMode Mode { get; private set; }
 
     /// <summary>
-    /// The Nexar GraphQL API endpoint.
+    /// Nexar GraphQL API endpoint.
     /// </summary>
-    public static string ApiEndpoint => s_ApiEndpoint!;
-    private static string? s_ApiEndpoint;
+    public static string ApiEndpoint { get; private set; } = null!;
 
     /// <summary>
-    /// The Nexar home page.
+    /// Pinned workspace URL.
     /// </summary>
-    public static string NexarDotCom => s_NexarDotCom!;
-    private static string? s_NexarDotCom;
+    public static string? WorkspaceUrl { get; private set; }
+
+    /// <summary>
+    /// Nexar home page.
+    /// </summary>
+    public static string NexarDotCom { get; private set; } = null!;
 
     public static bool IsRegionApi { get; private set; }
 
     /// <summary>
     /// Sets the application mode and optional custom service.
     /// </summary>
-    public static void Initialize(AppMode mode, string? apiEndpoint)
+    public static void Initialize(AppMode mode, string? apiEndpoint, string? workspaceUrl)
     {
         Mode = mode;
+        WorkspaceUrl = workspaceUrl;
 
         if (!string.IsNullOrEmpty(apiEndpoint))
         {
-            s_ApiEndpoint = apiEndpoint;
+            ApiEndpoint = apiEndpoint;
             IsRegionApi = true;
         }
 
         switch (Mode)
         {
             case AppMode.Prod:
-                s_ApiEndpoint ??= "https://api.nexar.com/graphql";
-                s_NexarDotCom = "https://nexar.com";
+                ApiEndpoint ??= "https://api.nexar.com/graphql";
+                NexarDotCom = "https://nexar.com";
                 break;
             default:
                 throw new Exception();
@@ -66,6 +71,7 @@ public static class AppData
     }
 
     public static List<TreeItemData<TreeItem>>? TreeItems { get; private set; }
+
     public static void SetWorkspaces(IReadOnlyList<IMyWorkspace> source, string? workspaceAuthId)
     {
         TreeItems = [new MyTreeItemData(new SharedWithMeItem())];
@@ -96,6 +102,26 @@ public static class AppData
                     TreeItems.Add(new MyTreeItemData(new WorkspaceItem(it, false)));
             }
         }
+
+        OnChange?.Invoke();
+    }
+
+    public static void SetWorkspace(string workspaceUrl)
+    {
+        var workspaceInfo = new Workspaces_DesWorkspaceInfos_DesWorkspaceInfo(
+            workspaceId: string.Empty,
+            authId: string.Empty,
+            url: workspaceUrl,
+            name: string.Empty,
+            description: null,
+            location: null!);
+
+        var workspaceItem = new WorkspaceItem(workspaceInfo, true);
+
+        TreeItems = workspaceItem.CreateChildItems()
+            .Select(x => new MyTreeItemData(x))
+            .Cast<TreeItemData<TreeItem>>()
+            .ToList();
 
         OnChange?.Invoke();
     }

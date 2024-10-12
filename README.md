@@ -64,6 +64,27 @@ Data tree structure:
     - Tasks
     - Users
 
+## URL parameters
+
+The application may be started with the following parameters:
+
+```
+https://web-design-demo.nexar.com?api=...&token=...&workspace=...
+```
+
+- `api`
+
+    The Nexar GraphQL API endpoint, <https://api.nexar.com/graphql>
+
+- `token`
+
+    The Nexar access token to use and skip the connect page.
+
+- `workspace`
+
+    The pinned workspace URL.
+    Its content is shown instead of all workspaces.
+
 ## Building blocks
 
 [Blazor]: https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor
