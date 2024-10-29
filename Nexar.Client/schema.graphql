@@ -224,6 +224,8 @@ type Mutation {
   desUpdateProjectPermissions(input: DesUpdateProjectPermissionsInput!): DesUpdateProjectPermissionsPayload!
   "Link\/unlink A365 project with requirements block component."
   desSetProjectRequirementsBlock(input: DesSetProjectRequirementsBlockInput!): DesSetProjectRequirementsBlockPayload!
+  "Updates parameters for the specified project (does not affect the revision)."
+  desUpdateProjectParameters(input: DesUpdateProjectParametersInput!): DesUpdateProjectParametersPayload!
   "Updates a specific result block."
   desUpdateReuseBlock(input: DesUpdateReuseBlockInput!): DesUpdateReuseBlockPayload!
   "Creates a user."
@@ -1064,6 +1066,8 @@ type DesComponentConnection {
 }
 
 type DesComponentDetails {
+  "The component item internal identifier."
+  itemIntenalId: String!
   "The list of revision level parameters from the latest revision. Parameter types are unknown (`NONE`) for unmanaged components."
   parameters: [DesComponentParameter!]!
   "The list of parameters describing the item."
@@ -1441,8 +1445,11 @@ type DesFootprint {
   dataDownloadUrl: String!
   "ECAD entity folder."
   folder: DesFolder
-  "Globally unique identifier."
-  guid: String!
+  "Item internal identifier."
+  itemInternalId: String!
+  "Revision internal identifier."
+  revisionInternalId: String!
+  guid: String! @deprecated(reason: "Use `RevisionInternalId` instead.")
   "ECAD entity name."
   name: String!
   "ECAD entity comment."
@@ -2021,12 +2028,14 @@ type DesProjectParameter {
 
 "A permission associated with the project."
 type DesProjectPermission {
+  "The name of this project permission."
+  name: String!
+  "The user this project permission is associated with."
+  user: DesUser
   "The permission scope to differentiate different permission types."
   scope: DesPermissionScope!
   "The `DesUserGroup` this permission is associated with."
   group: DesUserGroup
-  "The user this permission is associated with."
-  user: DesUser
   "Tells if this permission allows reading of the associated project."
   canRead: Boolean!
   "Tells if this permission allows editing the associated project."
@@ -2035,8 +2044,6 @@ type DesProjectPermission {
   canCreate: Boolean!
   "Tells if this permission allows deletion of the associated project."
   canDelete: Boolean!
-  "The name of this permission."
-  name: String!
 }
 
 "Information about a project template."
@@ -2370,8 +2377,11 @@ type DesSimulation {
   dataDownloadUrl: String!
   "ECAD entity folder."
   folder: DesFolder
-  "Globally unique identifier."
-  guid: String!
+  "Item internal identifier."
+  itemInternalId: String!
+  "Revision internal identifier."
+  revisionInternalId: String!
+  guid: String! @deprecated(reason: "Use `RevisionInternalId` instead.")
   "ECAD entity name."
   name: String!
   "ECAD entity comment."
@@ -2470,8 +2480,11 @@ type DesSymbol {
   dataDownloadUrl: String!
   "ECAD entity folder."
   folder: DesFolder
-  "Globally unique identifier."
-  guid: String!
+  "Item internal identifier."
+  itemInternalId: String!
+  "Revision internal identifier."
+  revisionInternalId: String!
+  guid: String! @deprecated(reason: "Use `RevisionInternalId` instead.")
   "ECAD entity name."
   name: String!
   "ECAD entity comment."
@@ -2631,6 +2644,14 @@ type DesUpdateFolderPermissionsPayload {
 type DesUpdateLifeCycleDefinitionPayload {
   "Life cycle definition identifier."
   id: ID!
+  "Payload errors."
+  errors: [DesPayloadError!]!
+}
+
+"Payload associated with updating project parameters."
+type DesUpdateProjectParametersPayload {
+  "Project identifier."
+  projectId: ID!
   "Payload errors."
   errors: [DesPayloadError!]!
 }
@@ -3968,6 +3989,14 @@ input DesProjectFilterInput {
   updatedAt: DateTimeOperationFilterInput
 }
 
+"Input for the parametric details of a project."
+input DesProjectParameterInput {
+  "Project parameter name."
+  name: String!
+  "Project parameter value."
+  value: String!
+}
+
 input DesProjectsRequirementsBlockFilterInput {
   "Requirements block IDs."
   blockIds: [String!]!
@@ -4236,7 +4265,7 @@ input DesUpdateFolderPermissionInput {
   canModify: Boolean!
   "Scope of the permission."
   scope: DesPermissionScope!
-  "User identifier."
+  "User identifier. Workspace user ID should be used for the scope 'USER', global user ID should be used for the scope 'GUEST'."
   userId: String
   "Group identifier."
   groupId: ID
@@ -4260,13 +4289,23 @@ input DesUpdateLifeCycleDefinitionInput {
   lifeCycleDefinition: DesLifeCycleDefinitionInput!
 }
 
+"Input for updating project parameters."
+input DesUpdateProjectParametersInput {
+  "Project identifier."
+  projectId: ID!
+  "Replace all existing user-specific project parameters. By default parameters are appended to the existing list."
+  replaceExisting: Boolean
+  "Parameters to describe the project."
+  parameters: [DesProjectParameterInput!]!
+}
+
 "Input for updating project permission."
 input DesUpdateProjectPermissionInput {
   "Allows updating, deleting and creating when set, otherwise only read permissions will be allowed."
   canModify: Boolean!
   "Scope of the permission."
   scope: DesPermissionScope!
-  "User identifier."
+  "User identifier. Workspace user ID should be used for the scope 'USER', global user ID should be used for the scope 'GUEST'."
   userId: String
   "Group identifier."
   groupId: ID
@@ -4848,6 +4887,7 @@ enum DesParameterType {
 
 enum DesPermissionScope {
   USER
+  GUEST
   ANYONE
   ORGANISATION
   GROUP

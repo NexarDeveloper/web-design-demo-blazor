@@ -36,6 +36,9 @@ fragment MyComponent on DesComponent {
   folder {
     path
   }
+  details {
+    itemIntenalId
+  }
   revision {
     id
     details {

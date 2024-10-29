@@ -48,6 +48,8 @@
             <MudCardContent>
                 <TextFieldCopy Label="Id" Text=@component.Id />
 
+                <TextField Label="Details.ItemInternalId" Text=@component.Details.ItemIntenalId />
+
                 <TextField Label="Name" Text=@component.Name />
 
                 <TextField Label="Comment" Text=@component.Comment />
@@ -62,6 +64,11 @@
                 <br />
 
                 <MudCard>
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">Revision</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
                     <MudCardContent>
                         <TextFieldCopy Label="Revision.Id" Text=@component.Revision.Id />
 
