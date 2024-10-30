@@ -37,7 +37,7 @@ fragment MyComponent on DesComponent {
     path
   }
   details {
-    itemIntenalId
+    itemInternalId
   }
   revision {
     id

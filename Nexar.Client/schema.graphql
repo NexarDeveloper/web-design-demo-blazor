@@ -1067,7 +1067,7 @@ type DesComponentConnection {
 
 type DesComponentDetails {
   "The component item internal identifier."
-  itemIntenalId: String!
+  itemInternalId: String!
   "The list of revision level parameters from the latest revision. Parameter types are unknown (`NONE`) for unmanaged components."
   parameters: [DesComponentParameter!]!
   "The list of parameters describing the item."
