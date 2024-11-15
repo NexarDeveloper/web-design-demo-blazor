@@ -119,8 +119,7 @@ public static class AppData
         var workspaceItem = new WorkspaceItem(workspaceInfo, true);
 
         TreeItems = workspaceItem.CreateChildItems()
-            .Select(x => new MyTreeItemData(x))
-            .Cast<TreeItemData<TreeItem>>()
+            .Select(x => (TreeItemData<TreeItem>)new MyTreeItemData(x))
             .ToList();
 
         OnChange?.Invoke();
