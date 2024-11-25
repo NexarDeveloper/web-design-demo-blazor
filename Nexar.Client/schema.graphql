@@ -66,6 +66,10 @@ type Query {
   desProjectTemplateById("The node identifier for a project template." id: ID!): DesProjectTemplate
   "Searches for a specific folder by its unique identifier."
   desFolderById("The node identifier for a folder." id: ID!): DesFolder
+  "Searches for a specific footprint by its unique identifier."
+  desFootprintById("The node identifier for a footprint." id: ID!): DesFootprint
+  "Searches for a specific symbol by its unique identifier."
+  desSymbolById("The node identifier for a symbol." id: ID!): DesSymbol
   "Search for comment threads associated with a project."
   desCommentThreads("The node identifier for a project (This is the project field named \"id\")." projectId: ID!): [DesCommentThread!]!
   "Search for a specific comment thread associated with a project."
@@ -206,6 +210,10 @@ type Mutation {
   desUpdateFolderPermissions(input: DesUpdateFolderPermissionsInput!): DesUpdateFolderPermissionsPayload!
   "Updates life cycle state for the provided component."
   desUpdateComponentLifeCycleState(input: DesUpdateComponentLifeCycleStateInput!): DesUpdateComponentLifeCycleStatePayload!
+  "Updates life cycle state for the provided footprint."
+  desUpdateFootprintLifeCycleState(input: DesUpdateFootprintLifeCycleStateInput!): DesUpdateFootprintLifeCycleStatePayload!
+  "Updates life cycle state for the provided symbol."
+  desUpdateSymbolLifeCycleState(input: DesUpdateSymbolLifeCycleStateInput!): DesUpdateSymbolLifeCycleStatePayload!
   "Creates a folder in the library."
   desCreateFolder(input: DesCreateFolderInput!): DesCreateFolderPayload!
   "Updates the specified folder in the library."
@@ -1434,9 +1442,13 @@ type DesFolderPermission {
   name: String!
 }
 
-"Footprint files. Footprints define the space a component occupies."
-type DesFootprint {
+"A component footprint. Footprints define the space a component occupies."
+type DesFootprint implements Node {
+  "Footprint node identifier."
+  id: ID!
   pins: [DesPin!]! @deprecated(reason: "Not implemented and may be removed.")
+  "The life cycle state information."
+  lifeCycleState: DesLifeCycleState!
   "ECAD entity full size image URL."
   imageFullSizeUrl: String!
   "ECAD entity thumbnail image URL."
@@ -1563,7 +1575,7 @@ type DesLifeCycleDefinition {
   "The user this life cycle definition was last updated by."
   updatedBy: DesUser!
   "The `DesLifeCycleStateTransition` list for this life cycle definition."
-  stateTransitions: [DesLifeCycleStateTransition]!
+  stateTransitions: [DesLifeCycleStateTransition!]!
   "The node ID."
   id: ID!
   "The reference ID for this life cycle definition."
@@ -1577,7 +1589,7 @@ type DesLifeCycleDefinition {
   "The `DateTime` this life cycle definition was last updated."
   updatedAt: DateTime!
   "The `DesLifeCycleStage` list for this life cycle definition."
-  stages: [DesLifeCycleStage]!
+  stages: [DesLifeCycleStage!]!
   "Type of life cycle management."
   lifeCycleManagementType: DesLifeCycleManagementType!
   "Tells if this life cycle definition is automatically assigned the first `DesLifeCycleState` when a revision is released."
@@ -2469,9 +2481,13 @@ type DesSupplierStock {
 }
 
 "A component symbol. These represent the body and the pins on the physical component."
-type DesSymbol {
+type DesSymbol implements Node {
+  "Symbol node identifier."
+  id: ID!
   "The list of pins."
   pins: [DesPin!]!
+  "The life cycle state information."
+  lifeCycleState: DesLifeCycleState!
   "ECAD entity full size image URL."
   imageFullSizeUrl: String!
   "ECAD entity thumbnail image URL."
@@ -2640,6 +2656,14 @@ type DesUpdateFolderPermissionsPayload {
   folderId: ID!
 }
 
+"Payload associated with updating a footprint life cycle state."
+type DesUpdateFootprintLifeCycleStatePayload {
+  "Footprint identifier."
+  footprintId: ID!
+  "Payload errors."
+  errors: [DesPayloadError!]!
+}
+
 "Payload associated with updating a life cycle definition."
 type DesUpdateLifeCycleDefinitionPayload {
   "Life cycle definition identifier."
@@ -2678,6 +2702,14 @@ type DesUpdateRevisionNamingSchemePayload {
 type DesUpdateSettingPayload {
   "The setting that was updated."
   setting: DesSetting!
+  "Payload errors."
+  errors: [DesPayloadError!]!
+}
+
+"Payload associated with updating a symbol life cycle state."
+type DesUpdateSymbolLifeCycleStatePayload {
+  "Symbol identifier."
+  symbolId: ID!
   "Payload errors."
   errors: [DesPayloadError!]!
 }
@@ -4281,6 +4313,16 @@ input DesUpdateFolderPermissionsInput {
   permissions: [DesUpdateFolderPermissionInput!]!
 }
 
+"Input to update footprint life cycle state."
+input DesUpdateFootprintLifeCycleStateInput {
+  "Footprint identifier."
+  footprintId: ID!
+  "Life cycle transition state identifier."
+  lifeCycleStateTransitionId: String!
+  "Comment."
+  comment: String
+}
+
 "Input for updating life cycle definition."
 input DesUpdateLifeCycleDefinitionInput {
   "Life cycle definition identifier. Defines which life cycle definition should be updated."
@@ -4367,6 +4409,16 @@ input DesUpdateSettingInput {
   name: String!
   "The value that the setting should be replaced with."
   value: String!
+}
+
+"Input to update symbol life cycle state."
+input DesUpdateSymbolLifeCycleStateInput {
+  "Symbol identifier."
+  symbolId: ID!
+  "Life cycle transition state identifier."
+  lifeCycleStateTransitionId: String!
+  "Comment."
+  comment: String
 }
 
 "Input for updating a task comment."

@@ -36,9 +36,6 @@ fragment MyComponent on DesComponent {
   folder {
     path
   }
-  details {
-    itemInternalId
-  }
   revision {
     id
     details {
@@ -48,6 +45,23 @@ fragment MyComponent on DesComponent {
       modifiedAt
       childCount
       parentCount
+    }
+  }
+  details {
+    itemInternalId
+    symbols {
+      id
+      name
+      comment
+      description
+      dataDownloadUrl
+    }
+    footprints {
+      id
+      name
+      comment
+      description
+      dataDownloadUrl
     }
   }
 }

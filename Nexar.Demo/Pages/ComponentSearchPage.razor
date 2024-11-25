@@ -86,6 +86,63 @@
                         }
                     </MudCardContent>
                 </MudCard>
+
+                @foreach(var item in component.Details.Symbols)
+                {
+                    <br />
+
+                    <MudCard>
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText Typo="Typo.h6">Symbol</MudText>
+                            </CardHeaderContent>
+                            <CardHeaderActions>
+                                <MudTooltip Text="Download">
+                                    <MudIconButton Icon=@Icons.Material.Outlined.Download
+                                                   Target="_blank" Href=@item.DataDownloadUrl />
+                                </MudTooltip>
+                            </CardHeaderActions>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <TextFieldCopy Label="Id" Text=@item.Id />
+
+                            <TextField Label="Name" Text=@item.Name />
+
+                            <TextField Label="Comment" Text=@item.Comment />
+
+                            <TextField Label="Description" Text=@item.Description />
+                        </MudCardContent>
+                    </MudCard>
+                }
+
+                @foreach (var item in component.Details.Footprints)
+                {
+                    <br />
+
+                    <MudCard>
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText Typo="Typo.h6">Footprint</MudText>
+                            </CardHeaderContent>
+                            <CardHeaderActions>
+                                <MudTooltip Text="Download">
+                                    <MudIconButton Icon=@Icons.Material.Outlined.Download
+                                                   Target="_blank" Href=@item.DataDownloadUrl />
+                                </MudTooltip>
+                            </CardHeaderActions>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <TextFieldCopy Label="Id" Text=@item.Id />
+
+                            <TextField Label="Name" Text=@item.Name />
+
+                            <TextField Label="Comment" Text=@item.Comment />
+
+                            <TextField Label="Description" Text=@item.Description />
+                        </MudCardContent>
+                    </MudCard>
+                }
+
             </MudCardContent>
         </MudCard>
         <br />
