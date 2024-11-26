@@ -55,6 +55,9 @@ fragment MyComponent on DesComponent {
       comment
       description
       dataDownloadUrl
+      lifeCycleState {
+        name
+      }
     }
     footprints {
       id
@@ -62,6 +65,9 @@ fragment MyComponent on DesComponent {
       comment
       description
       dataDownloadUrl
+      lifeCycleState {
+        name
+      }
     }
   }
 }
