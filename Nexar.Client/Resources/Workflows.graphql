@@ -1,0 +1,23 @@
+﻿# Gets the workspace workflows.
+query WorkspaceWorkflows($workspaceUrl: String!) {
+  desWorkspaceByUrl(workspaceUrl: $workspaceUrl) {
+    workflows {
+      ...MyWorkflow
+    }
+  }
+}
+
+# This fragment becomes IMyWorkflow in C#.
+fragment MyWorkflow on DesWorkflow {
+  name
+  workflowId
+  processDefinitionId
+  status
+  state
+  createdAt
+  createdBy
+  variables {
+    name
+    value
+  }
+}

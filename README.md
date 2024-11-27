@@ -63,6 +63,7 @@ Data tree structure:
         - Project Templates
     - Tasks
     - Users
+    - Workflows
 
 ## URL parameters
 

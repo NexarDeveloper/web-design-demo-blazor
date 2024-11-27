@@ -1,0 +1,54 @@
+﻿@page "/Workflow"
+@inherits AbstractPage
+@using Data = WorkflowItem
+
+<ItemPageHeader Text="Workflow" Item=@Data.Current />
+
+@if (Data.Current is null)
+{
+    return;
+}
+
+<TextFieldCopy Label="WorkflowId" Text=@Data.Current.Tag.WorkflowId />
+
+<TextFieldCopy Label="ProcessDefinitionId" Text=@Data.Current.Tag.ProcessDefinitionId />
+
+<TextField Label="Name" Text=@Data.Current.Tag.Name />
+
+<TextField Label="Status" Text=@Data.Current.Tag.Status />
+
+<TextField Label="State" Text=@Data.Current.Tag.State />
+
+<TextField Label="CreatedAt" Text=@Data.Current.Tag.CreatedAt.ToString() />
+
+<TextField Label="CreatedBy" Text=@Data.Current.Tag.CreatedBy />
+
+<br />
+<MudTable Items=@Data.Current.Tag.Variables.OrderBy(x => x.Name) Dense=true>
+    <ToolBarContent>
+        <MudText Typo=Typo.h6>Variables</MudText>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Name</MudTh>
+        <MudTh>Value</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Value">@context.Value</MudTd>
+    </RowTemplate>
+</MudTable>
+
+<br />
+<AlertGraphQL Files="Workflows.graphql" />
+
+@code {
+    protected override void OnInitialized()
+    {
+        Data.OnChange += StateHasChanged;
+    }
+
+    protected override void Disposing()
+    {
+        Data.OnChange -= StateHasChanged;
+    }
+}

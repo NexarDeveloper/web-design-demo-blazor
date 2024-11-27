@@ -27,6 +27,7 @@ public sealed class WorkspaceItem(IMyWorkspace tag, bool hasData) : TreeItem
             new WorkspaceLibraryItem(this),
             new WorkspaceTasksItem(this),
             new WorkspaceUsersItem(this),
+            new WorkspaceWorkflowsItem(this),
         ];
     }
 
