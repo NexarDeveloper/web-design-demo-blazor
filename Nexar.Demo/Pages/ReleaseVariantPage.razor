@@ -5,38 +5,59 @@
 <ItemPageHeader Text="Release Variant" Item=@Data.Current />
 
 @if (Data.Current is null)
-{
     return;
-}
 
 <TextField Label="Name" Text=@Data.Current.Tag.Name />
 
-<br />
-<MudText Typo=Typo.h6>PCB Assembly</MudText>
-<TextField Label="Version" Text=@Data.Current.Tag.PcbAssembly?.Version />
-<TextField Label="LifeCycleStateName" Text=@Data.Current.Tag.PcbAssembly?.LifeCycleStateName />
+@if (Data.Current.Tag.PcbAssembly is { })
+{
+    <br />
+    <MudText Typo=Typo.h6>PcbAssembly</MudText>
+    <TextField Label="Version" Text=@Data.Current.Tag.PcbAssembly.Version />
+    <TextField Label="LifeCycleStateName" Text=@Data.Current.Tag.PcbAssembly.LifeCycleStateName />
+    <MudField Label="Download" Variant=Variant.Outlined>
+        <MudLink Href=@Data.Current.Tag.PcbAssembly.DownloadUrl Target=_blank>@Data.Current.Tag.PcbAssembly.PackageName</MudLink>
+    </MudField>
+    <MudField Label="Folders/Files" Variant=Variant.Outlined>
+        <MudList T="string" Dense=true ReadOnly=true>
+            @foreach (var folder in Data.Current.Tag.PcbAssembly.Folders)
+            {
+                <MudListItem>
+                    <MudLink Href=@folder.DownloadUrl Target=_blank>@folder.RelativePath</MudLink>
+                </MudListItem>
+                @foreach (var file in folder.Files)
+                {
+                    <MudListItem Icon=@Icons.Material.Filled.Check>
+                        <MudLink Href=@file.DownloadUrl Target=_blank>@file.FileName</MudLink>
+                    </MudListItem>
+                }
+            }
+        </MudList>
+    </MudField>
+}
 
-<br />
-<MudText Typo=Typo.h6>PCB Fabrication</MudText>
-<TextField Label="Version" Text=@Data.Current.Tag.PcbFabrication?.Version />
-<TextField Label="LifeCycleStateName" Text=@Data.Current.Tag.PcbFabrication?.LifeCycleStateName />
-
-<br />
-<MudTable Items=@Downloads() Dense=true>
-    <ToolBarContent>
-        <MudText Typo=Typo.h6>Downloads</MudText>
-    </ToolBarContent>
-    <HeaderContent>
-        <MudTh>Package</MudTh>
-        <MudTh>Download</MudTh>
-    </HeaderContent>
-    <RowTemplate>
-        <MudTd DataLabel="Package">@context.Item1</MudTd>
-        <MudTd DataLabel="Download">
-            <MudLink Href=@context.Item3>@context.Item2</MudLink>
-        </MudTd>
-    </RowTemplate>
-</MudTable>
+@if (Data.Current.Tag.PcbFabrication is { })
+{
+    <br />
+    <MudText Typo=Typo.h6>PcbFabrication</MudText>
+    <TextField Label="Version" Text=@Data.Current.Tag.PcbFabrication.Version />
+    <TextField Label="LifeCycleStateName" Text=@Data.Current.Tag.PcbFabrication.LifeCycleStateName />
+    <MudField Label="Download" Variant=Variant.Outlined>
+        <MudLink Href=@Data.Current.Tag.PcbFabrication.DownloadUrl Target=_blank>@Data.Current.Tag.PcbFabrication.PackageName</MudLink>
+    </MudField>
+    <MudTable Items=@Downloads() Dense=true>
+        <HeaderContent>
+            <MudTh>Package</MudTh>
+            <MudTh>Download</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Package">@context.Item1</MudTd>
+            <MudTd DataLabel="Download">
+                <MudLink Href=@context.Item3>@context.Item2</MudLink>
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+}
 
 <br />
 <AlertGraphQL Files="Project.Releases.graphql Project.ReleaseById.graphql" />
@@ -54,18 +75,15 @@
 
     (string, string?, string?)[] Downloads()
     {
-        var assembly = Data.Current!.Tag.PcbAssembly;
-        var fabrication = Data.Current.Tag.PcbFabrication;
-        return new (string, string?, string?)[]
-        {
-            ("Assembly", assembly?.PackageName, assembly?.DownloadUrl),
-            ("Fabrication", fabrication?.PackageName, fabrication?.DownloadUrl),
-            ("ODB", fabrication?.Odb.PackageName, fabrication?.Odb.DownloadUrl),
-            ("IPC2581", fabrication?.Ipc2581.PackageName, fabrication?.Ipc2581.DownloadUrl),
-            ("Gerber", fabrication?.Gerber.PackageName, fabrication?.Gerber.DownloadUrl),
-            ("GerberX2", fabrication?.GerberX2.PackageName, fabrication?.GerberX2.DownloadUrl),
-            ("NC Drill", fabrication?.NcDrill.PackageName, fabrication?.NcDrill.DownloadUrl),
-            ("Test Points", fabrication?.TestPoints.PackageName, fabrication?.TestPoints.DownloadUrl),
-        };
+        var fabrication = Data.Current!.Tag.PcbFabrication!;
+        return
+        [
+            ("ODB", fabrication.Odb.PackageName, fabrication.Odb.DownloadUrl),
+        ("IPC2581", fabrication.Ipc2581.PackageName, fabrication.Ipc2581.DownloadUrl),
+        ("Gerber", fabrication.Gerber.PackageName, fabrication.Gerber.DownloadUrl),
+        ("GerberX2", fabrication.GerberX2.PackageName, fabrication.GerberX2.DownloadUrl),
+        ("NC Drill", fabrication.NcDrill.PackageName, fabrication.NcDrill.DownloadUrl),
+        ("Test Points", fabrication.TestPoints.PackageName, fabrication.TestPoints.DownloadUrl),
+    ];
     }
 }

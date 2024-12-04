@@ -65,7 +65,6 @@ public static class AppData
 
     public static void Reset()
     {
-        NexarClientFactory.AccessToken = null;
         TreeItems = null;
         OnChange?.Invoke();
     }

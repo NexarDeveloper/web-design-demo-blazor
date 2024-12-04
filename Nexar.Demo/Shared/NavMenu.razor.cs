@@ -3,6 +3,7 @@ using MudBlazor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Nexar.Demo.Shared;
@@ -10,7 +11,7 @@ namespace Nexar.Demo.Shared;
 public partial class NavMenu : IDisposable
 {
     [Inject]
-    NavigationManager NavManager { get; init; } = null!;
+    NavigationManager Navigation { get; init; } = null!;
 
     [Inject]
     private IDialogService DialogService { get; init; } = null!;
@@ -37,6 +38,12 @@ public partial class NavMenu : IDisposable
         {
             Console.WriteLine(ex);
             await DialogService.ShowMessageBox("Error", ex.Message);
+
+            if (ex is HttpRequestException)
+            {
+                AppData.Reset();
+                Navigation.NavigateTo("");
+            }
         }
         return null;
     }
@@ -48,6 +55,6 @@ public partial class NavMenu : IDisposable
 
         var page = node.SetCurrent();
         if (page is not null)
-            NavManager.NavigateTo(page);
+            Navigation.NavigateTo(page);
     }
 }

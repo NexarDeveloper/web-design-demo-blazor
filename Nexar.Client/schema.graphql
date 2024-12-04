@@ -1236,7 +1236,7 @@ type DesCreateUserGroupPayload {
 
 "Payload associated with creating a user."
 type DesCreateUserPayload {
-  "User identifier."
+  "Workspace user identifier."
   userId: String!
 }
 
@@ -1386,6 +1386,16 @@ type DesDownloadableFile {
   relativePath: String!
   "Download URL for file."
   downloadUrl: String!
+}
+
+"A folder of downloadable files."
+type DesDownloadableFolder {
+  "The folder relative path."
+  relativePath: String!
+  "Download URL for the whole folder."
+  downloadUrl: String!
+  "Downloadable files of this folder."
+  files: [DesDownloadableFile!]!
 }
 
 "Payload associated with error."
@@ -1869,10 +1879,10 @@ type DesPcb {
 type DesPcbAssembly {
   "The name of the PCB assembly package."
   packageName: String!
-  "Pick and Place files and download URL."
-  pickAndPlace: DesPickAndPlace!
-  "Assembly drawing files and download URL."
-  assemblyDrawings: DesAssemblyDrawings!
+  "Downloadable folders."
+  folders: [DesDownloadableFolder!]!
+  pickAndPlace: DesPickAndPlace! @deprecated(reason: "Use `folders`.")
+  assemblyDrawings: DesAssemblyDrawings! @deprecated(reason: "Use `folders`.")
   "Download URL."
   downloadUrl: String!
   "Version."
@@ -2764,8 +2774,10 @@ type DesUser {
   pictureUrl(size: DesUserPictureSize): String
   "Null if the user no longer exists."
   groups: [DesUserGroup!]
-  "The internal user ID."
-  userId: String!
+  "The workspace specific user identifier."
+  userId: String
+  "The global user identifier. Common for this user across all workspaces."
+  globalUserId: String
   "Null if the user no longer exists."
   userName: String
   "Null if the user no longer exists."
@@ -3072,7 +3084,7 @@ input DesAddComponentPartChoicesInput {
 input DesAddUsersToGroupInput {
   "The group node ID."
   id: ID!
-  "User IDs."
+  "Workspace user identifiers."
   userIds: [String!]!
 }
 
@@ -3813,7 +3825,7 @@ input DesDeleteUserGroupInput {
 input DesDeleteUserInput {
   "URL for the workspace to delete the user from."
   workspaceUrl: String!
-  "User identifier."
+  "Workspace user identifier."
   userId: String!
 }
 
@@ -3915,7 +3927,7 @@ input DesLifeCycleStateTransitionApprovalGroupInput {
 input DesLifeCycleStateTransitionControllerInput {
   "Scope of the transition controller."
   scope: DesPermissionScope!
-  "User identifier."
+  "Workspace user identifier."
   userId: String
   "Group identifier."
   groupId: ID
@@ -4162,7 +4174,7 @@ input DesRemoveComponentPartChoicesInput {
 input DesRemoveUsersFromGroupInput {
   "The group node ID."
   id: ID!
-  "User IDs."
+  "Workspace user identifiers."
   userIds: [String!]!
 }
 
@@ -4297,7 +4309,7 @@ input DesUpdateFolderPermissionInput {
   canModify: Boolean!
   "Scope of the permission."
   scope: DesPermissionScope!
-  "User identifier. Workspace user ID should be used for the scope 'USER', global user ID should be used for the scope 'GUEST'."
+  "Workspace user identifier."
   userId: String
   "Group identifier."
   groupId: ID
@@ -4343,12 +4355,12 @@ input DesUpdateProjectParametersInput {
 
 "Input for updating project permission."
 input DesUpdateProjectPermissionInput {
+  "User identifier. Workspace user identifier should be used for the scope 'USER', global user identifier should be used for the scope 'GUEST'."
+  userId: String
   "Allows updating, deleting and creating when set, otherwise only read permissions will be allowed."
   canModify: Boolean!
   "Scope of the permission."
   scope: DesPermissionScope!
-  "User identifier. Workspace user ID should be used for the scope 'USER', global user ID should be used for the scope 'GUEST'."
-  userId: String
   "Group identifier."
   groupId: ID
 }
@@ -4457,7 +4469,7 @@ input DesUpdateUserGroupInput {
 input DesUpdateUserInput {
   "Workspace URL."
   workspaceUrl: String!
-  "User identifier."
+  "Workspace user identifier."
   userId: String!
   "User first name."
   firstName: String
@@ -5205,6 +5217,19 @@ type SupImage {
   creditUrl: String!
 }
 
+"inStockAgg produces an InStockBucket with whether it is in stock or not + counts"
+type SupInStockBucket {
+  isInStock: Boolean!
+  count: Int
+}
+
+"cadLevelAgg produces a LevelBucket with level + displayName"
+type SupLevelBucket {
+  level: Int
+  displayName: String!
+  count: Int
+}
+
 "An offer is a specific buyable part from a distributor, with specific packaging, pricing, stock, moq."
 type SupOffer {
   "Cache ID"
@@ -5299,7 +5324,7 @@ type SupPart {
   "The average stock level at each distributor"
   avgAvail: Float!
   "Companies with Offers for this part"
-  sellers(includeBrokers: Boolean! = false authorizedOnly: Boolean! = false): [SupPartSeller!]!
+  sellers(includeBrokers: Boolean! = false authorizedOnly: Boolean! = false limit: Int start: Int): [SupPartSeller!]!
   "The estimated factory lead time in days derived from trusted distributor offers."
   estimatedFactoryLeadDays: Int
   "This part might be known by these alternate MPNs"
@@ -5380,6 +5405,10 @@ type SupPartResultSet {
   categoryAgg("number of buckets to return (default 10)" size: Int! = 10): [SupCategoryBucket!]!
   "Aggregate on the availability of CAD models for the result set"
   cadAgg: [SupCadBucket!]!
+  "Aggregate on CAD levels for this result set"
+  cadLevelAgg: [SupLevelBucket!]!
+  "Aggregate on whether the parts are in stock for this result set"
+  inStockAgg: [SupInStockBucket!]!
   "Categories that are determined by search algo to be related to the search term.  Useful for suggesting a Category filter in the search UI."
   suggestedCategories: [SupCategoryBucket!]!
   "Attributes that are determined by search algo to be related to the search term.  Useful for suggesting most relevant filters in the search UI."
@@ -5401,7 +5430,7 @@ type SupPartSeller {
   "Distributor's country"
   country: String
   "List of offers.  Multiple offers may exist in different packaging.\nWhile multiple geo-targeted offers may exist, currently the API only exposes one geo-targeted offer at a time based on `country` parameter.\nPlease contact us if you have a need to see all geo-targeted offer variants."
-  offers: [SupOffer!]!
+  offers(priceBreaks: [Int!]): [SupOffer!]!
   "True if the distributor is an authorized distributor for this manufacturer.  See [authorized](https:\/\/octopart.com\/authorized) for more information."
   isAuthorized: Boolean!
   "True if the distributor is a Non-Authorized Dealer.  See [authorized](https:\/\/octopart.com\/authorized) for more information."

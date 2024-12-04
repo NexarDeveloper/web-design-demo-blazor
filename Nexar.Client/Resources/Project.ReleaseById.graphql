@@ -15,6 +15,14 @@ fragment MyReleaseVariant on DesReleaseVariant {
     downloadUrl
     version
     lifeCycleStateName
+    folders {
+      relativePath
+      downloadUrl
+      files {
+        fileName
+        downloadUrl
+      }
+    }
   }
   pcbFabrication {
     packageName

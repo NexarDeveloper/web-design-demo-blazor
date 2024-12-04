@@ -3,6 +3,7 @@
 bin/
 obj/
 Generated/
+z.*
 
 # VS StrawberryShake
 /.graphqlrc.json

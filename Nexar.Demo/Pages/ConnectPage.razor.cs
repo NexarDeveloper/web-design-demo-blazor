@@ -30,7 +30,7 @@ public partial class ConnectPage
     bool _loading;
     bool _connecting;
 
-    async Task SetTokenAndWorkspaces(string token)
+    static async Task SetTokenAndWorkspaces(string token)
     {
         // share token for services
         NexarClientFactory.AccessToken = token;
@@ -46,7 +46,7 @@ public partial class ConnectPage
             workspaceAuthId = A365Scope;
 
         // fetch and set workspaces or set pinned workspace
-        if (WorkspaceUrl is null)
+        if (AppData.WorkspaceUrl is null)
         {
             var client = NexarClientFactory.GetClient(AppData.ApiEndpoint);
             var res = await client.Workspaces.ExecuteAsync();
@@ -55,7 +55,7 @@ public partial class ConnectPage
         }
         else
         {
-            AppData.SetWorkspace(WorkspaceUrl);
+            AppData.SetWorkspace(AppData.WorkspaceUrl);
         }
     }
 
@@ -98,6 +98,8 @@ public partial class ConnectPage
     /// </summary>
     protected override async Task OnInitializedAsync()
     {
+        AppData.OnChange += StateHasChanged;
+
         // skip started
         _token = NexarClientFactory.AccessToken;
         if (!string.IsNullOrEmpty(_token))
