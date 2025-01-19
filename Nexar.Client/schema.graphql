@@ -196,10 +196,6 @@ type Mutation {
   desReleaseComponent(input: DesReleaseComponentInput!): DesReleaseComponentPayload!
   "Creates and releases the specified component template."
   desReleaseComponentTemplate(input: DesReleaseComponentTemplateInput!): DesReleaseComponentTemplatePayload!
-  "Adds part choices of the specified component."
-  desAddComponentPartChoices(input: DesAddComponentPartChoicesInput!): DesAddComponentPartChoicesPayload!
-  "Removes part choices of the specified component."
-  desRemoveComponentPartChoices(input: DesRemoveComponentPartChoicesInput!): DesRemoveComponentPartChoicesPayload!
   "Updates the specified component template."
   desUpdateComponentTemplate(input: DesUpdateComponentTemplateInput!): DesUpdateComponentTemplatePayload!
   "Updates parameters for the specified component (creates a new revision)."
@@ -222,6 +218,10 @@ type Mutation {
   desMoveFolder(input: DesMoveFolderInput!): DesMoveFolderPayload!
   "Deletes the specified folder from the library."
   desDeleteFolder(input: DesDeleteFolderInput!): DesDeleteFolderPayload!
+  "Adds part choices of the specified component."
+  desAddComponentPartChoices(input: DesAddComponentPartChoicesInput!): DesAddComponentPartChoicesPayload!
+  "Removes part choices of the specified component."
+  desRemoveComponentPartChoices(input: DesRemoveComponentPartChoicesInput!): DesRemoveComponentPartChoicesPayload!
   "Uploads the project zip file."
   desUploadProject(input: DesUploadProjectInput!): DesUploadProjectPayload!
   "*PROTOTYPE, SUBJECT TO CHANGE*"
@@ -330,6 +330,8 @@ interface Node {
 
 "Payload associated with adding part choices for a component."
 type DesAddComponentPartChoicesPayload {
+  "The new component (revision) created with revision control enabled."
+  newComponentId: ID!
   "Payload errors."
   errors: [DesPayloadError!]!
 }
@@ -1976,7 +1978,7 @@ type DesProject implements Node {
   "The web address to download a preview image for this project."
   previewUrl: String!
   "The list of workflows associated with this project."
-  workflows("An option to search workflows that have been completed." isClosed: Boolean! = false "An option to search workflows that have been modified after a specific `DateTime`." modifiedAfter: DateTime where: DesWorkflowFilterInput): [DesWorkflow!]
+  workflows("An option to search workflows that have been modified after a specific `DateTime`." modifiedAfter: DateTime "Filter workflows by a variable." withVariable: DesWorkflowFilterByVariableInput "An option to search workflows that have been completed." isClosed: Boolean! = false where: DesWorkflowFilterInput): [DesWorkflow!]
   "The latest VCS revision."
   latestRevision: DesVcsRevision!
   "The list of VCS revisions."
@@ -2190,6 +2192,8 @@ type DesReleaseVariant {
 
 "Payload associated with removing part choices for a component."
 type DesRemoveComponentPartChoicesPayload {
+  "The new component (revision) created with revision control enabled."
+  newComponentId: ID!
   "Payload errors."
   errors: [DesPayloadError!]!
 }
@@ -2957,7 +2961,7 @@ type DesWorkspace implements Node {
   "The list of workflow definitions in this workspace."
   workflowDefinitions(where: DesWorkflowDefinitionFilterInput): [DesWorkflowDefinition!]
   "The list of workflows in this workspace."
-  workflows(where: DesWorkflowFilterInput): [DesWorkflow!]
+  workflows("Filter workflows by a variable." withVariable: DesWorkflowFilterByVariableInput where: DesWorkflowFilterInput): [DesWorkflow!]
   "The descriptive label for this workspace."
   name: String!
   "The web address of this workspace."
@@ -3078,6 +3082,8 @@ input DesAddComponentPartChoicesInput {
   componentId: ID!
   "Manufacturer part choices to add."
   manufacturerParts: [DesPartChoiceInput!]!
+  "Use when Altium Designer version 23 option 'Part Choices Revision control' is checked."
+  withRevisionControl: Boolean
 }
 
 "Input for adding users to a group."
@@ -4054,12 +4060,30 @@ input DesRectangleInput {
   pos2: DesPosition2DInput!
 }
 
+"Input for releasing component datasheet."
+input DesReleaseComponentDatasheetInput {
+  "The datasheet name. Use null to be generated."
+  itemName: String
+  "The datasheet file"
+  file: DesReleaseComponentFileInput!
+  "The datasheet revision naming scheme identifier."
+  revisionNamingSchemeNodeId: ID!
+  "The datasheet life cycle definition identifier."
+  lifeCycleDefinitionNodeId: ID!
+}
+
 "Input for releasing component file."
 input DesReleaseComponentFileInput {
   "Uploaded file ID."
   fileId: String!
   "Relative path of the source file."
   relativePath: String!
+}
+
+"Input for adding existing footprints to the release"
+input DesReleaseComponentFootprintInput {
+  "Footprint identifier."
+  id: ID!
 }
 
 "Input for releasing component."
@@ -4088,12 +4112,14 @@ input DesReleaseComponentInput {
   componentDescription: String
   "Parameters for component."
   parameters: [DesRevisionParameterInput!]!
-  "The symbol folder path, existing or to be created."
-  symbolReleaseFolder: String!
+  "The symbol folder path, existing or to be created. Required when 'symbolFiles' are provided."
+  symbolReleaseFolder: String
   "The symbol name. Use null to be generated."
   symbolItemName: String
-  "The symbol files."
-  symbolFiles: [DesReleaseComponentFileInput!]!
+  "The symbol files. Either 'symbolFiles' or 'symbol' must be provided."
+  symbolFiles: [DesReleaseComponentFileInput!]
+  "Existing symbol to include. Either 'symbolFiles' or 'symbol' must be provided."
+  symbol: DesReleaseComponentSymbolInput
   "**DEPRECATED** Use `symbolRevisionNamingSchemeNodeId` instead with a value from `DesRevisionNamingScheme.id`."
   symbolRevisionNamingSchemeId: String
   "The symbol revision naming scheme identifier."
@@ -4102,12 +4128,14 @@ input DesReleaseComponentInput {
   symbolLifeCycleDefinitionId: String
   "The symbol life cycle definition identifier."
   symbolLifeCycleDefinitionNodeId: ID
-  "The footprint folder path, existing or to be created."
-  footprintReleaseFolder: String!
+  "The footprint folder path, existing or to be created. Required when 'footprintFiles' are provided."
+  footprintReleaseFolder: String
   "The footprint name. Use null to be generated."
   footprintItemName: String
-  "The footprint files."
-  footprintFiles: [DesReleaseComponentFileInput!]!
+  "The footprint files. Either 'footprintFiles' or 'footprints' must be provided."
+  footprintFiles: [DesReleaseComponentFileInput!]
+  "Existing footprints to include. Either 'footprintFiles' or 'footprints' must be provided."
+  footprints: [DesReleaseComponentFootprintInput!]
   "**DEPRECATED** Use `footprintRevisionNamingSchemeNodeId` instead with a value from `DesRevisionNamingScheme.id`."
   footprintRevisionNamingSchemeId: String
   "The footprint revision naming scheme identifier."
@@ -4116,6 +4144,18 @@ input DesReleaseComponentInput {
   footprintLifeCycleDefinitionId: String
   "The footprint life cycle definition identifier."
   footprintLifeCycleDefinitionNodeId: ID
+  "Datasheets for component."
+  datasheets: [DesReleaseComponentDatasheetInput!]
+  "The datasheet folder path, existing or to be created."
+  datasheetReleaseFolder: String
+  "Naming scheme template for the datasheet folder."
+  datasheetReleaseFolderItemNamingSchemeTemplate: String
+}
+
+"Input for adding existing symbols to the release"
+input DesReleaseComponentSymbolInput {
+  "Symbol identifier."
+  id: ID!
 }
 
 "Input for releasing a component template."
@@ -4166,8 +4206,10 @@ input DesReleaseVariantFilterInput {
 input DesRemoveComponentPartChoicesInput {
   "Component identifier."
   componentId: ID!
-  "Manufacturer part choices to remove."
+  "Manufacturer part choices to remove. Use null to remove all choices."
   manufacturerParts: [DesPartChoiceInput!]
+  "Use when Altium Designer version 23 option 'Part Choices Revision control' is checked."
+  withRevisionControl: Boolean
 }
 
 "Input to remove users from group."
@@ -4549,6 +4591,14 @@ input DesWorkflowDefinitionFilterInput {
   createdBy: StringOperationFilterInput
   "The `DateTime` for the creation of this workflow definition."
   createdAt: DateTimeOperationFilterInput
+}
+
+"Filter workflows by a variable."
+input DesWorkflowFilterByVariableInput {
+  "Name of the variable."
+  name: String
+  "List of value prefixes."
+  valueMatchesOneOf: [String!]!
 }
 
 "A workflow manages the execution of a logical sequence of tasks."
@@ -5395,8 +5445,8 @@ type SupPartResultSet {
   specsViewAttributeGroups: [SupAttributeGroup!]!
   "If an invalid query was modified or rejected, warnings indicate this fact to the user.  For example if query contained too many tokens, some tokens may be ignored."
   warnings: [String!]
-  "Perform aggregations on Spec values across multiple Attributes.\nYou *must* specify `attributeNames` for this field to be populated.\n`attributeNames` should be a list of Attribute.shortname values (e.g. `capacitance` or `voltageRatingDc`)"
-  specAggs("a list of Attribute.shortname values to aggregate on (e.g. `capacitance` or `voltageRatingDc`)" attributeNames: [String!]! "number of spec value buckets to return (default 10)" size: Int! = 10): [SupSpecAgg!]!
+  "Perform aggregations on Spec values across multiple Attributes.\nYou *must* specify `attributeNames` for this field to be populated.\n`attributeNames` should be a list of Attribute.shortname values (e.g. `capacitance` or `voltageRatingDc`)\n- You can set `attributeSelection=WITHSUGGESTED` to additionally include suggested attributes for aggregation\n- Alternatively, set `attributeSelection=ALL` to include all attributes for aggregation\n- To rely solely on suggested attributes, set `attributeSelection=WITHSUGGESTED` and `attributeNames=[]`"
+  specAggs("a list of Attribute.shortname values to aggregate on (e.g. `capacitance` or `voltageRatingDc`)" attributeNames: [String!]! "defines how attributes are selected for aggregation (default EXPLICIT)" attributeSelection: SupSpecAggsSelection! = EXPLICIT "number of spec value buckets to return (default 10)" size: Int! = 10): [SupSpecAgg!]!
   "Aggregate on manufacturers for this result set"
   manufacturerAgg("number of buckets to return (default 10)" size: Int! = 10): [SupCompanyBucket!]!
   "Aggregate on distributors for this result set"
@@ -5624,6 +5674,12 @@ enum SupRole {
 enum SupSortDirection {
   asc
   desc
+}
+
+enum SupSpecAggsSelection {
+  EXPLICIT
+  WITH_SUGGESTED
+  ALL
 }
 
 interface ManOrderEvent {
