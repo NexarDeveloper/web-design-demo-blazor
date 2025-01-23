@@ -2176,6 +2176,8 @@ type DesReleaseEdge {
 
 "A variant contains a specific configuration of a base design."
 type DesReleaseVariant {
+  "The project release package."
+  downloadUrl: String!
   "The data needed for assembly of this published design variant."
   pcbAssembly: DesPcbAssembly
   "The data needed for fabrication of this published design variant."

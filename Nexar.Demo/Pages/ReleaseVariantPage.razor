@@ -8,6 +8,7 @@
     return;
 
 <TextField Label="Name" Text=@Data.Current.Tag.Name />
+<TextFieldUrl Label="DownloadUrl" Href=@Data.Current.Tag.DownloadUrl Text="Full Release" />
 
 @if (Data.Current.Tag.PcbAssembly is { })
 {
@@ -15,9 +16,7 @@
     <MudText Typo=Typo.h6>PcbAssembly</MudText>
     <TextField Label="Version" Text=@Data.Current.Tag.PcbAssembly.Version />
     <TextField Label="LifeCycleStateName" Text=@Data.Current.Tag.PcbAssembly.LifeCycleStateName />
-    <MudField Label="Download" Variant=Variant.Outlined>
-        <MudLink Href=@Data.Current.Tag.PcbAssembly.DownloadUrl Target=_blank>@Data.Current.Tag.PcbAssembly.PackageName</MudLink>
-    </MudField>
+    <TextFieldUrl Label="Download" Href=@Data.Current.Tag.PcbAssembly.DownloadUrl Text=@Data.Current.Tag.PcbAssembly.PackageName />
     <MudField Label="Folders/Files" Variant=Variant.Outlined>
         <MudList T="string" Dense=true ReadOnly=true>
             @foreach (var folder in Data.Current.Tag.PcbAssembly.Folders)
@@ -42,9 +41,7 @@
     <MudText Typo=Typo.h6>PcbFabrication</MudText>
     <TextField Label="Version" Text=@Data.Current.Tag.PcbFabrication.Version />
     <TextField Label="LifeCycleStateName" Text=@Data.Current.Tag.PcbFabrication.LifeCycleStateName />
-    <MudField Label="Download" Variant=Variant.Outlined>
-        <MudLink Href=@Data.Current.Tag.PcbFabrication.DownloadUrl Target=_blank>@Data.Current.Tag.PcbFabrication.PackageName</MudLink>
-    </MudField>
+    <TextFieldUrl Label="Download" Href=@Data.Current.Tag.PcbFabrication.DownloadUrl Text=@Data.Current.Tag.PcbFabrication.PackageName />
     <MudTable Items=@Downloads() Dense=true>
         <HeaderContent>
             <MudTh>Package</MudTh>
@@ -79,11 +76,11 @@
         return
         [
             ("ODB", fabrication.Odb.PackageName, fabrication.Odb.DownloadUrl),
-        ("IPC2581", fabrication.Ipc2581.PackageName, fabrication.Ipc2581.DownloadUrl),
-        ("Gerber", fabrication.Gerber.PackageName, fabrication.Gerber.DownloadUrl),
-        ("GerberX2", fabrication.GerberX2.PackageName, fabrication.GerberX2.DownloadUrl),
-        ("NC Drill", fabrication.NcDrill.PackageName, fabrication.NcDrill.DownloadUrl),
-        ("Test Points", fabrication.TestPoints.PackageName, fabrication.TestPoints.DownloadUrl),
-    ];
+            ("IPC2581", fabrication.Ipc2581.PackageName, fabrication.Ipc2581.DownloadUrl),
+            ("Gerber", fabrication.Gerber.PackageName, fabrication.Gerber.DownloadUrl),
+            ("GerberX2", fabrication.GerberX2.PackageName, fabrication.GerberX2.DownloadUrl),
+            ("NC Drill", fabrication.NcDrill.PackageName, fabrication.NcDrill.DownloadUrl),
+            ("Test Points", fabrication.TestPoints.PackageName, fabrication.TestPoints.DownloadUrl),
+        ];
     }
 }
