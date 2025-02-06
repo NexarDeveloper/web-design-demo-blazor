@@ -27,10 +27,10 @@ public sealed class VariantLayersItem(VariantItem parent) : LeafTreeItem(parent)
 
     protected override async Task UpdateAsync()
     {
-        var res = await Client.VariantLayers.ExecuteAsync(Parent.Parent.Parent.Tag.Id, Parent.Tag.Name);
+        var res = await Client.DesignVariantLayers.ExecuteAsync(Parent.Tag.Id);
         var data = res.AssertNoErrors();
 
-        var pcb = data.DesProjectById!.Design.Variants[0].Pcb;
+        var pcb = data.DesWipVariantById?.Pcb;
         if (pcb is null)
             return;
 

@@ -30,17 +30,17 @@ public sealed class VariantPcbItem(NodeTreeItem parent) : LeafTreeItem(parent)
     {
         if (Parent is VariantItem variantItem)
         {
-            var res = await Client.VariantPcb.ExecuteAsync(variantItem.Parent.Parent.Tag.Id, variantItem.Tag.Name, ItemsLimit);
+            var res = await Client.DesignVariantPcb.ExecuteAsync(variantItem.Tag.Id, ItemsLimit);
             var data = res.AssertNoErrors();
 
-            Tag = data.DesProjectById!.Design.Variants[0].Pcb;
+            Tag = data.DesWipVariantById?.Pcb;
         }
         else if (Parent is ReleaseVariantItem releaseVariantItem)
         {
-            var res = await Client.ReleaseVariantPcb.ExecuteAsync(releaseVariantItem.Parent.Tag.Id, releaseVariantItem.Tag.Name, ItemsLimit);
+            var res = await Client.ReleaseVariantPcb.ExecuteAsync(releaseVariantItem.Tag.Id, ItemsLimit);
             var data = res.AssertNoErrors();
 
-            Tag = data.DesReleaseById?.Variants[0].Pcb;
+            Tag = data.DesReleaseVariantById?.Pcb;
         }
         else
         {

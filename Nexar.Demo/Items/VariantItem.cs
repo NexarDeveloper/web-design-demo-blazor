@@ -11,7 +11,6 @@ public sealed class VariantItem(IMyWipVariant tag, ProjectDesignItem parent) : N
     public IMyWipVariant Tag { get; } = tag;
     public override string Text => Tag.Name;
     public override string Icon => Icons.Material.Filled.Memory;
-    public new ProjectDesignItem Parent => (ProjectDesignItem)base.Parent;
 
     public override string SetCurrent()
     {

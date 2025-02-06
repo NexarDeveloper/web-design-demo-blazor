@@ -5,10 +5,9 @@
 <ItemPageHeader Text="Design Variant" Item=@Data.Current />
 
 @if (Data.Current is null)
-{
     return;
-}
 
+<TextFieldCopy Label="Id" Text=@Data.Current.Tag.Id />
 <TextField Label="Name" Text=@Data.Current.Tag.Name />
 
 <br />

@@ -1,13 +1,9 @@
-﻿# Gets the project design variant layer stack information.
-query VariantLayers($projectId: ID!, $variantName: String!) {
-  desProjectById(id: $projectId) {
-    design {
-      variants(where: {name: {eq: $variantName}}) {
-        pcb {
-          layerStack {
-            ...MyStackup
-          }
-        }
+﻿# Gets the design variant layer stack information.
+query DesignVariantLayers($variantId: ID!) {
+  desWipVariantById(id: $variantId) {
+    pcb {
+      layerStack {
+        ...MyStackup
       }
     }
   }

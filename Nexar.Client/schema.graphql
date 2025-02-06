@@ -47,10 +47,17 @@ type Query {
   desUserByGlobalId(id: String!): DesUser
   "Search projects within a workspace with results in paged groups."
   desProjects("The web address of a workspace." workspaceUrl: String! "Requirements block filter." requirementsBlockFilter: DesProjectsRequirementsBlockFilterInput "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesProjectFilterInput): DesProjectConnection
-  "Search a specific project by its unique identifier."
-  desProjectById("The node identifier for a project." id: ID!): DesProject
+  "Searches a project by its node identifier."
+  desProjectById("The project node identifier." id: ID!): DesProject
+  "Searches a release by its node identifier."
+  desReleaseById("The release node identifier." id: ID!): DesRelease
+  "Searches a project variant by its node identifier."
+  desWipVariantById("The project variant node identifier." id: ID!): DesWipVariant
+  "Searches a release variant by its node identifier."
+  desReleaseVariantById("The release variant node identifier." id: ID!): DesReleaseVariant
   "Gets the project node ID from its internal ID."
   desProjectIdFromAfsId("The web address of a workspace." workspaceUrl: String! "AFS internal identifier." afsId: String! "True for shared projects." isSharedProject: Boolean): DesProjectIdPayload!
+  desBomById(id: ID!): DesBom @deprecated(reason: "Use `desWipVariantById` or `desReleaseVariantById` in order to access BOM.")
   desDesignItemById(id: ID!): DesDesignItem
   "Gets the library by workspace URL."
   desLibrary(workspaceUrl: String!): DesLibrary!
@@ -74,10 +81,6 @@ type Query {
   desCommentThreads("The node identifier for a project (This is the project field named \"id\")." projectId: ID!): [DesCommentThread!]!
   "Search for a specific comment thread associated with a project."
   desCommentThread("The node identifier for a project (This is the project field named \"id\")." projectId: ID! "The reference identifier for a comment thread." threadId: String!): DesCommentThread
-  "Gets a release by its unique identifier."
-  desReleaseById("The node identifier for a release." id: ID!): DesRelease
-  "Gets the BOM by its unique identifier."
-  desBomById("The BOM identifier." id: ID!): DesBom
   desManufacturePackages: [DesManufacturePackage!]!
   "Gets the manufacture package by its unique identifier."
   desManufacturePackageById("The node identifier for manufacture package." id: ID!): DesManufacturePackage
@@ -363,8 +366,7 @@ type DesAssemblyDrawings {
 
 "A Bill of Materials (BOM) contains a list of all of the parts needed for the assembly of a PCB."
 type DesBom implements Node {
-  "The node identifier for this BOM (used by `desBomById`)."
-  id: ID!
+  id: ID! @deprecated(reason: "Use `desWipVariantById` and `desReleaseVariantById` in order to access BOM.")
   bomItems: [DesBomItem!]! @deprecated(reason: "Use `items`.")
   "The list of BOM items returned by pages."
   items("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesBomItemConnection
@@ -2175,7 +2177,9 @@ type DesReleaseEdge {
 }
 
 "A variant contains a specific configuration of a base design."
-type DesReleaseVariant {
+type DesReleaseVariant implements Node {
+  "The node identifier (used by `desReleaseVariantById`)."
+  id: ID!
   "The project release package."
   downloadUrl: String!
   "The data needed for assembly of this published design variant."
@@ -2874,7 +2878,9 @@ type DesWeight {
 }
 
 "A variant contains a specific configuration of a base design."
-type DesWipVariant {
+type DesWipVariant implements Node {
+  "The node identifier (used by `desWipVariantById`)."
+  id: ID!
   designExchange: DesDesignExchange
   "The Bill of Materials (BOM) for this design variant."
   bom: DesBom
@@ -4186,8 +4192,6 @@ input DesReleaseComponentTemplateInput {
 input DesReleaseFilterInput {
   and: [DesReleaseFilterInput!]
   or: [DesReleaseFilterInput!]
-  "The node identifier for this release (used by `desReleaseById`)."
-  id: StringOperationFilterInput
   "The `DateTime` when this release was created."
   createdAt: DateTimeOperationFilterInput
   "The summary of this release content or purpose."

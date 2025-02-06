@@ -33,17 +33,17 @@ public sealed class VariantBomItem(NodeTreeItem parent) : LeafTreeItem(parent)
     {
         if (Parent is VariantItem variantItem)
         {
-            var res = await Client.VariantBom.ExecuteAsync(variantItem.Parent.Parent.Tag.Id, variantItem.Tag.Name, ItemsLimit);
+            var res = await Client.DesignVariantBom.ExecuteAsync(variantItem.Tag.Id, ItemsLimit);
             var data = res.AssertNoErrors();
 
-            Tag = data.DesProjectById?.Design.Variants[0].Bom;
+            Tag = data.DesWipVariantById?.Bom;
         }
         else if (Parent is ReleaseVariantItem releaseVariantItem)
         {
-            var res = await Client.ReleaseVariantBom.ExecuteAsync(releaseVariantItem.Parent.Tag.Id, releaseVariantItem.Tag.Name, ItemsLimit);
+            var res = await Client.ReleaseVariantBom.ExecuteAsync(releaseVariantItem.Tag.Id, ItemsLimit);
             var data = res.AssertNoErrors();
 
-            Tag = data.DesReleaseById?.Variants[0].Bom;
+            Tag = data.DesReleaseVariantById?.Bom;
         }
         else
         {

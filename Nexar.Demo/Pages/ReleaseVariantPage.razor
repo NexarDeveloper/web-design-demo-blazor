@@ -7,6 +7,7 @@
 @if (Data.Current is null)
     return;
 
+<TextFieldCopy Label="Id" Text=@Data.Current.Tag.Id />
 <TextField Label="Name" Text=@Data.Current.Tag.Name />
 <TextFieldUrl Label="DownloadUrl" Href=@Data.Current.Tag.DownloadUrl Text="Full Release" />
 

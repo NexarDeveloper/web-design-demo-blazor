@@ -11,7 +11,6 @@ public sealed class ReleaseVariantItem(IMyReleaseVariant tag, ReleaseItem parent
     public IMyReleaseVariant Tag { get; } = tag;
     public override string Text => Tag.Name;
     public override string Icon => Icons.Material.Filled.Launch;
-    public new ReleaseItem Parent => (ReleaseItem)base.Parent;
 
     public override string SetCurrent()
     {

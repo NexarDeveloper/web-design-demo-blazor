@@ -1,23 +1,17 @@
-﻿# Gets the project design variant schematics.
-query VariantSchematics($projectId: ID!, $variantName: String!, $limit: Int!) {
-  desProjectById(id: $projectId) {
-    design {
-      variants(where: {name: {eq: $variantName}}) {
-        schematics {
-          ...MySchematic
-        }
-      }
+﻿# Gets the design variant schematics.
+query DesignVariantSchematics($variantId: ID!, $limit: Int!) {
+  desWipVariantById(id: $variantId) {
+    schematics {
+      ...MySchematic
     }
   }
 }
 
-# Gets the project release variant schematics.
-query ReleaseVariantSchematics($releaseId: ID!, $variantName: String!, $limit: Int!) {
-  desReleaseById(id: $releaseId) {
-    variants(where: {name: {eq: $variantName}}) {
-      schematics {
-        ...MySchematic
-      }
+# Gets the release variant schematics.
+query ReleaseVariantSchematics($variantId: ID!, $limit: Int!) {
+  desReleaseVariantById(id: $variantId) {
+    schematics {
+      ...MySchematic
     }
   }
 }

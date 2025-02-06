@@ -1,23 +1,17 @@
-﻿# Gets the project design variant design items.
-query VariantPcb($projectId: ID!, $variantName: String!, $limit: Int!) {
-  desProjectById(id: $projectId) {
-    design {
-      variants(where: {name: {eq: $variantName}}) {
-        pcb {
-          ...MyPcb
-        }
-      }
+﻿# Gets the design variant design items.
+query DesignVariantPcb($variantId: ID!, $limit: Int!) {
+  desWipVariantById(id: $variantId) {
+    pcb {
+      ...MyPcb
     }
   }
 }
 
-# Gets the project release variant design items.
-query ReleaseVariantPcb($releaseId: ID!, $variantName: String!, $limit: Int!) {
-  desReleaseById(id: $releaseId) {
-    variants(where: {name: {eq: $variantName}}) {
-      pcb {
-        ...MyPcb
-      }
+# Gets the release variant design items.
+query ReleaseVariantPcb($variantId: ID!, $limit: Int!) {
+  desReleaseVariantById(id: $variantId) {
+    pcb {
+      ...MyPcb
     }
   }
 }
