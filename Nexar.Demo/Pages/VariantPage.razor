@@ -2,10 +2,10 @@
 @inherits AbstractPage
 @using Data = VariantItem
 
-<ItemPageHeader Text="Design Variant" Item=@Data.Current />
-
 @if (Data.Current is null)
     return;
+
+<ItemPageHeader Text="Design Variant" Item=@Data.Current />
 
 <TextFieldCopy Label="Id" Text=@Data.Current.Tag.Id />
 <TextField Label="Name" Text=@Data.Current.Tag.Name />

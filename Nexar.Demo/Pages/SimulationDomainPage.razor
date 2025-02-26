@@ -2,12 +2,10 @@
 @inherits AbstractPage
 @using Data = SimulationDomainItem
 
-<ItemPageHeader Text="Simulation" Item=@Data.Current />
-
 @if (Data.Current is null)
-{
     return;
-}
+
+<ItemPageHeader Text="Simulation" Item=@Data.Current />
 
 @if (Data.Current.IsUpdating)
 {

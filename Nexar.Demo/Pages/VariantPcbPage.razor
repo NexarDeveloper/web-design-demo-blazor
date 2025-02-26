@@ -2,12 +2,10 @@
 @inherits AbstractPage
 @using Data = VariantPcbItem
 
-<ItemPageHeader Text="PCB" Item=@Data.Current />
-
 @if (Data.Current is null)
-{
     return;
-}
+
+<ItemPageHeader Text="PCB" Item=@Data.Current />
 
 @if (Data.Current.IsUpdating)
 {

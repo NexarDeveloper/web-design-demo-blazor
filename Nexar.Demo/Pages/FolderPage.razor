@@ -2,12 +2,10 @@
 @inherits AbstractPage
 @using Data = FolderItem
 
-<ItemPageHeader Text="Folder" Item=@Data.Current />
-
 @if (Data.Current is null)
-{
     return;
-}
+
+<ItemPageHeader Text="Folder" Item=@Data.Current />
 
 <TextFieldCopy Label="Id" Text=@Data.Current.Tag.Id />
 

@@ -2,12 +2,10 @@
 @inherits AbstractPage
 @using Data = UserItem
 
-<ItemPageHeader Text="User" Item=@Data.Current />
-
 @if (Data.Current is null)
-{
     return;
-}
+
+<ItemPageHeader Text="User" Item=@Data.Current />
 
 <TextFieldCopy Label="UserId" Text=@Data.Current.Tag.UserId />
 

@@ -2,12 +2,10 @@
 @inherits AbstractPage
 @using Data = ProjectRevisionsItem
 
-<ItemPageHeader Text="Revisions" Item=@Data.Current />
-
 @if (Data.Current is null)
-{
     return;
-}
+
+<ItemPageHeader Text="Revisions" Item=@Data.Current />
 
 @if (Data.Current.IsUpdating)
 {

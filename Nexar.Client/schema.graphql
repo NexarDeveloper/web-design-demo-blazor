@@ -5223,6 +5223,12 @@ type SupCompanyBucket {
   count: Int
 }
 
+"contentVaultMetadataAgg produces a ContentMetadataBucket with metadata + counts"
+type SupContentMetadataBucket {
+  metadata: String!
+  count: Int
+}
+
 "A country's name, country code, and continent code."
 type SupCountry {
   name: String!
@@ -5369,6 +5375,10 @@ type SupPart {
   cad: SupPartCad
   "URL to request a CAD model from eeconcierge if a part doesn't already have a CAD model.  Will be null part is not eligible, e.g. a multimeter"
   cadRequestUrl: String
+  "All available CAD models for this part."
+  cadModels: SupPartCadModels!
+  "All available simulation models for this part."
+  simModels: [SupPartSimModel!]!
   "The UID from Octopart APIv3.  Provided for backwards compatibility, in general ID should be used."
   v3uid: ID!
   "A [Map](#map) of number of related objects.  Can be used to know the number of `images` or `descriptions` without having to request those related objects."
@@ -5408,6 +5418,84 @@ type SupPartCad {
   downloadUrlKicad: String!
   footprintImageUrl: String
   symbolImageUrl: String
+}
+
+"PartCadDownloadURLs holds CAD model download URLs in supported formats."
+type SupPartCadDownloadURLs {
+  "URL to download the model in Altium Designer format."
+  altium: String
+  "URL to download the model in EAGLE format."
+  eagle: String
+  "URL to download the model in ORCA format."
+  orcadSymbol: String
+  "URL to download the model in KiCad format."
+  kicad: String
+  "URL to download the model in Vault format."
+  vault: String
+}
+
+"PartCadModel represents a CAD model for the part."
+type SupPartCadModel {
+  "The company this model originated from."
+  source: SupCompany!
+  "The date the model was created or updated."
+  updated: Time!
+  "The URL to view this model on the provider website."
+  cadSourceUrl: String
+  "URLs to download this model, indexed by file format."
+  cadDownloadUrls: SupPartCadDownloadURLs!
+  "Preview URLs for this model."
+  previewUrls: SupPartCadPreviewURLs!
+  "True if the model contains symbols."
+  hasSymbol: Boolean!
+  "True if the model contains footprints."
+  hasFootprint: Boolean!
+  "True if the model has 3D model."
+  has3dModel: Boolean!
+  "The model level."
+  level: Int!
+  "The Style Guide version followed to create the model."
+  styleGuideVersion: String
+  "The Style Guide release date."
+  styleGuideDate: Time
+  "The Style Guide URL."
+  styleGuideUrl: String
+  "IPC compliance information."
+  ipcCompliant: String
+  "The datasheet used to create the model"
+  datasheetUrl: String
+  "The model datasheet release date."
+  datasheetDate: Time
+  "The datasheet version."
+  datasheetVersion: String
+  "The manufacturer from which model data was sourced."
+  sourcedBy: SupCompany
+}
+
+"PartCadModels holds all available CAD models for the part."
+type SupPartCadModels {
+  "True if at least one model contains symbols."
+  hasSymbol: Boolean!
+  "True if at least one model contains footprints."
+  hasFootprint: Boolean!
+  "True if at least one model contains 3D geometry."
+  has3dModel: Boolean!
+  "The highest cad model level for this part."
+  highestLevel: Int!
+  "Internal viewer URL."
+  viewerDownloadUrl: String
+  "Available CAD models for this part"
+  models: [SupPartCadModel!]!
+}
+
+"PartCadPreviewURLs holds CAD model preview URLs."
+type SupPartCadPreviewURLs {
+  "URLs of footprint preview images, indexed by image type (e.g. resolution, format). If not empty, the map contains a 'default' key pointing to the preferred image to use."
+  footprint: Map
+  "URLs of symbol preview images, indexed by image type (e.g. resolution, format). If not empty, the map contains a 'default' key pointing to the preferred image to use."
+  symbol: Map
+  "URLs of 3D model preview images, indexed by image type (e.g. resolution, format). If not empty, the map contains a 'default' key pointing to the preferred image to use."
+  threeD: Map
 }
 
 type SupPartMatch {
@@ -5463,6 +5551,8 @@ type SupPartResultSet {
   cadAgg: [SupCadBucket!]!
   "Aggregate on CAD levels for this result set"
   cadLevelAgg: [SupLevelBucket!]!
+  "Aggregate on Altium content metadata"
+  contentVaultMetadataAgg: [SupContentMetadataBucket!]!
   "Aggregate on whether the parts are in stock for this result set"
   inStockAgg: [SupInStockBucket!]!
   "Categories that are determined by search algo to be related to the search term.  Useful for suggesting a Category filter in the search UI."
@@ -5505,6 +5595,23 @@ type SupPartSeries {
   name: String!
   "Octopart URL for this series, specific to the parent part"
   url: String!
+}
+
+"PartSimModel represents a simulation model."
+type SupPartSimModel {
+  "The company this model originated from."
+  source: SupCompany!
+  "The URL to download this model."
+  downloadUrl: String!
+  "The model metadata items."
+  items: [SupPartSimModelItem!]!
+}
+
+"PartSimModelItem holds a metadata attribute for a simulation model."
+type SupPartSimModelItem {
+  itemName: String!
+  itemType: String!
+  fileName: String!
 }
 
 "Price in a specific currency + quantity.  By supplying a `currency` parameter the API will populate an estimated convertedPrice in the user's desired currency."
@@ -5661,6 +5768,7 @@ enum SupNexarFeatureID {
   SUGGESTIONS
   SPELLING_CORRECTIONS
   INVENTORY_HISTORY
+  ALTIUM_CONTENT_METADATA
 }
 
 enum SupPlanTier {

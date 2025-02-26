@@ -2,12 +2,10 @@
 @inherits AbstractPage
 @using Data = ThreadItem
 
-<ItemPageHeader Text="Thread" Item=@Data.Current />
-
 @if (Data.Current is null)
-{
     return;
-}
+
+<ItemPageHeader Text="Thread" Item=@Data.Current />
 
 <TextFieldCopy Label="CommentThreadId" Text=@Data.Current.Tag.CommentThreadId />
 

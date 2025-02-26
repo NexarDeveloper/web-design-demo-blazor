@@ -2,14 +2,12 @@
 @inherits AbstractPage
 @using Data = SharedWithMeProjectsItem
 
+@if (Data.Current is null)
+    return;
+
 <ItemPageHeader Text="Projects" Item=@Data.Current />
 
 <MudLink Href="https://365.altium.com/sharedwithme" Target="_blank">Altium 365 Shared with Me</MudLink>
-
-@if (Data.Current is null)
-{
-    return;
-}
 
 @if (Data.Current.Items is not null)
 {

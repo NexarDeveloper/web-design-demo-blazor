@@ -2,12 +2,10 @@
 @inherits AbstractPage
 @using Data = ComponentTemplatesItem
 
-<ItemPageHeader Text="Component Templates" Item=@Data.Current />
-
 @if (Data.Current is null)
-{
     return;
-}
+
+<ItemPageHeader Text="Component Templates" Item=@Data.Current />
 
 @if (Data.Current.IsUpdating)
 {

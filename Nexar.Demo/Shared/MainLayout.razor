@@ -7,18 +7,18 @@
 
 <MudLayout>
     <MudAppBar Elevation=0>
-        @if (!_drawerOpen)
-        {
+        <MudStack Row=true AlignItems=AlignItems.Center>
             <MudIconButton Icon=@Icons.Material.Filled.Menu Color=Color.Inherit Edge=Edge.Start OnClick=@(e => DrawerToggle()) />
-        }
-        <MudHidden Breakpoint=Breakpoint.Xs>
-            @if (AppData.WorkspaceUrl is { })
-            {
-                <MudIconButton Icon=@Icons.Material.Filled.FolderOpen Color=Color.Inherit Href="@AppData.WorkspaceUrl" Target="_blank" />
-            }
-            <MudLink Href=@AppData.ApiEndpoint Color=Color.Inherit Target="_blank">@AppData.ApiEndpoint</MudLink>
-        </MudHidden>
+            <MudHidden Breakpoint=Breakpoint.Xs>
+                <MudText Typo=Typo.h6>Nexar.Design Demo</MudText>
+                @if (AppData.WorkspaceUrl is { })
+                {
+                    <MudIconButton Icon=@Icons.Material.Filled.FolderOpen Color=Color.Inherit Href="@AppData.WorkspaceUrl" Target="_blank" />
+                }
+            </MudHidden>
+        </MudStack>
         <MudSpacer />
+        <MudLink Href=@AppData.ApiEndpoint Color=Color.Inherit Underline=Underline.Always Target="_blank">@AppData.ApiEndpoint</MudLink>
         <MudTooltip Text="Source code">
             <MudIconButton Icon=@Icons.Custom.Brands.GitHub Color=Color.Inherit Href="https://github.com/NexarDeveloper/web-design-demo-blazor" Target="_blank" />
         </MudTooltip>
@@ -29,14 +29,7 @@
             <MudIconButton Icon=@Icons.Material.Filled.Home Color=Color.Inherit Href=@AppData.NexarDotCom Target="_blank" />
         </MudTooltip>
     </MudAppBar>
-    <MudDrawer Width=500px @bind-Open=@_drawerOpen Elevation=1>
-        <MudDrawerHeader Class="align-center">
-            @if (_drawerOpen)
-            {
-                <MudIconButton Icon=@Icons.Material.Filled.Menu Color=Color.Inherit Edge=Edge.Start OnClick=@(e => DrawerToggle()) />
-            }
-            <MudText Typo=Typo.h6>Nexar.Design Demo</MudText>
-        </MudDrawerHeader>
+    <MudDrawer Width=500px @bind-Open=@_drawerOpen ClipMode="DrawerClipMode.Always" Elevation=1>
         <NavMenu />
     </MudDrawer>
     <MudMainContent>

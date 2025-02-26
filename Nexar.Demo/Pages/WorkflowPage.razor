@@ -2,12 +2,10 @@
 @inherits AbstractPage
 @using Data = WorkflowItem
 
-<ItemPageHeader Text="Workflow" Item=@Data.Current />
-
 @if (Data.Current is null)
-{
     return;
-}
+
+<ItemPageHeader Text="Workflow" Item=@Data.Current />
 
 <TextFieldCopy Label="WorkflowId" Text=@Data.Current.Tag.WorkflowId />
 

@@ -3,12 +3,10 @@
 @using Nexar.Client
 @using Data = VariantLayersItem
 
-<ItemPageHeader Text="Layers" Item=@Data.Current />
-
 @if (Data.Current is null)
-{
     return;
-}
+
+<ItemPageHeader Text="Layers" Item=@Data.Current />
 
 @if (Data.Current.IsUpdating)
 {
