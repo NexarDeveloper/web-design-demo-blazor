@@ -31,6 +31,8 @@ public static class AppData
     /// </summary>
     public static string NexarDotCom { get; private set; } = null!;
 
+    public static string VoyagerEndpoint => ApiEndpoint.TrimEnd('/')[0..^7] + "ui/voyager";
+
     public static bool IsRegionApi { get; private set; }
 
     /// <summary>
