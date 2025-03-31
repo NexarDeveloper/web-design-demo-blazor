@@ -15,6 +15,67 @@ type Query {
   node("ID of the object." id: ID!): Node
   "Lookup nodes by a list of IDs."
   nodes("The list of node IDs." ids: [ID!]!): [Node]!
+  "The project latest ECAD or MCAD revision."
+  desProjectCollaborationLatestRevision("The node identifier for a specific project." projectId: ID! "The collaboration domain." domain: DesCollaborationDomain!): DesCollaborationRevision
+  "The project ECAD or MCAD revisions returned by pages."
+  desProjectCollaborationRevisions("The node identifier for a specific project." projectId: ID! domain: DesCollaborationDomain! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesCollaborationRevisionConnection
+  "*PROTOTYPE, SUBJECT TO CHANGE*"
+  desProjectCollaborationSimulationRevisions(projectId: ID! domainName: String! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesCollaborationSimulationRevisionConnection
+  "*PROTOTYPE, SUBJECT TO CHANGE*"
+  desProjectCollaborationSimulationLatestRevision(projectId: ID! domainName: String! projectTypeName: String!): DesCollaborationSimulationRevision
+  "Search for comment threads associated with a project."
+  desCommentThreads("The node identifier for a project (This is the project field named \"id\")." projectId: ID!): [DesCommentThread!]!
+  "Search for a specific comment thread associated with a project."
+  desCommentThread("The node identifier for a project (This is the project field named \"id\")." projectId: ID! "The reference identifier for a comment thread." threadId: String!): DesCommentThread
+  desDesignItemById(id: ID!): DesDesignItem
+  "Gets the library by workspace URL."
+  desLibrary(workspaceUrl: String!): DesLibrary!
+  "Search a specific component by its unique identifier."
+  desComponentById("The node identifier for a component." id: ID!): DesComponent
+  "Searches multiple components by their unique identifiers."
+  desComponentsByIds("The node identifiers for components." ids: [ID!]!): [DesUnionPayload!]!
+  "Searches details of a revision by its unique identifier."
+  desRevisionDetailsById("The node identifier for specific revision details." id: ID!): DesRevisionDetails
+  "Searches for a specific template for a component by its unique identifier."
+  desComponentTemplateById("The node identifier for a component template." id: ID!): DesComponentTemplate
+  "Searches for a specific folder by its unique identifier."
+  desFolderById("The node identifier for a folder." id: ID!): DesFolder
+  "Searches for a specific footprint by its unique identifier."
+  desFootprintById("The node identifier for a footprint." id: ID!): DesFootprint
+  "Searches for a specific symbol by its unique identifier."
+  desSymbolById("The node identifier for a symbol." id: ID!): DesSymbol
+  "The list of project tasks."
+  desProjectTasks("The node identifier for a specific project." projectId: ID! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesTaskConnection
+  "The list of workspace tasks."
+  desWorkspaceTasks("The URL of the workspace to get tasks from." workspaceUrl: String! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesTaskConnection
+  desManufacturePackages: [DesManufacturePackage!]!
+  "Gets the manufacture package by its unique identifier."
+  desManufacturePackageById("The node identifier for manufacture package." id: ID!): DesManufacturePackage
+  "Search projects within a workspace with results in paged groups."
+  desProjects("The web address of a workspace." workspaceUrl: String! "Requirements block filter." requirementsBlockFilter: DesProjectsRequirementsBlockFilterInput "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesProjectFilterInput): DesProjectConnection
+  "Searches a project by its node identifier."
+  desProjectById("The project node identifier." id: ID!): DesProject
+  "Searches a release by its node identifier."
+  desReleaseById("The release node identifier." id: ID!): DesRelease
+  "Searches a project variant by its node identifier."
+  desWipVariantById("The project variant node identifier." id: ID!): DesWipVariant
+  "Searches a release variant by its node identifier."
+  desReleaseVariantById("The release variant node identifier." id: ID!): DesReleaseVariant
+  "Gets the project node ID from its internal ID."
+  desProjectIdFromAfsId("The web address of a workspace." workspaceUrl: String! "AFS internal identifier." afsId: String! "True for shared projects." isSharedProject: Boolean): DesProjectIdPayload!
+  desBomById(id: ID!): DesBom @deprecated(reason: "Use `desWipVariantById` or `desReleaseVariantById` in order to access BOM.")
+  "Find a specific reuse block by its unique identifier."
+  desReuseBlockById("The node identifier for a reuse block." id: ID!): DesReuseBlock
+  "Find a specific reuse block revision by its unique identifier."
+  desReuseBlockRevisionById("The node identifier for a reuse block revision." id: ID!): DesReuseBlockRevision
+  "Gets the specified workspace team."
+  desTeam(workspaceUrl: String!): DesTeam!
+  "Gets the specified workspace users by IDs."
+  desUsers(workspaceUrl: String! ids: [String!]!): [DesUser]!
+  "Gets the authorized user."
+  desUserByAuth: DesUser!
+  "Gets a user by the specified global ID."
+  desUserByGlobalId(id: String!): DesUser
   "Search for workspaces associated with this account."
   desWorkspaceInfos: [DesWorkspaceInfo!]!
   "Search a specific workspace by its unique identifier."
@@ -37,69 +98,10 @@ type Query {
   desRevisionNamingSchemeById(id: ID!): DesRevisionNamingScheme
   "Gets the first allowed naming scheme by the content kind."
   desRevisionNamingSchemeByContentTypeKind(workspaceUrl: String! kind: DesContentTypeKind!): DesRevisionNamingScheme!
-  "Gets the specified workspace team."
-  desTeam(workspaceUrl: String!): DesTeam!
-  "Gets the specified workspace users by IDs."
-  desUsers(workspaceUrl: String! ids: [String!]!): [DesUser]!
-  "Gets the authorized user."
-  desUserByAuth: DesUser!
-  "Gets a user by the specified global ID."
-  desUserByGlobalId(id: String!): DesUser
-  "Search projects within a workspace with results in paged groups."
-  desProjects("The web address of a workspace." workspaceUrl: String! "Requirements block filter." requirementsBlockFilter: DesProjectsRequirementsBlockFilterInput "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesProjectFilterInput): DesProjectConnection
-  "Searches a project by its node identifier."
-  desProjectById("The project node identifier." id: ID!): DesProject
-  "Searches a release by its node identifier."
-  desReleaseById("The release node identifier." id: ID!): DesRelease
-  "Searches a project variant by its node identifier."
-  desWipVariantById("The project variant node identifier." id: ID!): DesWipVariant
-  "Searches a release variant by its node identifier."
-  desReleaseVariantById("The release variant node identifier." id: ID!): DesReleaseVariant
-  "Gets the project node ID from its internal ID."
-  desProjectIdFromAfsId("The web address of a workspace." workspaceUrl: String! "AFS internal identifier." afsId: String! "True for shared projects." isSharedProject: Boolean): DesProjectIdPayload!
-  desBomById(id: ID!): DesBom @deprecated(reason: "Use `desWipVariantById` or `desReleaseVariantById` in order to access BOM.")
-  desDesignItemById(id: ID!): DesDesignItem
-  "Gets the library by workspace URL."
-  desLibrary(workspaceUrl: String!): DesLibrary!
-  "Search a specific component by its unique identifier."
-  desComponentById("The node identifier for a component." id: ID!): DesComponent
-  "Searches multiple components by their unique identifiers."
-  desComponentsByIds("The node identifiers for components." ids: [ID!]!): [DesUnionPayload!]!
-  "Searches details of a revision by its unique identifier."
-  desRevisionDetailsById("The node identifier for specific revision details." id: ID!): DesRevisionDetails
-  "Searches for a specific template for a component by its unique identifier."
-  desComponentTemplateById("The node identifier for a component template." id: ID!): DesComponentTemplate
-  "Searches for a specific template for a project by its unique identifier."
-  desProjectTemplateById("The node identifier for a project template." id: ID!): DesProjectTemplate
-  "Searches for a specific folder by its unique identifier."
-  desFolderById("The node identifier for a folder." id: ID!): DesFolder
-  "Searches for a specific footprint by its unique identifier."
-  desFootprintById("The node identifier for a footprint." id: ID!): DesFootprint
-  "Searches for a specific symbol by its unique identifier."
-  desSymbolById("The node identifier for a symbol." id: ID!): DesSymbol
-  "Search for comment threads associated with a project."
-  desCommentThreads("The node identifier for a project (This is the project field named \"id\")." projectId: ID!): [DesCommentThread!]!
-  "Search for a specific comment thread associated with a project."
-  desCommentThread("The node identifier for a project (This is the project field named \"id\")." projectId: ID! "The reference identifier for a comment thread." threadId: String!): DesCommentThread
-  desManufacturePackages: [DesManufacturePackage!]!
-  "Gets the manufacture package by its unique identifier."
-  desManufacturePackageById("The node identifier for manufacture package." id: ID!): DesManufacturePackage
-  "Find a specific reuse block by its unique identifier."
-  desReuseBlockById("The node identifier for a reuse block." id: ID!): DesReuseBlock
-  "Find a specific reuse block revision by its unique identifier."
-  desReuseBlockRevisionById("The node identifier for a reuse block revision." id: ID!): DesReuseBlockRevision
-  "The list of project tasks."
-  desProjectTasks("The node identifier for a specific project." projectId: ID! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesTaskConnection
-  "The list of workspace tasks."
-  desWorkspaceTasks("The URL of the workspace to get tasks from." workspaceUrl: String! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesTaskConnection
-  "The project latest ECAD or MCAD revision."
-  desProjectCollaborationLatestRevision("The node identifier for a specific project." projectId: ID! "The collaboration domain." domain: DesCollaborationDomain!): DesCollaborationRevision
-  "The project ECAD or MCAD revisions returned by pages."
-  desProjectCollaborationRevisions("The node identifier for a specific project." projectId: ID! domain: DesCollaborationDomain! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesCollaborationRevisionConnection
-  "*PROTOTYPE, SUBJECT TO CHANGE*"
-  desProjectCollaborationSimulationRevisions(projectId: ID! domainName: String! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesCollaborationSimulationRevisionConnection
-  "*PROTOTYPE, SUBJECT TO CHANGE*"
-  desProjectCollaborationSimulationLatestRevision(projectId: ID! domainName: String! projectTypeName: String!): DesCollaborationSimulationRevision
+  "Gets the workspace configuration."
+  desWorkspaceConfiguration(workspaceUrl: String!): DesWorkspaceConfiguration!
+  "Searches for a project template by its identifier."
+  desProjectTemplateById("The project template node identifier." id: ID!): DesProjectTemplate
   desWorkspaces(where: DesWorkspaceFilterInput): [DesWorkspace!]! @deprecated(reason: "Use `desWorkspaceInfos`.")
   "Gets the specified project export job."
   desProjectExportJob(projectExportJobId: String!): DesProjectExportJob!
@@ -134,9 +136,9 @@ type Query {
   "Attempt to complete a partial query string.  Used for autosuggest \/ typeahead text inputs."
   supSuggest("partial query string" q: String! "categoryId to scope suggestions to" categoryId: String "only return part number suggestions" partNumbersOnly: Boolean): [SupSuggestion!]!
   "Search parts, including filters, pagination, aggregation, sorting"
-  supSearch("the query to search" q: String "user's country" country: String! = "US" "user's currency" currency: String! = "USD" "offset in the result set" start: Int "page size of results" limit: Int "field to sort by.  See [sort values](https:\/\/octopart.com\/api\/v4\/values#sort)" sort: String "direction of sort: `asc` or `desc`" sortDir: SupSortDirection "filter to remove parts with no stocking distributors" inStockOnly: Boolean "a key: value map of filters. See [filter values](https:\/\/octopart.com\/api\/v4\/values#attributes)" filters: Map "fetch latest pricing and stock data from distributor API. Company.isDistributorApi indicates if a distributor supports this feature." distributorApi: Boolean "how long to wait for distributor API to respond as a duration string (e.g. `3s` or `500ms`)" distributorApiTimeout: String! = "3s" "if needed, pass along credentials for API integrations" customPricingCredentials: [SupApiCredentials!]): SupPartResultSet!
+  supSearch("the query to search" q: String "user's country" country: String! = "US" "user's currency" currency: String! = "USD" "offset in the result set" start: Int "page size of results" limit: Int "field to sort by.  See [sort values](https:\/\/octopart.com\/api\/v4\/values#sort)" sort: String "direction of sort: `asc` or `desc`" sortDir: SupSortDirection "filter to remove parts with no stocking distributors" inStockOnly: Boolean "filter to only include parts with a datasheet" hasDatasheetOnly: Boolean "a key: value map of filters. See [filter values](https:\/\/octopart.com\/api\/v4\/values#attributes)" filters: Map "fetch latest pricing and stock data from distributor API. Company.isDistributorApi indicates if a distributor supports this feature." distributorApi: Boolean "how long to wait for distributor API to respond as a duration string (e.g. `3s` or `500ms`)" distributorApiTimeout: String! = "3s" "if needed, pass along credentials for API integrations" customPricingCredentials: [SupApiCredentials!]): SupPartResultSet!
   "Search parts by mpn only, including filters, pagination, aggregation, sorting"
-  supSearchMpn("the query to search on mpn" q: String "user's country" country: String! = "US" "user's currency" currency: String! = "USD" "offset in the result set" start: Int "page size of results" limit: Int "field to sort by.  See [sort values](https:\/\/octopart.com\/api\/v4\/values#sort)" sort: String "direction of sort: `asc` or `desc`" sortDir: SupSortDirection "filter to remove parts with no stocking distributors" inStockOnly: Boolean "a key: value map of filters. See [filter values](https:\/\/octopart.com\/api\/v4\/values#attributes)" filters: Map "fetch latest pricing and stock data from distributor API. Company.isDistributorApi indicates if a distributor supports this feature." distributorApi: Boolean "how long to wait for distributor API to respond as a duration string (e.g. `3s` or `500ms`)" distributorApiTimeout: String! = "3s" "if needed, pass along credentials for API integrations" customPricingCredentials: [SupApiCredentials!]): SupPartResultSet!
+  supSearchMpn("the query to search on mpn" q: String "user's country" country: String! = "US" "user's currency" currency: String! = "USD" "offset in the result set" start: Int "page size of results" limit: Int "field to sort by.  See [sort values](https:\/\/octopart.com\/api\/v4\/values#sort)" sort: String "direction of sort: `asc` or `desc`" sortDir: SupSortDirection "filter to remove parts with no stocking distributors" inStockOnly: Boolean "filter to only include parts with a datasheet" hasDatasheetOnly: Boolean "a key: value map of filters. See [filter values](https:\/\/octopart.com\/api\/v4\/values#attributes)" filters: Map "fetch latest pricing and stock data from distributor API. Company.isDistributorApi indicates if a distributor supports this feature." distributorApi: Boolean "how long to wait for distributor API to respond as a duration string (e.g. `3s` or `500ms`)" distributorApiTimeout: String! = "3s" "if needed, pass along credentials for API integrations" customPricingCredentials: [SupApiCredentials!]): SupPartResultSet!
   "Suggest an alternate `q` when no results are found"
   supSpellingCorrection("query string to correct" q: String!): [SupSpellingCorrection!]!
   "Match multiple manufacturer + mpn pairs at once.  Useful for when you have a list of parts, as with a BOM (Bill of Materials)"
@@ -195,8 +197,6 @@ type Mutation {
   desCreateCommentThread(input: DesCreateCommentThreadInput!): DesCreateCommentThreadPayload!
   "Permanently deletes a comment thread."
   desDeleteCommentThread(input: DesDeleteCommentThreadInput!): DesDeleteCommentThreadPayload!
-  "Releases the specified component."
-  desReleaseComponent(input: DesReleaseComponentInput!): DesReleaseComponentPayload!
   "Creates and releases the specified component template."
   desReleaseComponentTemplate(input: DesReleaseComponentTemplateInput!): DesReleaseComponentTemplatePayload!
   "Updates the specified component template."
@@ -225,6 +225,22 @@ type Mutation {
   desAddComponentPartChoices(input: DesAddComponentPartChoicesInput!): DesAddComponentPartChoicesPayload!
   "Removes part choices of the specified component."
   desRemoveComponentPartChoices(input: DesRemoveComponentPartChoicesInput!): DesRemoveComponentPartChoicesPayload!
+  "Releases the specified component."
+  desReleaseComponent(input: DesReleaseComponentInput!): DesReleaseComponentPayload!
+  "Creates a project task. A task is a job activity in Altium 365."
+  desCreateProjectTask(input: DesCreateProjectTaskInput!): DesCreateTaskPayload!
+  "Creates a workspace task. A task is a job activity in Altium 365."
+  desCreateWorkspaceTask(input: DesCreateWorkspaceTaskInput!): DesCreateTaskPayload!
+  "Deletes the task specified by its node ID."
+  desDeleteTask(input: DesDeleteTaskInput!): DesDeleteTaskPayload!
+  "Updates the specified task."
+  desUpdateTask(input: DesUpdateTaskInput!): DesUpdateTaskPayload!
+  "Creates a new comment for the specified task."
+  desCreateTaskComment(input: DesCreateTaskCommentInput!): DesCreateTaskCommentPayload!
+  "Deletes the specified task comment."
+  desDeleteTaskComment(input: DesDeleteTaskCommentInput!): DesDeleteTaskCommentPayload!
+  "Updates the specified task comment."
+  desUpdateTaskComment(input: DesUpdateTaskCommentInput!): DesUpdateTaskCommentPayload!
   "Uploads the project zip file."
   desUploadProject(input: DesUploadProjectInput!): DesUploadProjectPayload!
   "*PROTOTYPE, SUBJECT TO CHANGE*"
@@ -259,20 +275,6 @@ type Mutation {
   desLaunchWorkflow(input: DesLaunchWorkflowInput!): DesLaunchWorkflowPayload!
   "Terminates a workflow. Workflows allow you to automate design processes, and are created in Altium 365."
   desTerminateWorkflows(input: DesTerminateWorkflowsInput!): DesTerminateWorkflowsPayload!
-  "Creates a project task. A task is a job activity in Altium 365."
-  desCreateProjectTask(input: DesCreateProjectTaskInput!): DesCreateTaskPayload!
-  "Creates a workspace task. A task is a job activity in Altium 365."
-  desCreateWorkspaceTask(input: DesCreateWorkspaceTaskInput!): DesCreateTaskPayload!
-  "Deletes the task specified by its node ID."
-  desDeleteTask(input: DesDeleteTaskInput!): DesDeleteTaskPayload!
-  "Updates the specified task."
-  desUpdateTask(input: DesUpdateTaskInput!): DesUpdateTaskPayload!
-  "Creates a new comment for the specified task."
-  desCreateTaskComment(input: DesCreateTaskCommentInput!): DesCreateTaskCommentPayload!
-  "Deletes the specified task comment."
-  desDeleteTaskComment(input: DesDeleteTaskCommentInput!): DesDeleteTaskCommentPayload!
-  "Updates the specified task comment."
-  desUpdateTaskComment(input: DesUpdateTaskCommentInput!): DesUpdateTaskCommentPayload!
   "Creates the provided life cycle definition, with associated states, stages and state transitions."
   desCreateLifeCycleDefinition(input: DesCreateLifeCycleDefinitionInput!): DesCreateLifeCycleDefinitionPayload!
   "Updates the defined life cycle definition with those provided."
@@ -291,6 +293,8 @@ type Mutation {
   desCreateProjectExportJob(input: DesCreateProjectExportJobInput!): DesCreateProjectExportJobPayload!
   "Creates a manufacture package."
   desCreateManufacturePackage(input: DesCreateManufacturePackageInput!): DesCreateManufacturePackagePayload!
+  "Internal mutation to store Altium content vault metadata."
+  supCreateContentVaultMetadata(input: SupCreateContentVaultMetadataInput!): SupCreateContentVaultMetadataPayload!
   manCreateRapidQuoteRequest(qty: Int! meta: ManBoardMetaInput! shipping: ManShippingDetailsInput): ManRapidQuoteResponse
   "for a manufacturer to return a rapid quote reponse"
   manRespondRapidQuoteRequest("Unique request identifier" id: ID! "Quote Data From Manufactuerer" quote: ManQuoteInput!): ID!
@@ -1090,6 +1094,8 @@ type DesComponentDetails {
   footprints: [DesFootprint!]!
   "The list of component simuation models."
   simulations: [DesSimulation!]!
+  "The list of component datasheets."
+  datasheets: [DesDatasheet!]!
 }
 
 "An edge in a connection."
@@ -1242,6 +1248,26 @@ type DesCreateUserGroupPayload {
 type DesCreateUserPayload {
   "Workspace user identifier."
   userId: String!
+}
+
+"A component datasheet."
+type DesDatasheet implements Node {
+  "Datasheet node identifier."
+  id: ID!
+  "ECAD entity data download URL."
+  dataDownloadUrl: String!
+  "ECAD entity folder."
+  folder: DesFolder
+  "Item internal identifier."
+  itemInternalId: String!
+  "Revision internal identifier."
+  revisionInternalId: String!
+  "ECAD entity name."
+  name: String!
+  "ECAD entity comment."
+  comment: String!
+  "ECAD entity description."
+  description: String!
 }
 
 "Payload associated with deleting a comment."
@@ -1471,11 +1497,11 @@ type DesFootprint implements Node {
   dataDownloadUrl: String!
   "ECAD entity folder."
   folder: DesFolder
+  guid: String! @deprecated(reason: "Use `RevisionInternalId` instead.")
   "Item internal identifier."
   itemInternalId: String!
   "Revision internal identifier."
   revisionInternalId: String!
-  guid: String! @deprecated(reason: "Use `RevisionInternalId` instead.")
   "ECAD entity name."
   name: String!
   "ECAD entity comment."
@@ -1568,8 +1594,6 @@ type DesLibrary {
   components("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesComponentFilterInput): DesComponentConnection
   "Gets library component templates."
   componentTemplates("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesComponentTemplateConnection
-  "Gets library project templates."
-  projectTemplates("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesProjectTemplateConnection
   "Gets library reuse blocks."
   reuseBlocks("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesReuseBlockConnection
   "*PROTOTYPE, SUBJECT TO CHANGE*"
@@ -2409,11 +2433,11 @@ type DesSimulation {
   dataDownloadUrl: String!
   "ECAD entity folder."
   folder: DesFolder
+  guid: String! @deprecated(reason: "Use `RevisionInternalId` instead.")
   "Item internal identifier."
   itemInternalId: String!
   "Revision internal identifier."
   revisionInternalId: String!
-  guid: String! @deprecated(reason: "Use `RevisionInternalId` instead.")
   "ECAD entity name."
   name: String!
   "ECAD entity comment."
@@ -2516,11 +2540,11 @@ type DesSymbol implements Node {
   dataDownloadUrl: String!
   "ECAD entity folder."
   folder: DesFolder
+  guid: String! @deprecated(reason: "Use `RevisionInternalId` instead.")
   "Item internal identifier."
   itemInternalId: String!
   "Revision internal identifier."
   revisionInternalId: String!
-  guid: String! @deprecated(reason: "Use `RevisionInternalId` instead.")
   "ECAD entity name."
   name: String!
   "ECAD entity comment."
@@ -2962,6 +2986,8 @@ type DesWorkspace implements Node {
   location: DesWorkspaceLocation!
   "The resource managing components for this workspace."
   library: DesLibrary!
+  "The configuration of this workspace."
+  configuration: DesWorkspaceConfiguration!
   "The list of members authorized for this workspace."
   team: DesTeam!
   "The list of projects managed in this workspace."
@@ -2982,6 +3008,12 @@ type DesWorkspace implements Node {
   isDefault: Boolean!
   "The list of workspace tasks. For a particular workspace consider using the more effective query `desWorkspaceTasks`."
   tasks: [DesTask!]
+}
+
+"Information about workspace configuration."
+type DesWorkspaceConfiguration {
+  "Gets project templates."
+  projectTemplates("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesProjectTemplateConnection
 }
 
 "A workspace provides a flexible and secure method for managing design, manufacturing and supply content."
@@ -4070,14 +4102,16 @@ input DesRectangleInput {
 
 "Input for releasing component datasheet."
 input DesReleaseComponentDatasheetInput {
-  "The datasheet name. Use null to be generated."
+  "Datasheet identifier for adding an existing datasheet to the release. Either 'id' or 'file' must be provided."
+  id: ID
+  "The datasheet name for the 'file'. Use null to be generated."
   itemName: String
-  "The datasheet file"
-  file: DesReleaseComponentFileInput!
-  "The datasheet revision naming scheme identifier."
-  revisionNamingSchemeNodeId: ID!
-  "The datasheet life cycle definition identifier."
-  lifeCycleDefinitionNodeId: ID!
+  "The datasheet file for adding a new datasheet to the release. Either 'id' or 'file' must be provided."
+  file: DesReleaseComponentFileInput
+  "The datasheet revision naming scheme identifier. Required when 'file' is provided."
+  revisionNamingSchemeNodeId: ID
+  "The datasheet life cycle definition identifier. Required when 'file' is provided."
+  lifeCycleDefinitionNodeId: ID
 }
 
 "Input for releasing component file."
@@ -5229,11 +5263,39 @@ type SupContentMetadataBucket {
   count: Int
 }
 
+type SupContentVaultMetadata {
+  "Internal ID for this part."
+  partId: ID!
+  "Internal ID for the vault this is stored in."
+  vaultId: ID!
+  "Internal ID for the item in the vault this references."
+  vaultItemId: ID!
+  "True if the model in the content vault has symbol image."
+  hasSymbol: Boolean!
+  "True if the model in the content vault has footprint image."
+  hasFootprint: Boolean!
+  "True if the model in the content vault has 3D model."
+  has3dModel: Boolean!
+  "True if the model in the content vault has a thermal model."
+  hasThermal: Boolean!
+  "True if the model in the content vault has a simulation (SPICE) model."
+  hasSimulation: Boolean!
+}
+
 "A country's name, country code, and continent code."
 type SupCountry {
   name: String!
   countryCode: String!
   continentCode: String!
+}
+
+type SupCreateContentVaultMetadataError {
+  message: String!
+}
+
+type SupCreateContentVaultMetadataPayload {
+  metadata: SupContentVaultMetadata
+  errors: [SupCreateContentVaultMetadataError!]
 }
 
 "Textual description of a part"
@@ -5379,6 +5441,8 @@ type SupPart {
   cadModels: SupPartCadModels!
   "All available simulation models for this part."
   simModels: [SupPartSimModel!]!
+  "Altium content vault metadata for a given part, will return the latest revision."
+  contentVaultMetadata: SupContentVaultMetadata
   "The UID from Octopart APIv3.  Provided for backwards compatibility, in general ID should be used."
   v3uid: ID!
   "A [Map](#map) of number of related objects.  Can be used to know the number of `images` or `descriptions` without having to request those related objects."
@@ -5730,6 +5794,29 @@ input SupApiCredentials {
   password: String
   "Authentication details. `apiKey` should be given when an API requires it."
   apiKey: String
+}
+
+input SupCreateContentVaultMetadataInput {
+  "Internal ID for this part."
+  partId: ID!
+  "Internal Vault ID."
+  vaultId: ID!
+  "Internal Vault model ID."
+  vaultItemId: ID!
+  "Creation timestamp."
+  createTimestamp: Time!
+  "Internal model UUID"
+  octopartModelUuid: String
+  "True if the model has symbols."
+  hasSymbol: Boolean
+  "True if the model has footprints."
+  hasFootprint: Boolean
+  "True if the model has 3D geometries."
+  has3dModel: Boolean
+  "True if the model has thermal data."
+  hasThermal: Boolean
+  "True if the model has simulation data."
+  hasSimulation: Boolean
 }
 
 "A reference to a part offer."
@@ -7213,3 +7300,5 @@ directive @HasPlanTier(tier: SupPlanTier!) on FIELD_DEFINITION | ARGUMENT_DEFINI
 directive @NexarRequire(feature: SupNexarFeatureID!) on FIELD_DEFINITION
 
 directive @RequireAny(roles: [SupRole!]!) on FIELD_DEFINITION | ARGUMENT_DEFINITION
+
+directive @RequireAuth on FIELD_DEFINITION | ARGUMENT_DEFINITION

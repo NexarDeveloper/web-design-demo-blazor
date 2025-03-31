@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class ProjectTemplatesItem(WorkspaceLibraryItem parent) : LeafTreeItem(parent)
+public sealed class ProjectTemplatesItem(WorkspaceConfigurationItem parent) : LeafTreeItem(parent)
 {
     public IReadOnlyList<IMyProjectTemplate>? Templates { get; private set; }
     public override string Text => "Project Templates";
     public override string Icon => Icons.Material.Filled.CopyAll;
-    public new WorkspaceLibraryItem Parent => (WorkspaceLibraryItem)base.Parent;
+    public new WorkspaceConfigurationItem Parent => (WorkspaceConfigurationItem)base.Parent;
 
     public override string SetCurrent()
     {
@@ -31,6 +31,6 @@ public sealed class ProjectTemplatesItem(WorkspaceLibraryItem parent) : LeafTree
         var res = await Client.ProjectTemplates.ExecuteAsync(Parent.Parent.Tag.Url);
         var data = res.AssertNoErrors();
 
-        Templates = data.DesLibrary.ProjectTemplates?.Nodes;
+        Templates = data.DesWorkspaceConfiguration.ProjectTemplates?.Nodes;
     }
 }

@@ -1,6 +1,6 @@
 # Gets the specified workspace project templates.
 query ProjectTemplates($workspaceUrl: String!) {
-  desLibrary(workspaceUrl: $workspaceUrl) {
+  desWorkspaceConfiguration(workspaceUrl: $workspaceUrl) {
     projectTemplates(first: 1000) {
       totalCount
       nodes {
