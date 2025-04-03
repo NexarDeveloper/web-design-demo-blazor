@@ -2024,6 +2024,8 @@ type DesProject implements Node {
   name: String
   "The summary of this project content or purpose."
   description: String
+  "The project type."
+  projectType: DesProjectType!
   "The `DateTime` when this project was created."
   createdAt: DateTime!
   "The `DateTime` when this project was last modified."
@@ -4073,6 +4075,8 @@ input DesProjectFilterInput {
   name: StringOperationFilterInput
   "The summary of this project content or purpose."
   description: StringOperationFilterInput
+  "The project type."
+  projectType: DesProjectTypeOperationFilterInput
   "The `DateTime` when this project was created."
   createdAt: DateTimeOperationFilterInput
   "The `DateTime` when this project was last modified."
@@ -4085,6 +4089,13 @@ input DesProjectParameterInput {
   name: String!
   "Project parameter value."
   value: String!
+}
+
+input DesProjectTypeOperationFilterInput {
+  eq: DesProjectType
+  neq: DesProjectType
+  in: [DesProjectType!]
+  nin: [DesProjectType!]
 }
 
 input DesProjectsRequirementsBlockFilterInput {
@@ -5072,6 +5083,13 @@ enum DesPrimitiveShape {
   ROTATED_RECTANGLE
   ROUNDED_RECTANGLE
   CUSTOM
+}
+
+enum DesProjectType {
+  NONE
+  PCB_PROJECT
+  SYSTEM_DESIGN
+  HARNESS_DESIGN
 }
 
 enum DesRevisionNamingPolicy {
