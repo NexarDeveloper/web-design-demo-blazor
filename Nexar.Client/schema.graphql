@@ -15,9 +15,9 @@ type Query {
   node("ID of the object." id: ID!): Node
   "Lookup nodes by a list of IDs."
   nodes("The list of node IDs." ids: [ID!]!): [Node]!
-  "The project latest ECAD or MCAD revision."
+  "The project latest ECAD, MCAD or ESD revision."
   desProjectCollaborationLatestRevision("The node identifier for a specific project." projectId: ID! "The collaboration domain." domain: DesCollaborationDomain!): DesCollaborationRevision
-  "The project ECAD or MCAD revisions returned by pages."
+  "The project ECAD, MCAD or ESD revisions returned by pages."
   desProjectCollaborationRevisions("The node identifier for a specific project." projectId: ID! domain: DesCollaborationDomain! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesCollaborationRevisionConnection
   "*PROTOTYPE, SUBJECT TO CHANGE*"
   desProjectCollaborationSimulationRevisions(projectId: ID! domainName: String! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesCollaborationSimulationRevisionConnection
@@ -130,7 +130,7 @@ type Query {
   "Get categories"
   supCategories("list of category IDs. Omit to fetch all categories." ids: [String!] "list of \/electronic-parts SEO page paths for categories." paths: [String!]): [SupCategory!]!
   "Get parts by ID."
-  supParts("list of part IDs. APIv3 UIDs are also supported." ids: [String!]! "user's country" country: String! = "US" "user's currency" currency: String! = "USD" "fetch latest pricing and stock data from distributor API. Company.isDistributorApi indicates if a distributor supports this feature." distributorApi: Boolean "how long to wait for distributor API to respond as a duration string (e.g. `3s` or `500ms`)" distributorApiTimeout: String! = "3s" "if needed, pass along credentials for API integrations" customPricingCredentials: [SupApiCredentials!]): [SupPart]!
+  supParts("list of part IDs. APIv3 UIDs are also supported." ids: [String!]! "user's country" country: String! = "US" "user's currency" currency: String! = "USD" "fetch latest pricing and stock data from distributor API. Company.isDistributorApi indicates if a distributor supports this feature." distributorApi: Boolean "how long to wait for distributor API to respond as a duration string (e.g. `3s` or `500ms`) up to a max 10s" distributorApiTimeout: String! = "3s" "if needed, pass along credentials for API integrations" customPricingCredentials: [SupApiCredentials!]): [SupPart]!
   "Get part offers by reference."
   supPartOffers(country: String! currency: String! references: [SupOfferReference!]! "fetch latest pricing and stock data from distributor API." distributorApi: Boolean "how long to wait for distributor API to respond as a duration string (e.g. `3s` or `500ms`)" distributorApiTimeout: String! = "3s" "if needed, pass along credentials for API integrations" customPricingCredentials: [SupApiCredentials!]): [SupPartOffer]!
   "Attempt to complete a partial query string.  Used for autosuggest \/ typeahead text inputs."
@@ -221,6 +221,8 @@ type Mutation {
   desMoveFolder(input: DesMoveFolderInput!): DesMoveFolderPayload!
   "Deletes the specified folder from the library."
   desDeleteFolder(input: DesDeleteFolderInput!): DesDeleteFolderPayload!
+  "Creates a symbol."
+  desCreateSymbol(input: DesCreateSymbolInput!): DesCreateSymbolPayload!
   "Adds part choices of the specified component."
   desAddComponentPartChoices(input: DesAddComponentPartChoicesInput!): DesAddComponentPartChoicesPayload!
   "Removes part choices of the specified component."
@@ -875,14 +877,14 @@ type DesCadSplitLine {
   endPoint: DesCadPoint!
 }
 
-"ECAD or MCAD revision data."
+"ECAD, MCAD or ESD revision data."
 type DesCollaborationRevision {
   "Revision download data."
   downloadableFile: DesDownloadableFile!
   "The user who created this revision."
   createdBy: DesUser!
   "*PROTOTYPE, SUBJECT TO CHANGE*"
-  design: DesCadDesign!
+  design: DesCadDesign
   "Revision comment."
   comment: String!
   "Creation time."
@@ -1217,6 +1219,14 @@ type DesCreateProjectExportJobPayload {
 "Payload associated with creating a revision naming scheme."
 type DesCreateRevisionNamingSchemePayload {
   "ID of the created revision naming scheme."
+  id: ID!
+  "Payload errors."
+  errors: [DesPayloadError!]!
+}
+
+"Payload associated with creating a symbol."
+type DesCreateSymbolPayload {
+  "Identifier of the created symbol."
   id: ID!
   "Payload errors."
   errors: [DesPayloadError!]!
@@ -2009,9 +2019,9 @@ type DesProject implements Node {
   latestRevision: DesVcsRevision!
   "The list of VCS revisions."
   revisions("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesVcsRevisionConnection
-  "The latest ECAD or MCAD revision. See also `desProjectCollaborationLatestRevision`."
+  "The latest ECAD, MCAD or ESD revision. See also `desProjectCollaborationLatestRevision`."
   collaborationLatestRevision(domain: DesCollaborationDomain!): DesCollaborationRevision
-  "ECAD or MCAD revisions returned by pages. See also `desProjectCollaborationRevisions`."
+  "ECAD, MCAD or ESD revisions returned by pages. See also `desProjectCollaborationRevisions`."
   collaborationRevisions(domain: DesCollaborationDomain! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesCollaborationRevisionConnection
   projectPermissions: [DesProjectPermission!]!
   "The Altium 365 web address."
@@ -3761,6 +3771,30 @@ input DesCreateRevisionNamingSchemeLevelInput {
   revisionNamingPolicy: DesRevisionNamingPolicy!
 }
 
+"Input for creating a symbol file."
+input DesCreateSymbolFileInput {
+  "Uploaded file identifier (typically a SchLib file)."
+  fileId: String!
+  "Relative path of the source file (typically 'Released\/filename.SchLib')."
+  relativePath: String!
+}
+
+"Input for creating a symbol."
+input DesCreateSymbolInput {
+  "The workspace URL."
+  workspaceUrl: String!
+  "The destination folder identifier."
+  folderId: ID!
+  "The symbol name. Use null to be generated, provided that the destination folder defines an item naming scheme."
+  name: String
+  "The symbol files."
+  files: [DesCreateSymbolFileInput!]!
+  "The symbol revision naming scheme identifier."
+  revisionNamingSchemeId: ID
+  "The symbol life cycle definition identifier."
+  lifeCycleDefinitionId: ID
+}
+
 "Input for task comment creation."
 input DesCreateTaskCommentInput {
   "The task node ID."
@@ -4127,7 +4161,7 @@ input DesReleaseComponentDatasheetInput {
 
 "Input for releasing component file."
 input DesReleaseComponentFileInput {
-  "Uploaded file ID."
+  "Uploaded file identifier."
   fileId: String!
   "Relative path of the source file."
   relativePath: String!
@@ -4574,7 +4608,7 @@ input DesUpdateUserInput {
 input DesUploadCollaborationInput {
   "The project node ID."
   projectId: ID!
-  "The ECAD or MCAD domain."
+  "The ECAD, MCAD or ESD domain."
   domain: DesCollaborationDomain!
   "The uploaded file comment."
   comment: String!
@@ -4840,10 +4874,11 @@ enum DesCadWorkflowState {
   READY_TO_SEND_OR_RECEIVE_CHANGES
 }
 
-"Specifies ECAD or MCAD domain."
+"Specifies ECAD, MCAD or ESD domain."
 enum DesCollaborationDomain {
   ECAD
   MCAD
+  ESD
 }
 
 enum DesCommentContextType {
@@ -5158,6 +5193,8 @@ type SupAppliedFilter {
   values: [String!]!
   "human readable values to display in the UI"
   displayValues: [String!]!
+  "The symbol of the units"
+  unitsSymbol: String
 }
 
 "Defines an attribute like Capacitance or Resistance."
@@ -5176,6 +5213,8 @@ type SupAttribute {
   unitsName: String!
   "The symbol of the units"
   unitsSymbol: String!
+  "Shortened display name"
+  shortDisplayname: String!
 }
 
 "Groups similar attributes together, as can be seen with column groups in specs view"
@@ -5642,7 +5681,7 @@ type SupPartResultSet {
   "Attributes that are determined by search algo to be related to the search term.  Useful for suggesting most relevant filters in the search UI."
   suggestedFilters: [SupAttribute!]!
   "Full list of available Attributes in the result set"
-  allFilters: [SupAttribute!]!
+  allFilters(sort: SupAllFiltersSort! = default): [SupAttribute!]!
   "If a Category filter is applied, this will be the Category"
   appliedCategory: SupCategory
   "If filters are applied, this will contain display information"
@@ -5797,6 +5836,8 @@ type SupSuggestion {
   inCategoryName: String!
   "If the suggestion should also apply a categoryId filter, this is the Category ID"
   inCategoryId: String!
+  "If the suggestion should also apply a manufacturer filter, this is the Manufacturer name"
+  inManufacturerName: String!
 }
 
 input SupApiCredentials {
@@ -5861,6 +5902,12 @@ input SupPartMatchQuery {
   start: Int! = 0
   limit: Int! = 3
   reference: String
+}
+
+enum SupAllFiltersSort {
+  default
+  "Relevance is determined by the number of parts in the result set that have the attribute"
+  relevance
 }
 
 enum SupNexarFeatureID {
