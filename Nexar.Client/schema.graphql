@@ -29,7 +29,7 @@ type Query {
   desCommentThread("The node identifier for a project (This is the project field named \"id\")." projectId: ID! "The reference identifier for a comment thread." threadId: String!): DesCommentThread
   desDesignItemById(id: ID!): DesDesignItem
   "Gets the library by workspace URL."
-  desLibrary(workspaceUrl: String!): DesLibrary!
+  desLibrary(workspaceUrl: String): DesLibrary!
   "Search a specific component by its unique identifier."
   desComponentById("The node identifier for a component." id: ID!): DesComponent
   "Searches multiple components by their unique identifiers."
@@ -47,12 +47,12 @@ type Query {
   "The list of project tasks."
   desProjectTasks("The node identifier for a specific project." projectId: ID! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesTaskConnection
   "The list of workspace tasks."
-  desWorkspaceTasks("The URL of the workspace to get tasks from." workspaceUrl: String! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesTaskConnection
+  desWorkspaceTasks("The URL of the workspace to get tasks from." workspaceUrl: String "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesTaskConnection
   desManufacturePackages: [DesManufacturePackage!]!
   "Gets the manufacture package by its unique identifier."
   desManufacturePackageById("The node identifier for manufacture package." id: ID!): DesManufacturePackage
   "Search projects within a workspace with results in paged groups."
-  desProjects("The web address of a workspace." workspaceUrl: String! "Requirements block filter." requirementsBlockFilter: DesProjectsRequirementsBlockFilterInput "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesProjectFilterInput): DesProjectConnection
+  desProjects("The web address of a workspace." workspaceUrl: String "Requirements block filter." requirementsBlockFilter: DesProjectsRequirementsBlockFilterInput "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesProjectFilterInput): DesProjectConnection
   "Searches a project by its node identifier."
   desProjectById("The project node identifier." id: ID!): DesProject
   "Searches a release by its node identifier."
@@ -62,16 +62,16 @@ type Query {
   "Searches a release variant by its node identifier."
   desReleaseVariantById("The release variant node identifier." id: ID!): DesReleaseVariant
   "Gets the project node ID from its internal ID."
-  desProjectIdFromAfsId("The web address of a workspace." workspaceUrl: String! "AFS internal identifier." afsId: String! "True for shared projects." isSharedProject: Boolean): DesProjectIdPayload!
+  desProjectIdFromAfsId("The web address of a workspace." workspaceUrl: String "AFS internal identifier." afsId: String! "True for shared projects." isSharedProject: Boolean): DesProjectIdPayload!
   desBomById(id: ID!): DesBom @deprecated(reason: "Use `desWipVariantById` or `desReleaseVariantById` in order to access BOM.")
   "Find a specific reuse block by its unique identifier."
   desReuseBlockById("The node identifier for a reuse block." id: ID!): DesReuseBlock
   "Find a specific reuse block revision by its unique identifier."
   desReuseBlockRevisionById("The node identifier for a reuse block revision." id: ID!): DesReuseBlockRevision
   "Gets the specified workspace team."
-  desTeam(workspaceUrl: String!): DesTeam!
+  desTeam(workspaceUrl: String): DesTeam!
   "Gets the specified workspace users by IDs."
-  desUsers(workspaceUrl: String! ids: [String!]!): [DesUser]!
+  desUsers(workspaceUrl: String ids: [String!]!): [DesUser]!
   "Gets the authorized user."
   desUserByAuth: DesUser!
   "Gets a user by the specified global ID."
@@ -80,33 +80,32 @@ type Query {
   desWorkspaceInfos: [DesWorkspaceInfo!]!
   "Search a specific workspace by its unique identifier."
   desWorkspaceById("The node identifier for a workspace." id: ID!): DesWorkspace
-  "Search a specific workspace by its URL."
-  desWorkspaceByUrl(workspaceUrl: String!): DesWorkspace
   "Get a list of workspace locations."
   desWorkspaceLocations: [DesWorkspaceLocation!]!
   "Gets the specified settings."
-  desSettings(workspaceUrl: String! names: [String!]!): [String]!
+  desSettings(workspaceUrl: String names: [String!]!): [String]!
   "Gets life cycle definitions."
-  desLifeCycleDefinitions(workspaceUrl: String!): [DesLifeCycleDefinition!]!
+  desLifeCycleDefinitions(workspaceUrl: String): [DesLifeCycleDefinition!]!
   "Gets a life cycle definition based on the id provided."
   desLifeCycleDefinitionById(id: ID!): DesLifeCycleDefinition
   "Gets the first allowed life cycle by the content kind."
-  desLifeCycleDefinitionByContentTypeKind(workspaceUrl: String! kind: DesContentTypeKind!): DesLifeCycleDefinition!
+  desLifeCycleDefinitionByContentTypeKind(workspaceUrl: String kind: DesContentTypeKind!): DesLifeCycleDefinition!
   "Gets revision naming schemes."
-  desRevisionNamingSchemes(workspaceUrl: String!): [DesRevisionNamingScheme!]!
+  desRevisionNamingSchemes(workspaceUrl: String): [DesRevisionNamingScheme!]!
   "Gets a revision naming scheme based on the ID provided."
   desRevisionNamingSchemeById(id: ID!): DesRevisionNamingScheme
   "Gets the first allowed naming scheme by the content kind."
-  desRevisionNamingSchemeByContentTypeKind(workspaceUrl: String! kind: DesContentTypeKind!): DesRevisionNamingScheme!
+  desRevisionNamingSchemeByContentTypeKind(workspaceUrl: String kind: DesContentTypeKind!): DesRevisionNamingScheme!
   "Gets the workspace configuration."
-  desWorkspaceConfiguration(workspaceUrl: String!): DesWorkspaceConfiguration!
+  desWorkspaceConfiguration(workspaceUrl: String): DesWorkspaceConfiguration!
   "Searches for a project template by its identifier."
   desProjectTemplateById("The project template node identifier." id: ID!): DesProjectTemplate
-  desWorkspaces(where: DesWorkspaceFilterInput): [DesWorkspace!]! @deprecated(reason: "Use `desWorkspaceInfos`.")
+  "Gets the creation job for a manufacture package by its unique identifier."
+  desManufacturePackageCreationJob("The node identifier for a manufacture package creation job." id: ID!): DesManufacturePackageCreationJob
   "Gets the specified project export job."
   desProjectExportJob(projectExportJobId: String!): DesProjectExportJob!
   desSharedWithMe: DesSharedWithMe!
-  supOctopartIdFromCiivaId(workspaceUrl: String! ciivaId: String!): String @deprecated(reason: "Use `supPartIdFromCiivaId`.")
+  supOctopartIdFromCiivaId(workspaceUrl: String ciivaId: String!): String @deprecated(reason: "Use `supPartIdFromCiivaId`.")
   "Nexar infrastructure, subject to change."
   supPartIdFromCiivaId(ciivaId: String!): String
   "Nexar infrastructure, subject to change."
@@ -119,14 +118,15 @@ type Query {
   supPartExtrasByPartId(partId: String!): SupPartExtras
   "Nexar supply part data for internal use only."
   supPartExtrasByPartIds(partIds: [String!]!): [SupUnionPayload!]!
-  "Gets the creation job for a manufacture package by its unique identifier."
-  desManufacturePackageCreationJob("The node identifier for a manufacture package creation job." id: ID!): DesManufacturePackageCreationJob
+  "Search a specific workspace by its URL."
+  desWorkspaceByUrl(workspaceUrl: String!): DesWorkspace
+  desWorkspaces(where: DesWorkspaceFilterInput): [DesWorkspace!]! @deprecated(reason: "Use `desWorkspaceInfos`.")
   "Get all attributes"
   supAttributes: [SupAttribute!]!
   "Get manufacturer companies"
   supManufacturers("list of company IDs.  Omit to fetch all manufacturers." ids: [String!] "list of URL slugs for \/manufacturers paths" slugs: [String!] "Return only manufacturers that have a minimum number of active parts." minNumberOfActiveParts: Int): [SupCompany!]!
   "Get seller companies (distributors)"
-  supSellers("list of company IDs.  Omit to fetch all sellers." ids: [String!] "list of URL slugs for \/distributors paths" slugs: [String!]): [SupCompany!]!
+  supSellers("list of company IDs.  Omit to fetch all sellers." ids: [String!] "Include only companies that support custom pricing." customPricingOnly: Boolean! = false "list of URL slugs for \/distributors paths" slugs: [String!]): [SupCompany!]!
   "Get categories"
   supCategories("list of category IDs. Omit to fetch all categories." ids: [String!] "list of \/electronic-parts SEO page paths for categories." paths: [String!]): [SupCategory!]!
   "Get parts by ID."
@@ -291,10 +291,10 @@ type Mutation {
   desDeleteRevisionNamingScheme(input: DesDeleteRevisionNamingSchemeInput!): DesDeleteRevisionNamingSchemePayload!
   "Updates the value associated with the specified setting."
   desUpdateSetting(input: DesUpdateSettingInput!): DesUpdateSettingPayload!
-  "Creates a job that exports the specified project data."
-  desCreateProjectExportJob(input: DesCreateProjectExportJobInput!): DesCreateProjectExportJobPayload!
   "Creates a manufacture package."
   desCreateManufacturePackage(input: DesCreateManufacturePackageInput!): DesCreateManufacturePackagePayload!
+  "Creates a job that exports the specified project data."
+  desCreateProjectExportJob(input: DesCreateProjectExportJobInput!): DesCreateProjectExportJobPayload!
   "Internal mutation to store Altium content vault metadata."
   supCreateContentVaultMetadata(input: SupCreateContentVaultMetadataInput!): SupCreateContentVaultMetadataPayload!
   manCreateRapidQuoteRequest(qty: Int! meta: ManBoardMetaInput! shipping: ManShippingDetailsInput): ManRapidQuoteResponse
@@ -1266,6 +1266,10 @@ type DesDatasheet implements Node {
   id: ID!
   "ECAD entity data download URL."
   dataDownloadUrl: String!
+  "The user this entity was created by."
+  createdBy: DesUser!
+  "The user this entity was last updated by."
+  updatedBy: DesUser!
   "ECAD entity folder."
   folder: DesFolder
   "Item internal identifier."
@@ -1505,6 +1509,10 @@ type DesFootprint implements Node {
   imageThumbnailUrl: String!
   "ECAD entity data download URL."
   dataDownloadUrl: String!
+  "The user this entity was created by."
+  createdBy: DesUser!
+  "The user this entity was last updated by."
+  updatedBy: DesUser!
   "ECAD entity folder."
   folder: DesFolder
   guid: String! @deprecated(reason: "Use `RevisionInternalId` instead.")
@@ -2443,6 +2451,10 @@ type DesSharedWithMeProjectInfoEdge {
 type DesSimulation {
   "ECAD entity data download URL."
   dataDownloadUrl: String!
+  "The user this entity was created by."
+  createdBy: DesUser!
+  "The user this entity was last updated by."
+  updatedBy: DesUser!
   "ECAD entity folder."
   folder: DesFolder
   guid: String! @deprecated(reason: "Use `RevisionInternalId` instead.")
@@ -2550,6 +2562,10 @@ type DesSymbol implements Node {
   imageThumbnailUrl: String!
   "ECAD entity data download URL."
   dataDownloadUrl: String!
+  "The user this entity was created by."
+  createdBy: DesUser!
+  "The user this entity was last updated by."
+  updatedBy: DesUser!
   "ECAD entity folder."
   folder: DesFolder
   guid: String! @deprecated(reason: "Use `RevisionInternalId` instead.")
@@ -3675,7 +3691,7 @@ input DesCreateCommentThreadInput {
 "Input for folder creation."
 input DesCreateFolderInput {
   "URL of the workspace into which the folder has to be created."
-  workspaceUrl: String!
+  workspaceUrl: String
   "Folder name."
   name: String!
   "Folder description."
@@ -3693,7 +3709,7 @@ input DesCreateFolderInput {
 "Input for creating a life cycle definition."
 input DesCreateLifeCycleDefinitionInput {
   "Defines which workspace the life cycle definition should be created on."
-  workspaceUrl: String!
+  workspaceUrl: String
   lifeCycleDefinition: DesLifeCycleDefinitionInput!
 }
 
@@ -3746,7 +3762,7 @@ input DesCreateProjectTaskInput {
 "Input for revision naming scheme creation."
 input DesCreateRevisionNamingSchemeInput {
   "The workspace URL that the revision naming scheme should be created on."
-  workspaceUrl: String!
+  workspaceUrl: String
   "The name of this revision naming scheme."
   name: String!
   "If true, the revision naming scheme is only applicable to objects of the content types specified by `contentTypes`."
@@ -3782,7 +3798,7 @@ input DesCreateSymbolFileInput {
 "Input for creating a symbol."
 input DesCreateSymbolInput {
   "The workspace URL."
-  workspaceUrl: String!
+  workspaceUrl: String
   "The destination folder identifier."
   folderId: ID!
   "The symbol name. Use null to be generated, provided that the destination folder defines an item naming scheme."
@@ -3818,7 +3834,7 @@ input DesCreateTaskInput {
 "Input for user group creation."
 input DesCreateUserGroupInput {
   "URL for workspace in which the user group is to be created."
-  workspaceUrl: String!
+  workspaceUrl: String
   "User group name."
   name: String!
 }
@@ -3826,7 +3842,7 @@ input DesCreateUserGroupInput {
 "Input for user creation."
 input DesCreateUserInput {
   "URL for the workspace to add the new user into."
-  workspaceUrl: String!
+  workspaceUrl: String
   "New user username."
   userName: String!
   "New user password."
@@ -3842,7 +3858,7 @@ input DesCreateUserInput {
 "Input for workspace task creation."
 input DesCreateWorkspaceTaskInput {
   "The workspace URL."
-  workspaceUrl: String!
+  workspaceUrl: String
   "The new task data."
   task: DesCreateTaskInput!
 }
@@ -3906,7 +3922,7 @@ input DesDeleteUserGroupInput {
 "Input for deleting a user."
 input DesDeleteUserInput {
   "URL for the workspace to delete the user from."
-  workspaceUrl: String!
+  workspaceUrl: String
   "Workspace user identifier."
   userId: String!
 }
@@ -3936,7 +3952,7 @@ input DesDesignItemParameterFilterInput {
 "Input for launching a workflow."
 input DesLaunchWorkflowInput {
   "URL of workspace."
-  workspaceUrl: String!
+  workspaceUrl: String
   "Identifier for workflow definition."
   workflowDefinitionId: String!
   "Name of workflow definition."
@@ -4042,7 +4058,7 @@ input DesMoveFolderInput {
 "Input for subscribing to comment update notifications."
 input DesOnCommentUpdatedInput {
   "Workspace URL."
-  workspaceUrl: String!
+  workspaceUrl: String
   "Access token for authorization."
   token: String!
 }
@@ -4176,7 +4192,7 @@ input DesReleaseComponentFootprintInput {
 "Input for releasing component."
 input DesReleaseComponentInput {
   "Workspace URL for releasing a component."
-  workspaceUrl: String!
+  workspaceUrl: String
   "Destination parent folder identifier for releasing a component. If omitted or empty, `componentReleaseFolder` is required."
   componentParentFolderId: ID
   "New child folder name for releasing a component. If omitted or empty, `componentParentFolderId` is required."
@@ -4248,7 +4264,7 @@ input DesReleaseComponentSymbolInput {
 "Input for releasing a component template."
 input DesReleaseComponentTemplateInput {
   "The target workspace URL."
-  workspaceUrl: String!
+  workspaceUrl: String
   "The target folder path, existing or to be created."
   folder: String!
   "The component template name."
@@ -4343,7 +4359,7 @@ input DesSharedWithMeProjectInfoFilterInput {
 "Input for terminating workflows."
 input DesTerminateWorkflowsInput {
   "Workspace URL."
-  workspaceUrl: String!
+  workspaceUrl: String
   "Workflow identifiers."
   workflowIds: [String!]!
 }
@@ -4543,7 +4559,7 @@ input DesUpdateRevisionNamingSchemeLevelInput {
 "Input for updating a setting."
 input DesUpdateSettingInput {
   "The workspace URL that the setting should be updated on."
-  workspaceUrl: String!
+  workspaceUrl: String
   "The name of the setting to be updated."
   name: String!
   "The value that the setting should be replaced with."
@@ -4595,7 +4611,7 @@ input DesUpdateUserGroupInput {
 "Input for updating a user."
 input DesUpdateUserInput {
   "Workspace URL."
-  workspaceUrl: String!
+  workspaceUrl: String
   "Workspace user identifier."
   userId: String!
   "User first name."
@@ -4637,15 +4653,15 @@ input DesUploadCollaborationSimulationInput {
 "Input for uploading a project."
 input DesUploadProjectInput {
   "The workspace URL."
-  workspaceUrl: String!
+  workspaceUrl: String
   "The uploaded zip file ID."
   fileId: String!
   "The project name."
   name: String!
   "The project description."
   description: String
-  "The project target folder path."
-  folderPath: String
+  "The project target parent folder identifier."
+  parentFolderId: ID!
 }
 
 "A variant contains a specific configuration of a base design."
@@ -5306,6 +5322,8 @@ type SupCompany {
   isDistributorApi: Boolean!
   "True if Octocart is supported for this distributor"
   isOctocartSupported: Boolean!
+  "Custom Pricing details."
+  customPricingDetails: SupCustomPricingDetails
 }
 
 "manufacturerAgg and distributorAgg produce a CompanyBucket with company + counts"
@@ -5353,6 +5371,10 @@ type SupCreateContentVaultMetadataError {
 type SupCreateContentVaultMetadataPayload {
   metadata: SupContentVaultMetadata
   errors: [SupCreateContentVaultMetadataError!]
+}
+
+type SupCustomPricingDetails {
+  authType: SupCustomPricingAuthType!
 }
 
 "Textual description of a part"
@@ -5511,7 +5533,7 @@ type SupPart {
   "The average stock level at each distributor"
   avgAvail: Float!
   "Companies with Offers for this part"
-  sellers(includeBrokers: Boolean! = false authorizedOnly: Boolean! = false limit: Int start: Int): [SupPartSeller!]!
+  sellers(includeBrokers: Boolean! = false authorizedOnly: Boolean! = false customPricingOnly: Boolean! = false limit: Int start: Int): [SupPartSeller!]!
   "The estimated factory lead time in days derived from trusted distributor offers."
   estimatedFactoryLeadDays: Int
   "This part might be known by these alternate MPNs"
@@ -5841,8 +5863,10 @@ type SupSuggestion {
 }
 
 input SupApiCredentials {
+  "The ID of the company that you are providing credentials for. An Octopart representative will give this value to you if needed."
+  companyId: String! = ""
   "The name of the API that you are providing credentials for. An Octopart representative will give this value to you if needed."
-  apiName: String!
+  apiName: String @deprecated(reason: "use `company_id` instead")
   "Authentication details. `clientId` and `clientSecret` should be given together when an API requires them."
   clientId: String
   "Authentication details. `clientId` and `clientSecret` should be given together when an API requires them."
@@ -5908,6 +5932,12 @@ enum SupAllFiltersSort {
   default
   "Relevance is determined by the number of parts in the result set that have the attribute"
   relevance
+}
+
+enum SupCustomPricingAuthType {
+  CLIENT_CREDENTIALS
+  USERNAME_PASSWORD
+  API_KEY
 }
 
 enum SupNexarFeatureID {
@@ -6852,6 +6882,8 @@ type DatBomPart {
   partId: String!
   confidence: Float!
   strategy: DatBomPartSearchStrategy!
+  "Nexar supply part data for internal use only. Array of size 1."
+  part: [SupPart]!
 }
 
 type DatBomPartHistory {

@@ -1,8 +1,5 @@
 using MudBlazor;
 using Nexar.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Nexar.Demo;
 
@@ -56,7 +53,7 @@ public static class AppData
                 NexarDotCom = "https://nexar.com";
                 break;
             default:
-                throw new Exception();
+                throw new InvalidOperationException($"Invalid mode: '{Mode}'.");
         }
     }
 
