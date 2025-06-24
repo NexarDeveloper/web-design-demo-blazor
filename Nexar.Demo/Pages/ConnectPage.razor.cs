@@ -2,10 +2,7 @@
 using Microsoft.JSInterop;
 using MudBlazor;
 using Nexar.Client;
-using System;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Nexar.Demo.Pages;
 
@@ -45,18 +42,11 @@ public partial class ConnectPage
         if (workspaceAuthId is null && securityToken.Claims.Any(x => x.Type == "scope" && x.Value == A365Scope))
             workspaceAuthId = A365Scope;
 
-        // fetch and set workspaces or set pinned workspace
-        if (AppData.WorkspaceUrl is null)
-        {
-            var client = NexarClientFactory.GetClient(AppData.ApiEndpoint);
-            var res = await client.Workspaces.ExecuteAsync();
-            var data = res.AssertNoErrors();
-            AppData.SetWorkspaces(data.DesWorkspaceInfos, workspaceAuthId);
-        }
-        else
-        {
-            AppData.SetWorkspace(AppData.WorkspaceUrl);
-        }
+        // fetch and set workspaces
+        var client = NexarClientFactory.GetClient(AppData.ApiEndpoint);
+        var res = await client.Workspaces.ExecuteAsync();
+        var data = res.AssertNoErrors();
+        AppData.SetWorkspaces(data.DesWorkspaceInfos, workspaceAuthId, AppData.WorkspaceUrl);
     }
 
     /// <summary>

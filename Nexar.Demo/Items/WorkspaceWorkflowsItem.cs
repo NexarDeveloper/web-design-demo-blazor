@@ -1,9 +1,5 @@
 ﻿using MudBlazor;
 using Nexar.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
@@ -15,10 +11,10 @@ public sealed class WorkspaceWorkflowsItem(WorkspaceItem parent) : NodeTreeItem(
 
     public override async Task<List<TreeItem>> ServerData()
     {
-        var res = await Client.WorkspaceWorkflows.ExecuteAsync(_parent.Tag.Url);
+        var res = await Client.WorkspaceWorkflows.ExecuteAsync(_parent.Tag.WorkspaceId);
         var data = res.AssertNoErrors();
 
-        var workflows = data?.DesWorkspaceByUrl?.Workflows;
+        var workflows = data?.DesWorkspaceById?.Workflows;
         if (workflows is null)
             return [];
 

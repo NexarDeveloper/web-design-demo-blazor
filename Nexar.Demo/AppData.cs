@@ -70,12 +70,25 @@ public static class AppData
 
     public static List<TreeItemData<TreeItem>>? TreeItems { get; private set; }
 
-    public static void SetWorkspaces(IReadOnlyList<IMyWorkspace> source, string? workspaceAuthId)
+    public static void SetWorkspaces(IReadOnlyList<IMyWorkspace> source, string? workspaceAuthId, string? workspaceUrl)
     {
-        TreeItems = [new MyTreeItemData(new SharedWithMeItem())];
+        TreeItems = workspaceUrl is null ? [new MyTreeItemData(new SharedWithMeItem())] : [];
 
-        // add workspaces depending on auth
-        if (workspaceAuthId is null)
+        // add workspaces depending on input
+        if (workspaceUrl is { })
+        {
+            workspaceUrl = new Uri(workspaceUrl).AbsoluteUri;
+            foreach (var it in source)
+            {
+                if (it.Url == workspaceUrl)
+                {
+                    var workspaceItem = new WorkspaceItem(it, true);
+                    TreeItems = [.. workspaceItem.CreateChildItems().Select(x => (TreeItemData<TreeItem>)new MyTreeItemData(x))];
+                    break;
+                }
+            }
+        }
+        else if (workspaceAuthId is null)
         {
             // all workspaces allowed
             foreach (var it in source)
@@ -100,25 +113,6 @@ public static class AppData
                     TreeItems.Add(new MyTreeItemData(new WorkspaceItem(it, false)));
             }
         }
-
-        OnChange?.Invoke();
-    }
-
-    public static void SetWorkspace(string workspaceUrl)
-    {
-        var workspaceInfo = new Workspaces_DesWorkspaceInfos_DesWorkspaceInfo(
-            workspaceId: string.Empty,
-            authId: string.Empty,
-            url: workspaceUrl,
-            name: string.Empty,
-            description: null,
-            location: null!);
-
-        var workspaceItem = new WorkspaceItem(workspaceInfo, true);
-
-        TreeItems = workspaceItem.CreateChildItems()
-            .Select(x => (TreeItemData<TreeItem>)new MyTreeItemData(x))
-            .ToList();
 
         OnChange?.Invoke();
     }
