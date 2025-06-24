@@ -136,13 +136,13 @@ type Query {
   "Attempt to complete a partial query string.  Used for autosuggest \/ typeahead text inputs."
   supSuggest("partial query string" q: String! "categoryId to scope suggestions to" categoryId: String "only return part number suggestions" partNumbersOnly: Boolean): [SupSuggestion!]!
   "Search parts, including filters, pagination, aggregation, sorting"
-  supSearch("the query to search" q: String "user's country" country: String! = "US" "user's currency" currency: String! = "USD" "offset in the result set" start: Int "page size of results" limit: Int "field to sort by.  See [sort values](https:\/\/octopart.com\/api\/v4\/values#sort)" sort: String "direction of sort: `asc` or `desc`" sortDir: SupSortDirection "filter to remove parts with no stocking distributors" inStockOnly: Boolean "filter to only include parts with a datasheet" hasDatasheetOnly: Boolean "a key: value map of filters. See [filter values](https:\/\/octopart.com\/api\/v4\/values#attributes)" filters: Map "fetch latest pricing and stock data from distributor API. Company.isDistributorApi indicates if a distributor supports this feature." distributorApi: Boolean "how long to wait for distributor API to respond as a duration string (e.g. `3s` or `500ms`)" distributorApiTimeout: String! = "3s" "if needed, pass along credentials for API integrations" customPricingCredentials: [SupApiCredentials!]): SupPartResultSet!
+  supSearch("the query to search" q: String "user's country" country: String! = "US" "user's currency" currency: String! = "USD" "offset in the result set" start: Int "page size of results" limit: Int "field to sort by.  See [sort values](https:\/\/octopart.com\/api\/v4\/values#sort)" sort: String "direction of sort: `asc` or `desc`" sortDir: SupSortDirection "filter to remove parts with no stocking distributors" inStockOnly: Boolean "filter to only include parts with a datasheet" hasDatasheetOnly: Boolean "a key: value map of filters. See [filter values](https:\/\/octopart.com\/api\/v4\/values#attributes)" filters: Map "fetch latest pricing and stock data from distributor API. Company.isDistributorApi indicates if a distributor supports this feature." distributorApi: Boolean "how long to wait for distributor API to respond as a duration string (e.g. `3s` or `500ms`)" distributorApiTimeout: String! = "3s" "if needed, pass along credentials for API integrations" customPricingCredentials: [SupApiCredentials!] "Specifying a ranking method. For internal use only." rankingMethod: SupSearchRankingMethod! = DEFAULT): SupPartResultSet!
   "Search parts by mpn only, including filters, pagination, aggregation, sorting"
-  supSearchMpn("the query to search on mpn" q: String "user's country" country: String! = "US" "user's currency" currency: String! = "USD" "offset in the result set" start: Int "page size of results" limit: Int "field to sort by.  See [sort values](https:\/\/octopart.com\/api\/v4\/values#sort)" sort: String "direction of sort: `asc` or `desc`" sortDir: SupSortDirection "filter to remove parts with no stocking distributors" inStockOnly: Boolean "filter to only include parts with a datasheet" hasDatasheetOnly: Boolean "a key: value map of filters. See [filter values](https:\/\/octopart.com\/api\/v4\/values#attributes)" filters: Map "fetch latest pricing and stock data from distributor API. Company.isDistributorApi indicates if a distributor supports this feature." distributorApi: Boolean "how long to wait for distributor API to respond as a duration string (e.g. `3s` or `500ms`)" distributorApiTimeout: String! = "3s" "if needed, pass along credentials for API integrations" customPricingCredentials: [SupApiCredentials!]): SupPartResultSet!
+  supSearchMpn("the query to search on mpn" q: String "user's country" country: String! = "US" "user's currency" currency: String! = "USD" "offset in the result set" start: Int "page size of results" limit: Int "field to sort by.  See [sort values](https:\/\/octopart.com\/api\/v4\/values#sort)" sort: String "direction of sort: `asc` or `desc`" sortDir: SupSortDirection "filter to remove parts with no stocking distributors" inStockOnly: Boolean "filter to only include parts with a datasheet" hasDatasheetOnly: Boolean "a key: value map of filters. See [filter values](https:\/\/octopart.com\/api\/v4\/values#attributes)" filters: Map "fetch latest pricing and stock data from distributor API. Company.isDistributorApi indicates if a distributor supports this feature." distributorApi: Boolean "how long to wait for distributor API to respond as a duration string (e.g. `3s` or `500ms`)" distributorApiTimeout: String! = "3s" "if needed, pass along credentials for API integrations" customPricingCredentials: [SupApiCredentials!] "Specifying a ranking method. For internal use only." rankingMethod: SupSearchRankingMethod! = DEFAULT): SupPartResultSet!
   "Suggest an alternate `q` when no results are found"
   supSpellingCorrection("query string to correct" q: String!): [SupSpellingCorrection!]!
   "Match multiple manufacturer + mpn pairs at once.  Useful for when you have a list of parts, as with a BOM (Bill of Materials)"
-  supMultiMatch("list of inputs to attempt to match" queries: [SupPartMatchQuery!]! "options when matching such as applying filters or only including authorized or in-stock parts" options: SupPartMatchOptions "user's country" country: String! = "US" "user's currency" currency: String! = "USD" "fetch latest pricing and stock data from distributor API. Company.isDistributorApi indicates if a distributor supports this feature." distributorApi: Boolean "how long to wait for distributor API to respond as a duration string (e.g. `3s` or `500ms`)" distributorApiTimeout: String! = "3s" "if needed, pass along credentials for API integrations" customPricingCredentials: [SupApiCredentials!]): [SupPartMatch!]!
+  supMultiMatch("list of inputs to attempt to match" queries: [SupPartMatchQuery!]! "options when matching such as applying filters or only including authorized or in-stock parts" options: SupPartMatchOptions "user's country" country: String! = "US" "user's currency" currency: String! = "USD" "fetch latest pricing and stock data from distributor API. Company.isDistributorApi indicates if a distributor supports this feature." distributorApi: Boolean "how long to wait for distributor API to respond as a duration string (e.g. `3s` or `500ms`)" distributorApiTimeout: String! = "3s" "if needed, pass along credentials for API integrations" customPricingCredentials: [SupApiCredentials!] "Specifying a ranking method. For internal use only." rankingMethod: SupSearchRankingMethod! = DEFAULT): [SupPartMatch!]!
   "get a the quotes from previously submitted metadata"
   manRapidQuotes(id: ID!): ManRapidQuoteResponse
   manRapidQuoteRequest(id: ID!): ManRapidQuoteRequest
@@ -4973,6 +4973,9 @@ enum DesContentTypeKind {
   ORDER_BOM
   PADS_PROJECT
   PART_REPORT
+  ESD_PROJECT
+  SOLUTION
+  SOFTWARE_PROJECT
 }
 
 enum DesDocumentType {
@@ -5965,6 +5968,16 @@ enum SupRole {
   CADMODELS
   INTERNAL
   NEXARINTERNAL
+}
+
+"Specify method on ranking search results.\nThis is an internal enum and not recommended for external users."
+enum SupSearchRankingMethod {
+  " Default Ranking for all searches. "
+  DEFAULT
+  " Ranking the result for Supply purpose. "
+  SUPPLY
+  " Ranking the result for Design purpose. "
+  DESIGN
 }
 
 enum SupSortDirection {
