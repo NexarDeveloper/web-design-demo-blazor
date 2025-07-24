@@ -1,7 +1,5 @@
 ﻿using MudBlazor;
 using Nexar.Client;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
@@ -17,6 +15,7 @@ public sealed class ProjectCollaborationItem(ProjectItem parent) : NodeTreeItem(
         {
             new CollaborationDomainItem(this, DesCollaborationDomain.Ecad),
             new CollaborationDomainItem(this, DesCollaborationDomain.Mcad),
+            new CollaborationDomainItem(this, DesCollaborationDomain.Esd),
         });
     }
 }

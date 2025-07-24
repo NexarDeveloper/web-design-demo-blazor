@@ -66,7 +66,7 @@ public partial class ConnectPage
             // save "good token"
             try
             {
-                await JS.InvokeVoidAsync("window.localStorage.setItem", AppData.ApiEndpoint, _token);
+                await JS.InvokeVoidAsync("window.localStorage.setItem", GetTokenKey(), _token);
             }
             catch (Exception ex)
             {
@@ -128,7 +128,7 @@ public partial class ConnectPage
                 // the token is not provided, get it from the storage
                 try
                 {
-                    _token = await JS.InvokeAsync<string>("window.localStorage.getItem", AppData.ApiEndpoint);
+                    _token = await JS.InvokeAsync<string>("window.localStorage.getItem", GetTokenKey());
                 }
                 catch (Exception ex)
                 {
@@ -151,5 +151,10 @@ public partial class ConnectPage
         var (ok, value) = await JS.InvokeAsyncWithErrorHandling<string>("navigator.clipboard.readText");
         if (ok)
             _token = value;
+    }
+
+    private string GetTokenKey()
+    {
+        return $"{AppData.Mode}|{AppData.ApiEndpoint}";
     }
 }

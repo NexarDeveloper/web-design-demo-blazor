@@ -128,7 +128,11 @@ type Query {
   "Get seller companies (distributors)"
   supSellers("list of company IDs.  Omit to fetch all sellers." ids: [String!] "Include only companies that support custom pricing." customPricingOnly: Boolean! = false "list of URL slugs for \/distributors paths" slugs: [String!]): [SupCompany!]!
   "Get categories"
-  supCategories("list of category IDs. Omit to fetch all categories." ids: [String!] "list of \/electronic-parts SEO page paths for categories." paths: [String!]): [SupCategory!]!
+  supCategories("list of category IDs. Omit to fetch all categories. Where id can be either an Octopart internal id or an Altium Global Resource ID (GRID)." ids: [String!] "list of SEO page paths for categories to include." paths: [String!] "Root of categories to include, defaults to ElectronicParts." root: SupCategoryRoot! = ElectronicParts): [SupCategory!]!
+  "Get a single category by id. Where id can be either an Octopart internal id or an Altium Global Resource ID (GRID)."
+  supCategoryById(id: ID!): SupCategory
+  "Get a list of categories by ids. Where id can be either an Octopart internal id or an Altium Global Resource ID (GRID)."
+  supCategoriesByIds(ids: [ID!]!): [SupCategory]!
   "Get parts by ID."
   supParts("list of part IDs. APIv3 UIDs are also supported." ids: [String!]! "user's country" country: String! = "US" "user's currency" currency: String! = "USD" "fetch latest pricing and stock data from distributor API. Company.isDistributorApi indicates if a distributor supports this feature." distributorApi: Boolean "how long to wait for distributor API to respond as a duration string (e.g. `3s` or `500ms`) up to a max 10s" distributorApiTimeout: String! = "3s" "if needed, pass along credentials for API integrations" customPricingCredentials: [SupApiCredentials!]): [SupPart]!
   "Get part offers by reference."
@@ -136,13 +140,23 @@ type Query {
   "Attempt to complete a partial query string.  Used for autosuggest \/ typeahead text inputs."
   supSuggest("partial query string" q: String! "categoryId to scope suggestions to" categoryId: String "only return part number suggestions" partNumbersOnly: Boolean): [SupSuggestion!]!
   "Search parts, including filters, pagination, aggregation, sorting"
-  supSearch("the query to search" q: String "user's country" country: String! = "US" "user's currency" currency: String! = "USD" "offset in the result set" start: Int "page size of results" limit: Int "field to sort by.  See [sort values](https:\/\/octopart.com\/api\/v4\/values#sort)" sort: String "direction of sort: `asc` or `desc`" sortDir: SupSortDirection "filter to remove parts with no stocking distributors" inStockOnly: Boolean "filter to only include parts with a datasheet" hasDatasheetOnly: Boolean "a key: value map of filters. See [filter values](https:\/\/octopart.com\/api\/v4\/values#attributes)" filters: Map "fetch latest pricing and stock data from distributor API. Company.isDistributorApi indicates if a distributor supports this feature." distributorApi: Boolean "how long to wait for distributor API to respond as a duration string (e.g. `3s` or `500ms`)" distributorApiTimeout: String! = "3s" "if needed, pass along credentials for API integrations" customPricingCredentials: [SupApiCredentials!] "Specifying a ranking method. For internal use only." rankingMethod: SupSearchRankingMethod! = DEFAULT): SupPartResultSet!
+  supSearch("the query to search" q: String "user's country" country: String! = "US" "user's currency" currency: String! = "USD" "offset in the result set" start: Int "page size of results" limit: Int "field to sort by.  See [sort values](https:\/\/octopart.com\/api\/v4\/values#sort)" sort: String "direction of sort: `asc` or `desc`" sortDir: SupSortDirection "filter to remove parts with no stocking distributors" inStockOnly: Boolean "filter to only include parts with a datasheet" hasDatasheetOnly: Boolean "a key: value map of filters. See [filter values](https:\/\/octopart.com\/api\/v4\/values#attributes)" filters: Map "fetch latest pricing and stock data from distributor API. Company.isDistributorApi indicates if a distributor supports this feature." distributorApi: Boolean "how long to wait for distributor API to respond as a duration string (e.g. `3s` or `500ms`)" distributorApiTimeout: String! = "3s" "if needed, pass along credentials for API integrations" customPricingCredentials: [SupApiCredentials!] "Specifying a ranking method." rankingMethod: SupSearchRankingMethod! = DEFAULT): SupPartResultSet!
   "Search parts by mpn only, including filters, pagination, aggregation, sorting"
-  supSearchMpn("the query to search on mpn" q: String "user's country" country: String! = "US" "user's currency" currency: String! = "USD" "offset in the result set" start: Int "page size of results" limit: Int "field to sort by.  See [sort values](https:\/\/octopart.com\/api\/v4\/values#sort)" sort: String "direction of sort: `asc` or `desc`" sortDir: SupSortDirection "filter to remove parts with no stocking distributors" inStockOnly: Boolean "filter to only include parts with a datasheet" hasDatasheetOnly: Boolean "a key: value map of filters. See [filter values](https:\/\/octopart.com\/api\/v4\/values#attributes)" filters: Map "fetch latest pricing and stock data from distributor API. Company.isDistributorApi indicates if a distributor supports this feature." distributorApi: Boolean "how long to wait for distributor API to respond as a duration string (e.g. `3s` or `500ms`)" distributorApiTimeout: String! = "3s" "if needed, pass along credentials for API integrations" customPricingCredentials: [SupApiCredentials!] "Specifying a ranking method. For internal use only." rankingMethod: SupSearchRankingMethod! = DEFAULT): SupPartResultSet!
-  "Suggest an alternate `q` when no results are found"
+  supSearchMpn("the query to search on mpn" q: String "user's country" country: String! = "US" "user's currency" currency: String! = "USD" "offset in the result set" start: Int "page size of results" limit: Int "field to sort by.  See [sort values](https:\/\/octopart.com\/api\/v4\/values#sort)" sort: String "direction of sort: `asc` or `desc`" sortDir: SupSortDirection "filter to remove parts with no stocking distributors" inStockOnly: Boolean "filter to only include parts with a datasheet" hasDatasheetOnly: Boolean "a key: value map of filters. See [filter values](https:\/\/octopart.com\/api\/v4\/values#attributes)" filters: Map "fetch latest pricing and stock data from distributor API. Company.isDistributorApi indicates if a distributor supports this feature." distributorApi: Boolean "how long to wait for distributor API to respond as a duration string (e.g. `3s` or `500ms`)" distributorApiTimeout: String! = "3s" "if needed, pass along credentials for API integrations" customPricingCredentials: [SupApiCredentials!] "Specifying a ranking method." rankingMethod: SupSearchRankingMethod! = DEFAULT): SupPartResultSet!
+  "Suggest alternate queries when no results are found."
+  supSearchCorrection(q: String!): [SupSearchCorrection!]!
+  "Suggest an alternate `q` when no results are found. This treats the query as an MPN search so will return suggestions based on MPNs."
   supSpellingCorrection("query string to correct" q: String!): [SupSpellingCorrection!]!
   "Match multiple manufacturer + mpn pairs at once.  Useful for when you have a list of parts, as with a BOM (Bill of Materials)"
-  supMultiMatch("list of inputs to attempt to match" queries: [SupPartMatchQuery!]! "options when matching such as applying filters or only including authorized or in-stock parts" options: SupPartMatchOptions "user's country" country: String! = "US" "user's currency" currency: String! = "USD" "fetch latest pricing and stock data from distributor API. Company.isDistributorApi indicates if a distributor supports this feature." distributorApi: Boolean "how long to wait for distributor API to respond as a duration string (e.g. `3s` or `500ms`)" distributorApiTimeout: String! = "3s" "if needed, pass along credentials for API integrations" customPricingCredentials: [SupApiCredentials!] "Specifying a ranking method. For internal use only." rankingMethod: SupSearchRankingMethod! = DEFAULT): [SupPartMatch!]!
+  supMultiMatch("list of inputs to attempt to match" queries: [SupPartMatchQuery!]! "options when matching such as applying filters or only including authorized or in-stock parts" options: SupPartMatchOptions "user's country" country: String! = "US" "user's currency" currency: String! = "USD" "fetch latest pricing and stock data from distributor API. Company.isDistributorApi indicates if a distributor supports this feature." distributorApi: Boolean "how long to wait for distributor API to respond as a duration string (e.g. `3s` or `500ms`)" distributorApiTimeout: String! = "3s" "if needed, pass along credentials for API integrations" customPricingCredentials: [SupApiCredentials!] "Specifying a ranking method." rankingMethod: SupSearchRankingMethod! = DEFAULT): [SupPartMatch!]!
+  "Search a specific reference design by its unique identifier."
+  supRefDesignById(id: ID!): SupRefDesign
+  "Search a specific reference design by its unique name."
+  supRefDesignByName(name: String!): SupRefDesign
+  "Search a reference designs."
+  supRefDesigns(q: String! filter: SupRefDesignFilterInput start: Int! = 0 limit: Int! = 10): SupRefDesignResultSet!
+  "Search a specific parts by reference design unique identifier and part's designators."
+  supRefParts(refDesignId: ID! designators: [String!]): [SupRefPart!]
   "get a the quotes from previously submitted metadata"
   manRapidQuotes(id: ID!): ManRapidQuoteResponse
   manRapidQuoteRequest(id: ID!): ManRapidQuoteRequest
@@ -211,8 +225,6 @@ type Mutation {
   desUpdateComponentLifeCycleState(input: DesUpdateComponentLifeCycleStateInput!): DesUpdateComponentLifeCycleStatePayload!
   "Updates life cycle state for the provided footprint."
   desUpdateFootprintLifeCycleState(input: DesUpdateFootprintLifeCycleStateInput!): DesUpdateFootprintLifeCycleStatePayload!
-  "Updates life cycle state for the provided symbol."
-  desUpdateSymbolLifeCycleState(input: DesUpdateSymbolLifeCycleStateInput!): DesUpdateSymbolLifeCycleStatePayload!
   "Creates a folder in the library."
   desCreateFolder(input: DesCreateFolderInput!): DesCreateFolderPayload!
   "Updates the specified folder in the library."
@@ -221,14 +233,20 @@ type Mutation {
   desMoveFolder(input: DesMoveFolderInput!): DesMoveFolderPayload!
   "Deletes the specified folder from the library."
   desDeleteFolder(input: DesDeleteFolderInput!): DesDeleteFolderPayload!
-  "Creates a symbol."
-  desCreateSymbol(input: DesCreateSymbolInput!): DesCreateSymbolPayload!
+  "Creates a footprint."
+  desCreateFootprint(input: DesCreateFootprintInput!): DesCreateFootprintPayload!
   "Adds part choices of the specified component."
   desAddComponentPartChoices(input: DesAddComponentPartChoicesInput!): DesAddComponentPartChoicesPayload!
   "Removes part choices of the specified component."
   desRemoveComponentPartChoices(input: DesRemoveComponentPartChoicesInput!): DesRemoveComponentPartChoicesPayload!
   "Releases the specified component."
   desReleaseComponent(input: DesReleaseComponentInput!): DesReleaseComponentPayload!
+  "Creates a symbol."
+  desCreateSymbol(input: DesCreateSymbolInput!): DesCreateSymbolPayload!
+  "Updates life cycle state for the provided symbol."
+  desUpdateSymbolLifeCycleState(input: DesUpdateSymbolLifeCycleStateInput!): DesUpdateSymbolLifeCycleStatePayload!
+  "Updates the specified symbol. This will create a new revision of the symbol, and reset the lifecycle state."
+  desUpdateSymbol(input: DesUpdateSymbolInput!): DesUpdateSymbolPayload!
   "Creates a project task. A task is a job activity in Altium 365."
   desCreateProjectTask(input: DesCreateProjectTaskInput!): DesCreateTaskPayload!
   "Creates a workspace task. A task is a job activity in Altium 365."
@@ -1192,6 +1210,14 @@ type DesCreateFolderPayload {
   errors: [DesPayloadError!]!
 }
 
+"Payload associated with creating footprint."
+type DesCreateFootprintPayload {
+  "The created footprint identifier."
+  footprintId: ID
+  "Payload errors."
+  errors: [DesPayloadError!]!
+}
+
 "Payload associated with creating a life cycle definition."
 type DesCreateLifeCycleDefinitionPayload {
   "Life cycle definition identifier."
@@ -1474,6 +1500,8 @@ type DesFolder implements Node {
   updatedAt: DateTime!
   "Folder type."
   folderType: DesFolderType!
+  "The reference identifier for this folder."
+  folderId: String!
 }
 
 "Information about a folder permission."
@@ -1577,9 +1605,9 @@ type DesLayer {
   "Layer copper weight."
   copperWeight: DesWeight
   "The copper area."
-  copperArea: DesArea
+  copperArea: DesArea @deprecated(reason: "No longer used - always returns null.")
   "The ratio of copper area to PCB area."
-  copperRatio: Decimal
+  copperRatio: Decimal @deprecated(reason: "No longer used - always returns null.")
   "Layer material."
   material: String
   "Layer nets."
@@ -1941,18 +1969,20 @@ type DesPcbAssembly {
 type DesPcbFabrication {
   "The name of the PCB fabrication package."
   packageName: String!
+  "Downloadable folders."
+  folders: [DesDownloadableFolder!]!
   "ODB files and download URL."
-  odb: DesOdb!
+  odb: DesOdb! @deprecated(reason: "Use `folders`.")
   "IPC 2581 files and download URL."
-  ipc2581: DesIpc2581!
+  ipc2581: DesIpc2581! @deprecated(reason: "Use `folders`.")
   "Gerber files and download URL."
-  gerber: DesGerber!
+  gerber: DesGerber! @deprecated(reason: "Use `folders`.")
   "Gerber X2 files and download URL."
-  gerberX2: DesGerberX2!
+  gerberX2: DesGerberX2! @deprecated(reason: "Use `folders`.")
   "NC Drill files and download URL."
-  ncDrill: DesNcDrill!
+  ncDrill: DesNcDrill! @deprecated(reason: "Use `folders`.")
   "Test point files and download URL."
-  testPoints: DesTestPoints!
+  testPoints: DesTestPoints! @deprecated(reason: "Use `folders`.")
   "Download URL."
   downloadUrl: String!
   "Version."
@@ -2786,6 +2816,14 @@ type DesUpdateSymbolLifeCycleStatePayload {
   errors: [DesPayloadError!]!
 }
 
+"Payload of updating a symbol."
+type DesUpdateSymbolPayload {
+  "Identifier of the updated symbol."
+  id: ID!
+  "Payload errors."
+  errors: [DesPayloadError!]!
+}
+
 "Payload associated with updating a task comment."
 type DesUpdateTaskCommentPayload {
   "Payload errors."
@@ -3123,10 +3161,6 @@ union SupUnionPayload = SupErrorPayload | SupPartExtras
 input BooleanOperationFilterInput {
   eq: Boolean
   neq: Boolean
-}
-
-input ComponentStringOperationFilterInput {
-  eq: String
 }
 
 input DateTimeOperationFilterInput {
@@ -3639,11 +3673,11 @@ input DesColorInput {
 "A component contains the parametric details of a PCB part."
 input DesComponentFilterInput {
   "The library label for this component."
-  name: ComponentStringOperationFilterInput
+  name: DesComponentStringOperationFilterInput
   "The additional information for this component."
-  comment: ComponentStringOperationFilterInput
+  comment: DesComponentStringOperationFilterInput
   "The summary of function or other performance details for this component."
-  description: ComponentStringOperationFilterInput
+  description: DesComponentStringOperationFilterInput
 }
 
 "Input for the parametric details of a component."
@@ -3652,6 +3686,10 @@ input DesComponentItemParameterInput {
   name: String!
   "Component item parameter value."
   value: String!
+}
+
+input DesComponentStringOperationFilterInput {
+  eq: String
 }
 
 "Input for comment creation."
@@ -3704,6 +3742,36 @@ input DesCreateFolderInput {
   itemNamingSchemeTemplate: String
   "Folder permissions (non recursive)."
   permissions: [DesUpdateFolderPermissionInput!]
+}
+
+"Input for creating a footprint file."
+input DesCreateFootprintFileInput {
+  "Uploaded file identifier (typically a *PcbLib* file)."
+  fileId: String!
+  "Relative path of the source file (typically *Released\/filename.PcbLib*)."
+  relativePath: String!
+}
+
+"Input for creating a footprint."
+input DesCreateFootprintInput {
+  "The workspace URL."
+  workspaceUrl: String
+  "The destination folder identifier."
+  folderId: ID!
+  "The footprint name. Use null to be generated, provided that the destination folder defines an item naming scheme."
+  name: String
+  "The footprint files."
+  files: [DesCreateFootprintFileInput!]!
+  "The footprint revision naming scheme identifier."
+  revisionNamingSchemeId: ID
+  "The footprint life cycle definition identifier."
+  lifeCycleDefinitionId: ID
+  "Comment for footprint revision."
+  comment: String
+  "Description for footprint revision."
+  description: String
+  "Parameters for footprint revision."
+  parameters: [DesRevisionParameterInput!]
 }
 
 "Input for creating a life cycle definition."
@@ -3789,9 +3857,9 @@ input DesCreateRevisionNamingSchemeLevelInput {
 
 "Input for creating a symbol file."
 input DesCreateSymbolFileInput {
-  "Uploaded file identifier (typically a SchLib file)."
+  "Uploaded file identifier (typically a *SchLib* file)."
   fileId: String!
-  "Relative path of the source file (typically 'Released\/filename.SchLib')."
+  "Relative path of the source file (typically *Released\/filename.SchLib*)."
   relativePath: String!
 }
 
@@ -4183,7 +4251,7 @@ input DesReleaseComponentFileInput {
   relativePath: String!
 }
 
-"Input for adding existing footprints to the release"
+"Input for adding existing footprints to the release."
 input DesReleaseComponentFootprintInput {
   "Footprint identifier."
   id: ID!
@@ -4215,13 +4283,13 @@ input DesReleaseComponentInput {
   componentDescription: String
   "Parameters for component."
   parameters: [DesRevisionParameterInput!]!
-  "The symbol folder path, existing or to be created. Required when 'symbolFiles' are provided."
+  "The symbol folder path, existing or to be created. Required when `symbolFiles` are provided."
   symbolReleaseFolder: String
   "The symbol name. Use null to be generated."
   symbolItemName: String
-  "The symbol files. Either 'symbolFiles' or 'symbol' must be provided."
+  "The symbol files. Either `symbolFiles` or `symbol` must be provided."
   symbolFiles: [DesReleaseComponentFileInput!]
-  "Existing symbol to include. Either 'symbolFiles' or 'symbol' must be provided."
+  "Existing symbol to include. Either `symbolFiles` or `symbol` must be provided."
   symbol: DesReleaseComponentSymbolInput
   "**DEPRECATED** Use `symbolRevisionNamingSchemeNodeId` instead with a value from `DesRevisionNamingScheme.id`."
   symbolRevisionNamingSchemeId: String
@@ -4231,13 +4299,13 @@ input DesReleaseComponentInput {
   symbolLifeCycleDefinitionId: String
   "The symbol life cycle definition identifier."
   symbolLifeCycleDefinitionNodeId: ID
-  "The footprint folder path, existing or to be created. Required when 'footprintFiles' are provided."
+  "The footprint folder path, existing or to be created. Required when `footprintFiles` are provided."
   footprintReleaseFolder: String
   "The footprint name. Use null to be generated."
   footprintItemName: String
-  "The footprint files. Either 'footprintFiles' or 'footprints' must be provided."
+  "The footprint files. Either `footprintFiles` or `footprints` must be provided."
   footprintFiles: [DesReleaseComponentFileInput!]
-  "Existing footprints to include. Either 'footprintFiles' or 'footprints' must be provided."
+  "Existing footprints to include. Either `footprintFiles` or `footprints` must be provided."
   footprints: [DesReleaseComponentFootprintInput!]
   "**DEPRECATED** Use `footprintRevisionNamingSchemeNodeId` instead with a value from `DesRevisionNamingScheme.id`."
   footprintRevisionNamingSchemeId: String
@@ -4255,7 +4323,7 @@ input DesReleaseComponentInput {
   datasheetReleaseFolderItemNamingSchemeTemplate: String
 }
 
-"Input for adding existing symbols to the release"
+"Input for adding existing symbols to the release."
 input DesReleaseComponentSymbolInput {
   "Symbol identifier."
   id: ID!
@@ -4564,6 +4632,18 @@ input DesUpdateSettingInput {
   name: String!
   "The value that the setting should be replaced with."
   value: String!
+}
+
+"Input for updating a symbol."
+input DesUpdateSymbolInput {
+  "The symbol identifier."
+  symbolId: ID!
+  "Optional comment."
+  comment: String
+  "Optional description."
+  description: String
+  "Optional release note."
+  releaseNote: String
 }
 
 "Input to update symbol life cycle state."
@@ -5266,9 +5346,9 @@ type SupCadBucket {
   count: Int
 }
 
-"A Category exists in a Category tree.  Examples include Passive Components or Capacitors.  The `path` field is helpful to see where a category is in the tree.\nCategory id `4161` is the root of tree."
+"A Category exists in a Category tree.  Examples include Passive Components or Capacitors.  The `path` field is helpful to see where a category is in the tree."
 type SupCategory {
-  "Octopart internal id.  Root id is 4161"
+  "Octopart internal id."
   id: ID!
   "ID of parent category."
   parentId: ID!
@@ -5783,6 +5863,12 @@ type SupReferenceDesign {
   url: String!
 }
 
+type SupSearchCorrection {
+  correctionString: String!
+  droppedTerms: [String!]!
+  hits: Int!
+}
+
 "Represents a specific value of an Attribute for a given Part"
 type SupSpec {
   attribute: SupAttribute!
@@ -5937,6 +6023,14 @@ enum SupAllFiltersSort {
   relevance
 }
 
+"Specify root to include in categories query.\nDefaults to Electronic parts root only"
+enum SupCategoryRoot {
+  "Electronic parts root"
+  ElectronicParts
+  "Application root"
+  Application
+}
+
 enum SupCustomPricingAuthType {
   CLIENT_CREDENTIALS
   USERNAME_PASSWORD
@@ -5970,13 +6064,13 @@ enum SupRole {
   NEXARINTERNAL
 }
 
-"Specify method on ranking search results.\nThis is an internal enum and not recommended for external users."
+"Specify method on ranking search results."
 enum SupSearchRankingMethod {
-  " Default Ranking for all searches. "
+  "Default Ranking for all searches."
   DEFAULT
-  " Ranking the result for Supply purpose. "
+  "Ranking the result for Supply purpose."
   SUPPLY
-  " Ranking the result for Design purpose. "
+  "Ranking the result for Design purpose."
   DESIGN
 }
 
@@ -5989,6 +6083,195 @@ enum SupSpecAggsSelection {
   EXPLICIT
   WITH_SUGGESTED
   ALL
+}
+
+type SupRefApplicationBucket {
+  applicationId: String!
+  count: Int!
+}
+
+"A reference design model aggregates the relevant documents, files and parts."
+type SupRefDesign {
+  "The reference design identifier."
+  id: ID!
+  "The reference design title."
+  title: String!
+  "The stable name identifier."
+  stableName: String!
+  "The subtitle providing context."
+  subtitle: String!
+  "The detailed description."
+  description: String!
+  "The source URL where the reference design is published."
+  sourceUrl: String
+  "Indicates whether the reference design is verified."
+  isVerified: Boolean!
+  "The creation date."
+  createdAt: DateTime
+  "The last updated date."
+  updatedAt: DateTime
+  "Indicates if an evaluation board is available."
+  hasEvalBoard: Boolean!
+  "The publisher identifier."
+  publisherId: String!
+  "The bill of materials (BOM) identifier."
+  bomId: String
+  "Part identifiers of the reference design, including their designators."
+  parts(designators: [String!] type: SupRefPartType): [SupRefPart]!
+  "The list of application identifiers related to the reference design."
+  applicationIds: [String!]!
+  "The list of evaluation kit identifiers associated with the reference design."
+  evaluationKitIds: [String!]!
+  "Preview images that provide a visual overview of the reference design."
+  previewImages: [SupImage]
+  "Frequently asked questions about the reference design."
+  faqs: [SupRefFaq!]!
+  "Key features highlighting the capabilities of the reference design."
+  keyFeatures: [SupRefKeyFeature]!
+  "Design files, such as schematics and layouts, for the reference design."
+  designFiles(type: String): [SupRefDesignFile]!
+  "Documentation resources related to the reference design."
+  documentations: [SupDocument]!
+  "Tags categorizing the reference design for search and organization."
+  tags: [SupRefTag]
+  "Software packages and resources associated with the reference design."
+  softwares: [SupRefResource]!
+  evaluationKits: [SupPart!]
+  publisher: [SupCompany!]
+}
+
+"Represents a design file belonging to a reference design."
+type SupRefDesignFile {
+  "The design file identifier."
+  refDesignFileId: String!
+  "The design file name."
+  name: String!
+  "The design file download URL."
+  url: String!
+  "The design file type."
+  type: String!
+  "The design file extension."
+  extension: String!
+  "Notes attached to the design file."
+  notes: [SupRefDesignNote]!
+}
+
+"Represents a note attached to a reference design file."
+type SupRefDesignNote {
+  "The note title."
+  title: String!
+  "The note description."
+  description: String
+  "The note identifier."
+  objectId: String
+  "The attached resource for the note."
+  attachment: SupDocument
+  "Points representing the position of the note attached on the design file."
+  points: [SupRefPoint2D]!
+}
+
+"Reference designs with pagination, aggregation information."
+type SupRefDesignResultSet {
+  "Total number of reference designs found."
+  hits: Int!
+  "List of reference designs in the current result set."
+  results: [SupRefDesign!]!
+  "Aggregate on publishers for this result set."
+  publisherAgg(size: Int = 10): [SupRefPublisherBucket!]
+  "Aggregate on applications for this result set."
+  applicationAgg(size: Int = 10): [SupRefApplicationBucket!]
+  "Aggregate on tags for this result set."
+  tagAgg(size: Int = 10): [SupRefTagBucket!]
+}
+
+"Represents a frequently asked question for a reference design."
+type SupRefFaq {
+  "The question text."
+  question: String!
+  "The answer text."
+  answer: String!
+}
+
+"Represents a key feature of a reference design."
+type SupRefKeyFeature {
+  "The feature name."
+  name: String!
+  "The feature description."
+  description: String!
+}
+
+type SupRefPart {
+  "The part identifier."
+  partId: String!
+  "The type identifier of this component, indicating its role in the reference design."
+  type: SupRefPartType!
+  "The global identifier linked to the reference design components."
+  designators: [String!]!
+  "Nexar supply part data for internal use only. Array of size 1."
+  part: [SupPart]!
+}
+
+"Represents a 2D point for a file note."
+type SupRefPoint2D {
+  "The point type."
+  type: String!
+  "The X coordinate."
+  x: Float!
+  "The Y coordinate."
+  y: Float!
+}
+
+type SupRefPublisherBucket {
+  publisherId: String!
+  count: Int!
+  publisher: [SupCompany!]
+}
+
+"Represents a resource related to a reference design."
+type SupRefResource {
+  "The resource title."
+  title: String!
+  "The resource description."
+  description: String!
+  "An optional note for the resource."
+  note: String
+  "The information of the download URL."
+  downloadText: String!
+  "The download URL for the resource."
+  downloadUrl: String!
+  "Other related resources."
+  otherResources: [SupRefResource]!
+}
+
+"Represents a tag for categorizing a reference design."
+type SupRefTag {
+  "The tag value."
+  value: String!
+  "The tag category name."
+  category: String!
+}
+
+type SupRefTagBucket {
+  name: String!
+  count: Int!
+}
+
+input SupRefDesignFilterInput {
+  isVerified: Boolean
+  hasEvalBoard: Boolean
+  applicationIds: [String!]
+  categoryIds: [String!]
+  publisherIds: [String!]
+  tags: [String!]
+}
+
+enum SupRefPartType {
+  "Main parts that the reference design demonstrate."
+  PRIMARY
+  "Important supporting parts essential to the function of the reference design."
+  KEY
+  "Other supporting parts."
+  OTHER
 }
 
 interface ManOrderEvent {
@@ -7229,6 +7512,7 @@ input SupOctocartItemInput {
   partId: String!
   offerId: String!
   quantity: Int!
+  ipn: String
 }
 
 input SupOctocartPartsBySellerInput {

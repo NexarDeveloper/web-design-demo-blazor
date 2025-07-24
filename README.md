@@ -50,6 +50,7 @@ Data tree structure:
         - Collaboration
             - ECAD
             - MCAD
+            - ESD
         - Simulation
             - AnsysEDB
             - PCBEDB
