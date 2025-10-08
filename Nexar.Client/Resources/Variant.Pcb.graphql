@@ -19,6 +19,11 @@ query ReleaseVariantPcb($variantId: ID!, $limit: Int!) {
 # This fragment becomes IMyPcb in C#.
 fragment MyPcb on DesPcb {
   documentId
+  mesh3D {
+    glbFile {
+      downloadUrl
+    }
+  }
   designItems(first: $limit) {
     totalCount
     nodes {

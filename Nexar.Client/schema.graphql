@@ -6,8 +6,6 @@ schema {
 
 scalar Map
 
-scalar Time
-
 scalar Any
 
 type Query {
@@ -16,17 +14,17 @@ type Query {
   "Lookup nodes by a list of IDs."
   nodes("The list of node IDs." ids: [ID!]!): [Node]!
   "The project latest ECAD, MCAD or ESD revision."
-  desProjectCollaborationLatestRevision("The node identifier for a specific project." projectId: ID! "The collaboration domain." domain: DesCollaborationDomain!): DesCollaborationRevision
+  desProjectCollaborationLatestRevision("The identifier for a specific project." projectId: ID! "The collaboration domain." domain: DesCollaborationDomain!): DesCollaborationRevision
   "The project ECAD, MCAD or ESD revisions returned by pages."
-  desProjectCollaborationRevisions("The node identifier for a specific project." projectId: ID! domain: DesCollaborationDomain! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesCollaborationRevisionConnection
+  desProjectCollaborationRevisions("The identifier for a specific project." projectId: ID! domain: DesCollaborationDomain! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesCollaborationRevisionConnection
   "*PROTOTYPE, SUBJECT TO CHANGE*"
   desProjectCollaborationSimulationRevisions(projectId: ID! domainName: String! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesCollaborationSimulationRevisionConnection
   "*PROTOTYPE, SUBJECT TO CHANGE*"
   desProjectCollaborationSimulationLatestRevision(projectId: ID! domainName: String! projectTypeName: String!): DesCollaborationSimulationRevision
   "Search for comment threads associated with a project."
-  desCommentThreads("The node identifier for a project (This is the project field named \"id\")." projectId: ID!): [DesCommentThread!]!
+  desCommentThreads("The identifier for a project (This is the project field named \"id\")." projectId: ID!): [DesCommentThread!]!
   "Search for a specific comment thread associated with a project."
-  desCommentThread("The node identifier for a project (This is the project field named \"id\")." projectId: ID! "The reference identifier for a comment thread." threadId: String!): DesCommentThread
+  desCommentThread("The identifier for a project (This is the project field named \"id\")." projectId: ID! "The reference identifier for a comment thread." threadId: String!): DesCommentThread
   desDesignItemById(id: ID!): DesDesignItem
   "Gets the library by workspace URL."
   desLibrary(workspaceUrl: String): DesLibrary!
@@ -45,7 +43,7 @@ type Query {
   "Searches for a specific symbol by its unique identifier."
   desSymbolById("The node identifier for a symbol." id: ID!): DesSymbol
   "The list of project tasks."
-  desProjectTasks("The node identifier for a specific project." projectId: ID! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesTaskConnection
+  desProjectTasks("The identifier for a specific project." projectId: ID! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesTaskConnection
   "The list of workspace tasks."
   desWorkspaceTasks("The URL of the workspace to get tasks from." workspaceUrl: String "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesTaskConnection
   desManufacturePackages: [DesManufacturePackage!]!
@@ -53,21 +51,27 @@ type Query {
   desManufacturePackageById("The node identifier for manufacture package." id: ID!): DesManufacturePackage
   "Search projects within a workspace with results in paged groups."
   desProjects("The web address of a workspace." workspaceUrl: String "Requirements block filter." requirementsBlockFilter: DesProjectsRequirementsBlockFilterInput "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesProjectFilterInput): DesProjectConnection
-  "Searches a project by its node identifier."
-  desProjectById("The project node identifier." id: ID!): DesProject
+  "Searches a project by its identifier."
+  desProjectById("The project identifier." id: ID!): DesProject
+  "Searches projects by their identifiers."
+  desProjectsByIds("An array of project identifiers." ids: [ID!]!): [DesProject]!
   "Searches a release by its node identifier."
   desReleaseById("The release node identifier." id: ID!): DesRelease
   "Searches a project variant by its node identifier."
   desWipVariantById("The project variant node identifier." id: ID!): DesWipVariant
   "Searches a release variant by its node identifier."
   desReleaseVariantById("The release variant node identifier." id: ID!): DesReleaseVariant
-  "Gets the project node ID from its internal ID."
+  "Gets the project identifier from its internal identifier."
   desProjectIdFromAfsId("The web address of a workspace." workspaceUrl: String "AFS internal identifier." afsId: String! "True for shared projects." isSharedProject: Boolean): DesProjectIdPayload!
   desBomById(id: ID!): DesBom @deprecated(reason: "Use `desWipVariantById` or `desReleaseVariantById` in order to access BOM.")
   "Find a specific reuse block by its unique identifier."
   desReuseBlockById("The node identifier for a reuse block." id: ID!): DesReuseBlock
+  "Find specific reuse blocks by their unique identifiers."
+  desReuseBlocksByIds("Node identifiers for the reuse blocks." ids: [ID!]!): [DesReuseBlock]!
   "Find a specific reuse block revision by its unique identifier."
   desReuseBlockRevisionById("The node identifier for a reuse block revision." id: ID!): DesReuseBlockRevision
+  "Find specific reuse block revisions by their unique identifiers."
+  desReuseBlockRevisionsByIds("Node identifiers for the reuse block revisions." ids: [ID!]!): [DesReuseBlockRevision]!
   "Gets the specified workspace team."
   desTeam(workspaceUrl: String): DesTeam!
   "Gets the specified workspace users by IDs."
@@ -136,7 +140,7 @@ type Query {
   "Get parts by ID."
   supParts("list of part IDs. APIv3 UIDs are also supported." ids: [String!]! "user's country" country: String! = "US" "user's currency" currency: String! = "USD" "fetch latest pricing and stock data from distributor API. Company.isDistributorApi indicates if a distributor supports this feature." distributorApi: Boolean "how long to wait for distributor API to respond as a duration string (e.g. `3s` or `500ms`) up to a max 10s" distributorApiTimeout: String! = "3s" "if needed, pass along credentials for API integrations" customPricingCredentials: [SupApiCredentials!]): [SupPart]!
   "Get part offers by reference."
-  supPartOffers(country: String! currency: String! references: [SupOfferReference!]! "fetch latest pricing and stock data from distributor API." distributorApi: Boolean "how long to wait for distributor API to respond as a duration string (e.g. `3s` or `500ms`)" distributorApiTimeout: String! = "3s" "if needed, pass along credentials for API integrations" customPricingCredentials: [SupApiCredentials!]): [SupPartOffer]!
+  supPartOffers(country: String! currency: String! references: [SupOfferReference!]! "fetch latest pricing and stock data from distributor API." distributorApi: Boolean "how long to wait for distributor API to respond as a duration string (e.g. `3s` or `500ms`)" distributorApiTimeout: String! = "3s" "if needed, pass along credentials for API integrations" customPricingCredentials: [SupApiCredentials!] priceBreaks: [Int!]): [SupPartOffer]!
   "Attempt to complete a partial query string.  Used for autosuggest \/ typeahead text inputs."
   supSuggest("partial query string" q: String! "categoryId to scope suggestions to" categoryId: String "only return part number suggestions" partNumbersOnly: Boolean): [SupSuggestion!]!
   "Search parts, including filters, pagination, aggregation, sorting"
@@ -151,12 +155,20 @@ type Query {
   supMultiMatch("list of inputs to attempt to match" queries: [SupPartMatchQuery!]! "options when matching such as applying filters or only including authorized or in-stock parts" options: SupPartMatchOptions "user's country" country: String! = "US" "user's currency" currency: String! = "USD" "fetch latest pricing and stock data from distributor API. Company.isDistributorApi indicates if a distributor supports this feature." distributorApi: Boolean "how long to wait for distributor API to respond as a duration string (e.g. `3s` or `500ms`)" distributorApiTimeout: String! = "3s" "if needed, pass along credentials for API integrations" customPricingCredentials: [SupApiCredentials!] "Specifying a ranking method." rankingMethod: SupSearchRankingMethod! = DEFAULT): [SupPartMatch!]!
   "Search a specific reference design by its unique identifier."
   supRefDesignById(id: ID!): SupRefDesign
+  "Search a specific reference designs by its unique identifiers."
+  supRefDesignByIds(ids: [ID!]!): [SupRefDesign!]
   "Search a specific reference design by its unique name."
   supRefDesignByName(name: String!): SupRefDesign
   "Search a reference designs."
   supRefDesigns(q: String! filter: SupRefDesignFilterInput start: Int! = 0 limit: Int! = 10): SupRefDesignResultSet!
   "Search a specific parts by reference design unique identifier and part's designators."
-  supRefParts(refDesignId: ID! designators: [String!]): [SupRefPart!]
+  supRefParts(refDesignId: ID! designators: [String!] start: Int! = 0 limit: Int! = 50): [SupRefPart!]
+  "Get a specific part group by its unique identifier (GRID)."
+  supPartGroupById(id: ID!): SupPartGroup!
+  "Get a set of part groups by their unique identifiers (GRIDs).\nIf an ID is not found it will be returned as null, ensuring a one to one mapping of input ids to output."
+  supPartGroupsByIds(ids: [ID!]!): [SupPartGroup]!
+  "Get a part group by the ID of the part."
+  supPartGroupByPartId(partId: ID!): SupPartGroup!
   "get a the quotes from previously submitted metadata"
   manRapidQuotes(id: ID!): ManRapidQuoteResponse
   manRapidQuoteRequest(id: ID!): ManRapidQuoteRequest
@@ -211,6 +223,8 @@ type Mutation {
   desCreateCommentThread(input: DesCreateCommentThreadInput!): DesCreateCommentThreadPayload!
   "Permanently deletes a comment thread."
   desDeleteCommentThread(input: DesDeleteCommentThreadInput!): DesDeleteCommentThreadPayload!
+  "Updates the specified footprint. This will create a new revision of the footprint, and reset the lifecycle state."
+  desUpdateFootprint(input: DesUpdateFootprintInput!): DesUpdateFootprintPayload!
   "Creates and releases the specified component template."
   desReleaseComponentTemplate(input: DesReleaseComponentTemplateInput!): DesReleaseComponentTemplatePayload!
   "Updates the specified component template."
@@ -235,6 +249,14 @@ type Mutation {
   desDeleteFolder(input: DesDeleteFolderInput!): DesDeleteFolderPayload!
   "Creates a footprint."
   desCreateFootprint(input: DesCreateFootprintInput!): DesCreateFootprintPayload!
+  "Updates the specified component's symbol (does not affect the revision)."
+  desUpdateComponentSymbol(input: DesUpdateComponentSymbolInput!): DesUpdateComponentSymbolPayload!
+  "Adds the specified footprint to a component (does not affect the revision)."
+  desAddFootprintToComponent(input: DesAddFootprintToComponentInput!): DesAddFootprintToComponentPayload!
+  "Removes the specified footprint from a component (does not affect the revision)."
+  desRemoveFootprintFromComponent(input: DesRemoveFootprintFromComponentInput!): DesRemoveFootprintFromComponentPayload!
+  "Upgrades components to use the latest symbol revision. This operation updates the link to the symbol and does not create new component revisions."
+  desUpgradeComponentsToLatestSymbol(input: DesUpgradeComponentsToLatestSymbolInput!): DesUpgradeComponentsToLatestSymbolPayload!
   "Adds part choices of the specified component."
   desAddComponentPartChoices(input: DesAddComponentPartChoicesInput!): DesAddComponentPartChoicesPayload!
   "Removes part choices of the specified component."
@@ -359,6 +381,12 @@ interface Node {
 type DesAddComponentPartChoicesPayload {
   "The new component (revision) created with revision control enabled."
   newComponentId: ID!
+  "Payload errors."
+  errors: [DesPayloadError!]!
+}
+
+"Payload associated with adding a footprint to a component."
+type DesAddFootprintToComponentPayload {
   "Payload errors."
   errors: [DesPayloadError!]!
 }
@@ -1073,6 +1101,10 @@ type DesComponent implements Node {
   details: DesComponentDetails!
   "Component 3D model."
   model3D: DesModel3D
+  "The component type classification for this component."
+  componentType: DesComponentType
+  "The user who created this component."
+  createdBy: DesUser!
   "The library label for this component."
   name: String!
   "The additional information for this component."
@@ -1182,6 +1214,24 @@ type DesComponentTemplateRevision {
   description: String!
   "Component template revision downloadable file."
   downloadableFile: DesDownloadableFile!
+}
+
+"Represents a component type classification in the component library."
+type DesComponentType implements Node {
+  "The node identifier for this component type."
+  id: ID!
+  "The display name of the component type."
+  name: String!
+  "The parent of this component type in the hierarchy."
+  parent: DesComponentType
+  "The user this was created by."
+  createdBy: DesUser!
+  "The user this was last updated by."
+  updatedBy: DesUser!
+  "The `DateTime` this was created."
+  createdAt: DateTime!
+  "The `DateTime` this was last updated."
+  updatedAt: DateTime!
 }
 
 "Payload associated with creating a comment."
@@ -1556,6 +1606,26 @@ type DesFootprint implements Node {
   description: String!
 }
 
+"A connection to a list of items."
+type DesFootprintConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [DesFootprintEdge!]
+  "A flattened list of the nodes."
+  nodes: [DesFootprint!]
+  "Identifies the total count of items in the connection."
+  totalCount: Int!
+}
+
+"An edge in a connection."
+type DesFootprintEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: DesFootprint!
+}
+
 "Gerber information. Gerber files store the shape and location data for all the elements on the PCB layout."
 type DesGerber {
   "Gerber files."
@@ -1644,6 +1714,10 @@ type DesLibrary {
   reuseBlocks("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesReuseBlockConnection
   "*PROTOTYPE, SUBJECT TO CHANGE*"
   downloadUrlsByTokens(tokens: [String!]!): [String]!
+  "Gets library symbols."
+  symbols("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesSymbolFilterInput): DesSymbolConnection
+  "Gets library footprints."
+  footprints("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesFootprintFilterInput): DesFootprintConnection
   name: String!
   description: String!
   version: String!
@@ -2050,7 +2124,7 @@ type DesProject implements Node {
   "The list of the parameters describing this project."
   parameters("An optional list of parameter names to search." names: [String!]): [DesProjectParameter!]!
   "The web address to download a preview image for this project."
-  previewUrl: String!
+  previewUrl(isDirectLink: Boolean! = false): String!
   "The list of workflows associated with this project."
   workflows("An option to search workflows that have been modified after a specific `DateTime`." modifiedAfter: DateTime "Filter workflows by a variable." withVariable: DesWorkflowFilterByVariableInput "An option to search workflows that have been completed." isClosed: Boolean! = false where: DesWorkflowFilterInput): [DesWorkflow!]
   "The latest VCS revision."
@@ -2062,6 +2136,8 @@ type DesProject implements Node {
   "ECAD, MCAD or ESD revisions returned by pages. See also `desProjectCollaborationRevisions`."
   collaborationRevisions(domain: DesCollaborationDomain! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesCollaborationRevisionConnection
   projectPermissions: [DesProjectPermission!]!
+  "The list of project tasks. For a particular project consider using the more effective query `desProjectTasks`."
+  tasks: [DesTask!]!
   "The Altium 365 web address."
   url: String!
   "The Altium 365 workspace URL."
@@ -2080,8 +2156,6 @@ type DesProject implements Node {
   updatedAt: DateTime!
   "The detailed design information for this project."
   design: DesDesign!
-  "The list of project tasks. For a particular project consider using the more effective query `desProjectTasks`."
-  tasks: [DesTask!]
 }
 
 "A connection to a list of items."
@@ -2278,6 +2352,12 @@ type DesRemoveComponentPartChoicesPayload {
   errors: [DesPayloadError!]!
 }
 
+"Payload associated with removing a footprint from a component."
+type DesRemoveFootprintFromComponentPayload {
+  "Payload errors."
+  errors: [DesPayloadError!]!
+}
+
 "Payload associated with removing users from a group."
 type DesRemoveUsersFromGroupPayload {
   "Payload errors."
@@ -2324,6 +2404,8 @@ type DesReuseBlockRevision implements Node {
   pcbSnippet: DesDownloadableFile!
   "The circuitry on a single schematic sheet saved as a reuse block."
   schematicSnippet: DesDownloadableFile!
+  "The life cycle state information."
+  lifeCycleState: DesLifeCycleState!
   "The node identifier for this reuse block (used by `desReuseBlockRevisionById`)."
   id: ID!
   "The name of the reuse block revision."
@@ -2611,6 +2693,26 @@ type DesSymbol implements Node {
   description: String!
 }
 
+"A connection to a list of items."
+type DesSymbolConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [DesSymbolEdge!]
+  "A flattened list of the nodes."
+  nodes: [DesSymbol!]
+  "Identifies the total count of items in the connection."
+  totalCount: Int!
+}
+
+"An edge in a connection."
+type DesSymbolEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: DesSymbol!
+}
+
 type DesSystemDiagram {
   "The downloadable file for the system diagram."
   systemDiagramFile: DesDownloadableFile
@@ -2740,6 +2842,12 @@ type DesUpdateComponentRevisionParametersPayload {
   errors: [DesPayloadError!]!
 }
 
+"Payload associated with updating the symbol of a component."
+type DesUpdateComponentSymbolPayload {
+  "Payload errors."
+  errors: [DesPayloadError!]!
+}
+
 "Payload associated with updating a component template."
 type DesUpdateComponentTemplatePayload {
   "Payload errors."
@@ -2762,6 +2870,14 @@ type DesUpdateFolderPermissionsPayload {
 type DesUpdateFootprintLifeCycleStatePayload {
   "Footprint identifier."
   footprintId: ID!
+  "Payload errors."
+  errors: [DesPayloadError!]!
+}
+
+"Payload of updating a footprint."
+type DesUpdateFootprintPayload {
+  "Identifier of the updated footprint."
+  id: ID!
   "Payload errors."
   errors: [DesPayloadError!]!
 }
@@ -2844,6 +2960,22 @@ type DesUpdateUserGroupPayload {
 
 "Payload associated with updating a user."
 type DesUpdateUserPayload {
+  "Payload errors."
+  errors: [DesPayloadError!]!
+}
+
+"Payload for upgrading components to use the latest symbol revision."
+type DesUpgradeComponentsToLatestSymbolPayload {
+  "The number of components that were successfully upgraded."
+  upgradedCount: Int!
+  "The number of components that failed to upgrade."
+  failedCount: Int!
+  "The total number of components that were processed."
+  totalProcessed: Int!
+  "List of component identifiers that were upgraded."
+  upgradedComponentIds: [ID!]!
+  "List of component identifiers that failed to upgrade."
+  failedComponentIds: [ID!]!
   "Payload errors."
   errors: [DesPayloadError!]!
 }
@@ -3062,6 +3194,8 @@ type DesWorkspace implements Node {
   workflowDefinitions(where: DesWorkflowDefinitionFilterInput): [DesWorkflowDefinition!]
   "The list of workflows in this workspace."
   workflows("Filter workflows by a variable." withVariable: DesWorkflowFilterByVariableInput where: DesWorkflowFilterInput): [DesWorkflow!]
+  "The list of workspace tasks. For a particular workspace consider using the more effective query `desWorkspaceTasks`."
+  tasks: [DesTask!]!
   "The descriptive label for this workspace."
   name: String!
   "The web address of this workspace."
@@ -3072,8 +3206,6 @@ type DesWorkspace implements Node {
   description: String
   "Tells if the workspace is the current user default."
   isDefault: Boolean!
-  "The list of workspace tasks. For a particular workspace consider using the more effective query `desWorkspaceTasks`."
-  tasks: [DesTask!]
 }
 
 "Information about workspace configuration."
@@ -3186,6 +3318,16 @@ input DesAddComponentPartChoicesInput {
   manufacturerParts: [DesPartChoiceInput!]!
   "Use when Altium Designer version 23 option 'Part Choices Revision control' is checked."
   withRevisionControl: Boolean
+}
+
+"Input for adding a footprint to a component."
+input DesAddFootprintToComponentInput {
+  "The component identifier."
+  componentId: ID!
+  "The identifier of the footprint to add to the component."
+  footprintId: ID!
+  "The index that the footprint should be added to the component at. If set as 0, it is set as the first and default footprint for the component. If omitted or set as `null`, it is set as the last listed footprint."
+  addAtIndex: Int
 }
 
 "Input for adding users to a group."
@@ -3692,6 +3834,17 @@ input DesComponentStringOperationFilterInput {
   eq: String
 }
 
+input DesComponentUpgradeFilterInput {
+  "Filter by component name (HRID)."
+  name: DesStringUpgradeOperationFilterInput
+  "Filter by the component's description."
+  description: DesStringUpgradeOperationFilterInput
+  "Filter by the component's comment field."
+  comment: DesStringUpgradeOperationFilterInput
+  "Filter by the name of the component's lifecycle state (e.g., \"Validated\")."
+  lifeCycleStateName: DesLifecycleStateUpgradeOperationFilterInput
+}
+
 "Input for comment creation."
 input DesCreateCommentInput {
   "Comment entity identifier."
@@ -3783,7 +3936,7 @@ input DesCreateLifeCycleDefinitionInput {
 
 "Input for manufacture package creation."
 input DesCreateManufacturePackageInput {
-  "The ID of the project to create a manufacture package from."
+  "The identifier of the project to create a manufacture package from."
   projectId: ID!
   "The Git commit which determines the version of the project to use. If not provided, the latest version is used."
   vcsRevisionId: String
@@ -3801,7 +3954,7 @@ input DesCreateManufacturePackageInput {
 
 "Input for project export job creation."
 input DesCreateProjectExportJobInput {
-  "The project node ID."
+  "Project identifier."
   projectId: ID!
   "The Git commit which determines the version of the project to use. If not provided, the latest version is used."
   vcsRevisionId: String
@@ -3821,7 +3974,7 @@ input DesCreateProjectExportJobInput {
 
 "Input for project task creation."
 input DesCreateProjectTaskInput {
-  "The project node ID."
+  "Project identifier."
   projectId: ID!
   "The new task data."
   task: DesCreateTaskInput!
@@ -4017,6 +4170,18 @@ input DesDesignItemParameterFilterInput {
   value: StringOperationFilterInput
 }
 
+"Provides filter options for a list of footprints."
+input DesFootprintFilterInput {
+  and: [DesFootprintFilterInput!]
+  or: [DesFootprintFilterInput!]
+  "Filter by the ECAD entity name."
+  name: StringOperationFilterInput
+  "Filter by the ECAD entity description."
+  description: StringOperationFilterInput
+  "Filter by the ECAD entity comment."
+  comment: StringOperationFilterInput
+}
+
 "Input for launching a workflow."
 input DesLaunchWorkflowInput {
   "URL of workspace."
@@ -4113,6 +4278,17 @@ input DesLifeCycleStateTransitionInput {
   controllers: [DesLifeCycleStateTransitionControllerInput!]
   "Approval groups for this life cycle definition transition. Mutually exclusive with controllers, if approvals are set, controllers must be omitted."
   approvals: [DesLifeCycleStateTransitionApprovalGroupInput!]
+}
+
+input DesLifecycleStateUpgradeOperationFilterInput {
+  "Equals."
+  eq: String
+  "Not equals."
+  neq: String
+  "Is one of the given strings."
+  in: [String!]
+  "Is not one of the given strings."
+  notIn: [String!]
 }
 
 "Input for moving a folder."
@@ -4381,6 +4557,14 @@ input DesRemoveComponentPartChoicesInput {
   withRevisionControl: Boolean
 }
 
+"Input for removing a footprint from a component."
+input DesRemoveFootprintFromComponentInput {
+  "The component identifier."
+  componentId: ID!
+  "The identifier of the footprint to remove from the component."
+  footprintId: ID!
+}
+
 "Input to remove users from group."
 input DesRemoveUsersFromGroupInput {
   "The group node ID."
@@ -4408,7 +4592,7 @@ input DesSchematicFilterInput {
 }
 
 input DesSetProjectRequirementsBlockInput {
-  "The project node ID."
+  "Project identifier."
   projectId: ID!
   "Requirements block ID."
   requirementsBlockId: String
@@ -4422,6 +4606,35 @@ input DesSharedWithMeProjectInfoFilterInput {
   name: StringOperationFilterInput
   "The project description."
   description: StringOperationFilterInput
+}
+
+input DesStringUpgradeOperationFilterInput {
+  "Equals."
+  eq: String
+  "Not equals."
+  neq: String
+  "Contains the given string."
+  contains: String
+  "Starts with the given string."
+  startsWith: String
+  "Ends with the given string."
+  endsWith: String
+  "Is one of the given strings."
+  in: [String!]
+  "Is not one of the given strings."
+  notIn: [String!]
+}
+
+"A component symbol. These represent the body and the pins on the physical component."
+input DesSymbolFilterInput {
+  and: [DesSymbolFilterInput!]
+  or: [DesSymbolFilterInput!]
+  "ECAD entity name."
+  name: StringOperationFilterInput
+  "ECAD entity description."
+  description: StringOperationFilterInput
+  "ECAD entity comment."
+  comment: StringOperationFilterInput
 }
 
 "Input for terminating workflows."
@@ -4486,6 +4699,14 @@ input DesUpdateComponentRevisionParametersInput {
   parameters: [DesRevisionParameterInput!]!
 }
 
+"Input for updating the symbol of a component."
+input DesUpdateComponentSymbolInput {
+  "The component identifier."
+  componentId: ID!
+  "The identifier of the symbol to link to the component. If omitted or set to `null`, the symbol will be unlinked from the component."
+  symbolId: ID
+}
+
 "Input for updating component template."
 input DesUpdateComponentTemplateInput {
   "The node ID."
@@ -4534,6 +4755,18 @@ input DesUpdateFolderPermissionsInput {
   replaceExisting: Boolean
   "Permissions to update."
   permissions: [DesUpdateFolderPermissionInput!]!
+}
+
+"Input for updating a footprint."
+input DesUpdateFootprintInput {
+  "The footprint identifier."
+  footprintId: ID!
+  "Optional comment."
+  comment: String
+  "Optional description."
+  description: String
+  "Optional release note."
+  releaseNote: String
 }
 
 "Input to update footprint life cycle state."
@@ -4700,9 +4933,17 @@ input DesUpdateUserInput {
   lastName: String
 }
 
+"Input for upgrading components to use the latest symbol revision."
+input DesUpgradeComponentsToLatestSymbolInput {
+  "The symbol identifier whose components should be upgraded."
+  symbolId: ID!
+  "Optional structured filter to limit which components are upgraded."
+  componentFilter: DesComponentUpgradeFilterInput
+}
+
 "Input for uploading a collaboration."
 input DesUploadCollaborationInput {
-  "The project node ID."
+  "Project identifier."
   projectId: ID!
   "The ECAD, MCAD or ESD domain."
   domain: DesCollaborationDomain!
@@ -5056,6 +5297,8 @@ enum DesContentTypeKind {
   ESD_PROJECT
   SOLUTION
   SOFTWARE_PROJECT
+  DEVICE_CONFIGURATION
+  SIMULATION
 }
 
 enum DesDocumentType {
@@ -5438,6 +5681,8 @@ type SupContentVaultMetadata {
   hasThermal: Boolean!
   "True if the model in the content vault has a simulation (SPICE) model."
   hasSimulation: Boolean!
+  "Content Vault certification level"
+  certificationLevel: Int
 }
 
 "A country's name, country code, and continent code."
@@ -5474,7 +5719,7 @@ type SupDescription {
 type SupDocument {
   name: String!
   pageCount: Int
-  createdAt: Time
+  createdAt: DateTime
   url: String!
   creditString: String!
   creditUrl: String!
@@ -5509,7 +5754,7 @@ type SupInStockBucket {
   count: Int
 }
 
-"cadLevelAgg produces a LevelBucket with level + displayName"
+"cadLevelAgg and contentVaultLevelAgg produce a LevelBucket with level + displayName"
 type SupLevelBucket {
   level: Int
   displayName: String!
@@ -5539,7 +5784,7 @@ type SupOffer {
   "Octopart internal URL for this offer."
   internalUrl: String!
   "The last time data was received from distributor feed or API for this offer."
-  updated: Time!
+  updated: DateTime!
   "Number of days to acquire parts from factory."
   factoryLeadDays: Int
   "Number of parts on order from factory."
@@ -5665,7 +5910,7 @@ type SupPartCadModel {
   "The company this model originated from."
   source: SupCompany!
   "The date the model was created or updated."
-  updated: Time!
+  updated: DateTime!
   "The URL to view this model on the provider website."
   cadSourceUrl: String
   "URLs to download this model, indexed by file format."
@@ -5683,7 +5928,7 @@ type SupPartCadModel {
   "The Style Guide version followed to create the model."
   styleGuideVersion: String
   "The Style Guide release date."
-  styleGuideDate: Time
+  styleGuideDate: DateTime
   "The Style Guide URL."
   styleGuideUrl: String
   "IPC compliance information."
@@ -5691,7 +5936,7 @@ type SupPartCadModel {
   "The datasheet used to create the model"
   datasheetUrl: String
   "The model datasheet release date."
-  datasheetDate: Time
+  datasheetDate: DateTime
   "The datasheet version."
   datasheetVersion: String
   "The manufacturer from which model data was sourced."
@@ -5777,6 +6022,8 @@ type SupPartResultSet {
   cadAgg: [SupCadBucket!]!
   "Aggregate on CAD levels for this result set"
   cadLevelAgg: [SupLevelBucket!]!
+  "Aggregate on Altium content metadata levels"
+  contentVaultLevelAgg: [SupLevelBucket!]!
   "Aggregate on Altium content metadata"
   contentVaultMetadataAgg: [SupContentMetadataBucket!]!
   "Aggregate on whether the parts are in stock for this result set"
@@ -5949,13 +6196,13 @@ type SupSuggestion {
   inCategoryId: String!
   "If the suggestion should also apply a manufacturer filter, this is the Manufacturer name"
   inManufacturerName: String!
+  "If the suggestion should also apply a partId filter, this is the Part ID"
+  inPartId: String!
 }
 
 input SupApiCredentials {
   "The ID of the company that you are providing credentials for. An Octopart representative will give this value to you if needed."
-  companyId: String! = ""
-  "The name of the API that you are providing credentials for. An Octopart representative will give this value to you if needed."
-  apiName: String @deprecated(reason: "use `company_id` instead")
+  companyId: String!
   "Authentication details. `clientId` and `clientSecret` should be given together when an API requires them."
   clientId: String
   "Authentication details. `clientId` and `clientSecret` should be given together when an API requires them."
@@ -5976,7 +6223,7 @@ input SupCreateContentVaultMetadataInput {
   "Internal Vault model ID."
   vaultItemId: ID!
   "Creation timestamp."
-  createTimestamp: Time!
+  createTimestamp: DateTime!
   "Internal model UUID"
   octopartModelUuid: String
   "True if the model has symbols."
@@ -5989,6 +6236,8 @@ input SupCreateContentVaultMetadataInput {
   hasThermal: Boolean
   "True if the model has simulation data."
   hasSimulation: Boolean
+  "Content Vault certification level"
+  certificationLevel: Int
 }
 
 "A reference to a part offer."
@@ -6088,6 +6337,13 @@ enum SupSpecAggsSelection {
 type SupRefApplicationBucket {
   applicationId: String!
   count: Int!
+  application: [SupCategory!]
+}
+
+type SupRefCategoryBucket {
+  categoryId: String!
+  count: Int!
+  category: [SupCategory!]
 }
 
 "A reference design model aggregates the relevant documents, files and parts."
@@ -6102,6 +6358,8 @@ type SupRefDesign {
   subtitle: String!
   "The detailed description."
   description: String!
+  "The type identifier of this reference design."
+  type: SupRefDesignType!
   "The source URL where the reference design is published."
   sourceUrl: String
   "Indicates whether the reference design is verified."
@@ -6117,11 +6375,11 @@ type SupRefDesign {
   "The bill of materials (BOM) identifier."
   bomId: String
   "Part identifiers of the reference design, including their designators."
-  parts(designators: [String!] type: SupRefPartType): [SupRefPart]!
+  parts(designators: [String!] type: SupRefPartType @deprecated(reason: "Use 'types' instead") types: [SupRefPartType] start: Int! = 0 limit: Int! = 50): [SupRefPart]!
   "The list of application identifiers related to the reference design."
   applicationIds: [String!]!
   "The list of evaluation kit identifiers associated with the reference design."
-  evaluationKitIds: [String!]!
+  evaluationKitIds: [String!]! @deprecated(reason: "Use 'evaluationKits' instead.")
   "Preview images that provide a visual overview of the reference design."
   previewImages: [SupImage]
   "Frequently asked questions about the reference design."
@@ -6136,8 +6394,10 @@ type SupRefDesign {
   tags: [SupRefTag]
   "Software packages and resources associated with the reference design."
   softwares: [SupRefResource]!
-  evaluationKits: [SupPart!]
+  "The list of evaluation kits associated with the reference design."
+  evaluationKits: [SupRefEvaluationKit!]
   publisher: [SupCompany!]
+  applications: [SupCategory!]
 }
 
 "Represents a design file belonging to a reference design."
@@ -6182,6 +6442,26 @@ type SupRefDesignResultSet {
   applicationAgg(size: Int = 10): [SupRefApplicationBucket!]
   "Aggregate on tags for this result set."
   tagAgg(size: Int = 10): [SupRefTagBucket!]
+  "Aggregate on categories for this result set."
+  categoryAgg(size: Int = 10): [SupRefCategoryBucket!]
+  "Aggregate on reference design types for this result set."
+  typeAgg(size: Int = 10): [SupRefDesignTypeBucket!]
+}
+
+type SupRefDesignTypeBucket {
+  type: SupRefDesignType!
+  count: Int!
+}
+
+type SupRefEvaluationKit {
+  "The part identifier."
+  partId: String!
+  "The evaluation kit title."
+  title: String!
+  "Preview images that provide a visual overview of the evaluation kit."
+  previewImages: [SupImage!]!
+  "Nexar supply part data for internal use only. Array of size 1."
+  evalKit(country: String! = "US" currency: String! = "USD"): [SupPart]!
 }
 
 "Represents a frequently asked question for a reference design."
@@ -6198,6 +6478,8 @@ type SupRefKeyFeature {
   name: String!
   "The feature description."
   description: String!
+  "The feature description in HTML format."
+  html: String
 }
 
 type SupRefPart {
@@ -6208,7 +6490,7 @@ type SupRefPart {
   "The global identifier linked to the reference design components."
   designators: [String!]!
   "Nexar supply part data for internal use only. Array of size 1."
-  part: [SupPart]!
+  part(country: String! = "US" currency: String! = "USD"): [SupPart]!
 }
 
 "Represents a 2D point for a file note."
@@ -6239,6 +6521,8 @@ type SupRefResource {
   downloadText: String!
   "The download URL for the resource."
   downloadUrl: String!
+  "The revision date for the resource."
+  revisionDate: DateTime!
   "Other related resources."
   otherResources: [SupRefResource]!
 }
@@ -6263,6 +6547,24 @@ input SupRefDesignFilterInput {
   categoryIds: [String!]
   publisherIds: [String!]
   tags: [String!]
+  types: [SupRefDesignType!]
+}
+
+enum SupRefDesignType {
+  "Highlights a component feature, often for marketing or sales purposes."
+  DEMOSTRATION
+  "Intended to test specific electrical\/mechanical characteristics."
+  EVALUATION
+  "Enables code\/hardware development and prototyping."
+  DEVELOPMENT
+  "Bundled offering to help users ramp up quickly."
+  STARTER
+  "Complete application or subsystem design with documentation."
+  REFERENCE_DESIGN
+  "Extends capabilities of a dev board. Often optional."
+  EXPANSION
+  "Combines multiple board types, sensors, or modules into a full system."
+  SYSTEM
 }
 
 enum SupRefPartType {
@@ -6272,6 +6574,140 @@ enum SupRefPartType {
   KEY
   "Other supporting parts."
   OTHER
+}
+
+"Shared Fields between `SupPartFamily` and `SupPartGroup`."
+interface SupPartFamilyEntity {
+  id: ID!
+  title: String!
+  subtitle: String!
+  overview: String!
+  categoryID: String!
+  manufacturerID: String!
+  applicationIDs: [String!]!
+  tags: [SupPartFamilyTag!]!
+  keyFeatures: [SupPartFamilyKeyFeature!]!
+}
+
+"`SupPartFamily` contains the relevant information related to a part family.\nIt exists in a hierarchy of other part families, they can contain children which represent other part families or\n`partGroups` which represent the leaves of the hierarchy tree."
+type SupPartFamily implements SupPartFamilyEntity {
+  "`id` is the global resource id (GRID) for this Part Family."
+  id: ID!
+  "`familyType` describes the part family in a part family hierarchy.\nIt is vendor and part family specific.\nExamples include: 'Series', 'Family', etc."
+  familyType: String!
+  "`parent` is the the direct parent of this family. This will be `null` if this is the highest level."
+  parent: SupPartFamily
+  "`children` is a list of the part families that are the direct children of this family.\nThere will be one of either `children` or `partGroups`."
+  children: [SupPartFamily!]!
+  "`partGroups` is a list of the part groups that are the direct children of this family.\nThere will be one of either `children` or `partGroups`."
+  partGroups: [SupPartGroup!]!
+  "`siblings` is a list of direct sibling part families of the current group, which have the same parent.\nThey are usually a close alternative choice of the current group."
+  siblings: [SupPartFamily!]!
+  "`title` of the part family."
+  title: String!
+  "`subtitle` of the part family."
+  subtitle: String!
+  "`overview` of the part family."
+  overview: String!
+  "`categoryID` is the identifier of the part category of this part family."
+  categoryID: String!
+  "`applicationIDs` is a list of the identifiers of relevant applications this part family can be useful for."
+  applicationIDs: [String!]!
+  "`tags` is a list of additional metadata for categorizing this part family."
+  tags: [SupPartFamilyTag!]!
+  "`keyFeatures` is the list of key part features relevant to this part family."
+  keyFeatures: [SupPartFamilyKeyFeature!]!
+  "`manufacturerID` is the identifier of the manufacturer of this part family."
+  manufacturerID: String!
+  category: SupCategory!
+  applications: [SupCategory!]
+  manufacturer: [SupCompany!]
+}
+
+"`SupPartFamilyDocument` contains the details for the documentation provided for a Part Family.\n`url` contains a link to the given document.\n`updatedAt` is the time we last updated this document."
+type SupPartFamilyDocument {
+  type: SupPartFamilyDocumentType!
+  description: String!
+  url: String!
+  updatedAt: DateTime!
+}
+
+"`SupPartFamilyFeatureMetadata` contains additional information about a given feature."
+type SupPartFamilyFeatureMetadata {
+  name: String!
+  value: String!
+}
+
+"`SupPartFamilyKeyFeature` contains the key details for a Part Family feature."
+type SupPartFamilyKeyFeature {
+  name: String!
+  group: String!
+  value: String!
+  valueType: SupPartFamilyFeatureValueType!
+  units: String!
+  metadata: [SupPartFamilyFeatureMetadata!]!
+}
+
+"`SupPartFamilyTag` represents additional metadata for a Part Family."
+type SupPartFamilyTag {
+  type: String!
+  value: String!
+}
+
+"`SupPartGroup` contains the relevant information relating to a part group.\nIt represents the leaves of the Part Family hierarchy, and contain the parts represented by this group."
+type SupPartGroup implements SupPartFamilyEntity {
+  "`id` is the global resource id (GRID) for this Part Group."
+  id: ID!
+  "`parent` is the the part family representing the direct parent of this group."
+  parent: SupPartFamily
+  "`siblings` is a list of direct sibling part groups of the current group, which have the same parent.\nThey are usually a close alternative choice of the current group."
+  siblings: [SupPartGroup!]!
+  "`title` of the part group."
+  title: String!
+  "`subtitle` of the part group."
+  subtitle: String!
+  "`overview` of the key details of this part group."
+  overview: String!
+  "`categoryID` is the identifier of the part category of this part group."
+  categoryID: String!
+  "`applicationIDs` is a list of the identifiers of relevant applications this part group can be useful for."
+  applicationIDs: [String!]!
+  "`tags` is a list of additional metadata for categorizing this part group."
+  tags: [SupPartFamilyTag!]!
+  "`keyFeatures` is the list of key part features relevant to this part group."
+  keyFeatures: [SupPartFamilyKeyFeature!]!
+  "`manufacturerID` is the identifier of the manufacturer of this part group."
+  manufacturerID: String!
+  "`partIDs` is the list of identifiers of the physical parts within this group."
+  partIDs: [String!]!
+  "`referenceDesignIDs` is a list of the identifiers of reference designs relevant to this part group."
+  referenceDesignIDs: [String!]!
+  "`documents` is a list of the key documentation related to this part group."
+  documents(type: SupPartFamilyDocumentType): [SupPartFamilyDocument!]!
+  category: SupCategory!
+  applications: [SupCategory]!
+  manufacturer: [SupCompany!]
+  parts: [SupPart]!
+}
+
+"Valid document types for Part Family documentation."
+enum SupPartFamilyDocumentType {
+  DATASHEET
+  MANUAL
+  APPLICATION_NOTE
+  REPORT
+  BROCHURE
+  FLYER
+  GUIDE
+  OTHER
+}
+
+"Valid types a features value can take."
+enum SupPartFamilyFeatureValueType {
+  STRING
+  SCALAR
+  RANGE
+  ENUMERATION
 }
 
 interface ManOrderEvent {

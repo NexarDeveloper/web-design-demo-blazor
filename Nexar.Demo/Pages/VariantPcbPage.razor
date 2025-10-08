@@ -17,6 +17,11 @@
 {
     <TextField Label="DocumentId" Text=@Data.Current.Tag.DocumentId />
 
+    @if (Data.Current.Tag.Mesh3D?.GlbFile is { })
+    {
+        <TextFieldUrl Label="Mesh3D.GlbFile.downloadUrl" Text="Download" Href="@Data.Current.Tag.Mesh3D?.GlbFile?.DownloadUrl" />
+    }
+
     <TextField Label="DesignItems.TotalCount" Text=@Data.Current.Tag.DesignItems!.TotalCount.ToString() />
 
     @if (Data.Current.Tag.DesignItems.TotalCount > Data.ItemsLimit)
