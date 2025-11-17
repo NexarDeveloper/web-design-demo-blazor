@@ -101,3 +101,14 @@ This is the endpoint for GraphQL queries and also the GraphQL IDE "Banana Cake P
 The package [HotChocolate StrawberryShake](https://github.com/ChilliCream/hotchocolate)
 is used for generating strongly typed C# client code for invoking GraphQL queries.
 See the source queries in [Resources](Nexar.Client/Resources).
+
+## How to update GraphQL schema
+
+Change to `Nexar.Client` and run:
+
+```
+dotnet tool restore
+dotnet graphql update
+```
+
+As a result, the GraphQL schema file `schema.graphql` is updated to the latest.
