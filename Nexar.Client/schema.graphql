@@ -25,19 +25,23 @@ type Query {
   desCommentThreads("The identifier for a project (This is the project field named \"id\")." projectId: ID!): [DesCommentThread!]!
   "Search for a specific comment thread associated with a project."
   desCommentThread("The identifier for a project (This is the project field named \"id\")." projectId: ID! "The reference identifier for a comment thread." threadId: String!): DesCommentThread
-  desDesignItemById(id: ID!): DesDesignItem
+  desDesignItemById(id: ID!): DesDesignItem @deprecated(reason: "Will be removed in the future.")
   "Gets the library by workspace URL."
   desLibrary(workspaceUrl: String): DesLibrary!
   "Search a specific component by its unique identifier."
-  desComponentById("The node identifier for a component." id: ID!): DesComponent
+  desComponentById("The identifier for a component." id: ID!): DesComponent
   "Searches multiple components by their unique identifiers."
-  desComponentsByIds("The node identifiers for components." ids: [ID!]!): [DesUnionPayload!]!
+  desComponentsByIds("The identifiers for components." ids: [ID!]!): [DesUnionPayload!]!
   "Searches details of a revision by its unique identifier."
-  desRevisionDetailsById("The node identifier for specific revision details." id: ID!): DesRevisionDetails
+  desRevisionDetailsById("The node identifier for specific revision details." id: ID!): DesRevisionDetails @deprecated(reason: "Use `desRevisionDetailsByRevisionId` instead.")
+  "Searches details of a revision by its reference identifier."
+  desRevisionDetailsByRevisionId("The workspace in which the revision exists." workspaceUrl: String! "The reference identifier for a specific revision." revisionId: String!): DesRevisionDetails
   "Searches for a specific template for a component by its unique identifier."
   desComponentTemplateById("The node identifier for a component template." id: ID!): DesComponentTemplate
   "Searches for a specific folder by its unique identifier."
-  desFolderById("The node identifier for a folder." id: ID!): DesFolder
+  desFolderById("The node identifier for a folder." id: ID!): DesFolder @deprecated(reason: "Use `DesFolderByFolderId` instead.")
+  "Searches for a specific folder by its reference identifier."
+  desFolderByFolderId(workspaceUrl: String! "The folder reference identifier." folderId: String!): DesFolder
   "Searches for a specific footprint by its unique identifier."
   desFootprintById("The node identifier for a footprint." id: ID!): DesFootprint
   "Searches for a specific symbol by its unique identifier."
@@ -48,17 +52,19 @@ type Query {
   desWorkspaceTasks("The URL of the workspace to get tasks from." workspaceUrl: String "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesTaskConnection
   desManufacturePackages: [DesManufacturePackage!]!
   "Gets the manufacture package by its unique identifier."
-  desManufacturePackageById("The node identifier for manufacture package." id: ID!): DesManufacturePackage
+  desManufacturePackageById("The node identifier for manufacture package." id: ID!): DesManufacturePackage @deprecated(reason: "Will be removed in the future.")
   "Search projects within a workspace with results in paged groups."
-  desProjects("The web address of a workspace." workspaceUrl: String "Requirements block filter." requirementsBlockFilter: DesProjectsRequirementsBlockFilterInput "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesProjectFilterInput): DesProjectConnection
+  desProjects("The web address of a workspace." workspaceUrl: String "Extra arguments." args: DesProjectsInput "Requirements block filter." requirementsBlockFilter: DesProjectsRequirementsBlockFilterInput "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesProjectFilterInput): DesProjectConnection
   "Searches a project by its identifier."
   desProjectById("The project identifier." id: ID!): DesProject
   "Searches projects by their identifiers."
   desProjectsByIds("An array of project identifiers." ids: [ID!]!): [DesProject]!
-  "Searches a release by its node identifier."
-  desReleaseById("The release node identifier." id: ID!): DesRelease
+  "Searches a release by its identifier."
+  desReleaseById("The release identifier." id: ID!): DesRelease
   "Searches a project variant by its node identifier."
-  desWipVariantById("The project variant node identifier." id: ID!): DesWipVariant
+  desWipVariantById("The project variant node identifier." id: ID!): DesWipVariant @deprecated(reason: "Use `desWipVariantByVariantName` instead.")
+  "Searches a project WIP variant by its name."
+  desWipVariantByVariantName("The project identifier." projectId: ID! variantName: String!): DesWipVariant
   "Searches a release variant by its node identifier."
   desReleaseVariantById("The release variant node identifier." id: ID!): DesReleaseVariant
   "Gets the project identifier from its internal identifier."
@@ -104,6 +110,8 @@ type Query {
   desWorkspaceConfiguration(workspaceUrl: String): DesWorkspaceConfiguration!
   "Searches for a project template by its identifier."
   desProjectTemplateById("The project template node identifier." id: ID!): DesProjectTemplate
+  "Searches for a project template revision by its identifier."
+  desProjectTemplateRevisionById("The project template revision identifier." id: ID!): DesProjectTemplateRevision
   "Gets the creation job for a manufacture package by its unique identifier."
   desManufacturePackageCreationJob("The node identifier for a manufacture package creation job." id: ID!): DesManufacturePackageCreationJob
   "Gets the specified project export job."
@@ -153,6 +161,26 @@ type Query {
   supSpellingCorrection("query string to correct" q: String!): [SupSpellingCorrection!]!
   "Match multiple manufacturer + mpn pairs at once.  Useful for when you have a list of parts, as with a BOM (Bill of Materials)"
   supMultiMatch("list of inputs to attempt to match" queries: [SupPartMatchQuery!]! "options when matching such as applying filters or only including authorized or in-stock parts" options: SupPartMatchOptions "user's country" country: String! = "US" "user's currency" currency: String! = "USD" "fetch latest pricing and stock data from distributor API. Company.isDistributorApi indicates if a distributor supports this feature." distributorApi: Boolean "how long to wait for distributor API to respond as a duration string (e.g. `3s` or `500ms`)" distributorApiTimeout: String! = "3s" "if needed, pass along credentials for API integrations" customPricingCredentials: [SupApiCredentials!] "Specifying a ranking method." rankingMethod: SupSearchRankingMethod! = DEFAULT): [SupPartMatch!]!
+  "Search a specific evaluation kit by its unique identifier."
+  supEvalKitById(id: ID!): SupEvalKit
+  "Search a specific evaluation kit by its unique identifier."
+  supEvalKitsByIds(ids: [ID!]!): [SupEvalKit]!
+  "List a evaluation kits."
+  supEvalKits(q: String start: Int! = 0 limit: Int! = 10): [SupEvalKit]!
+  "Search for part families and groups.\nThere is a limit on the number of parts allowed for each group. If you want the complete set of parts for a group\nmake a follow up request to `supPartGroupByName` or `supPartGroupById`."
+  supPartFamilySearch("The query text for the descriptive search of the part groups." q: String! "Part group filters to be applied to this search." filters: SupPartFamilyFilterInput "Start offset of the results in the result set." start: Int = 0 "Page size of the results in the result set." limit: Int = 10): SupPartFamilyResultSet!
+  "Search for part and group them by Part Group if applicable."
+  supPartFamilyPartSearch("The query text for descriptive search." q: String "The query text for MPN matching search.\nOverride q when this input is given." mpn: String "Filter to remove parts with no stocking distributors." inStockOnly: Boolean "Filter to only include parts with a datasheet." hasDatasheetOnly: Boolean "Spec Filters to be applied." filters: Map): SupPartFamilyPartResultSet!
+  "Get a specific part group by its unique identifier (GRID)."
+  supPartGroupById(id: ID!): SupPartGroup!
+  "Get a specific part group by its unique name."
+  supPartGroupByName(name: String!): SupPartGroup!
+  "Get a set of part groups by their unique identifiers (GRIDs).\nIf an ID is not found it will be returned as null, ensuring a one to one mapping of input ids to output."
+  supPartGroupsByIds(ids: [ID!]!): [SupPartGroup]!
+  "Get a part group by the ID of the part."
+  supPartGroupByPartId(partId: ID!): SupPartGroup!
+  "Get the set of filterable parameters for a part group within the given category."
+  supPartFamilyParameters(categoryId: ID!): [SupPartFamilyParameter!]!
   "Search a specific reference design by its unique identifier."
   supRefDesignById(id: ID!): SupRefDesign
   "Search a specific reference designs by its unique identifiers."
@@ -163,12 +191,24 @@ type Query {
   supRefDesigns(q: String! filter: SupRefDesignFilterInput start: Int! = 0 limit: Int! = 10): SupRefDesignResultSet!
   "Search a specific parts by reference design unique identifier and part's designators."
   supRefParts(refDesignId: ID! designators: [String!] start: Int! = 0 limit: Int! = 50): [SupRefPart!]
-  "Get a specific part group by its unique identifier (GRID)."
-  supPartGroupById(id: ID!): SupPartGroup!
-  "Get a set of part groups by their unique identifiers (GRIDs).\nIf an ID is not found it will be returned as null, ensuring a one to one mapping of input ids to output."
-  supPartGroupsByIds(ids: [ID!]!): [SupPartGroup]!
-  "Get a part group by the ID of the part."
-  supPartGroupByPartId(partId: ID!): SupPartGroup!
+  "Search a specific software project by its unique identifier."
+  supSoftwareProjectById(id: ID!): SupSoftwareProject
+  "Search a specific software project by its unique identifier."
+  supSoftwareProjectsByIds(ids: [ID!]!): [SupSoftwareProject]!
+  "List a reference solutions."
+  supSoftwareProjects(q: String start: Int! = 0 limit: Int! = 10 filter: SupSoftwareProjectFilterInput): [SupSoftwareProject]!
+  "Search a specific solution template by its unique identifier."
+  supSolutionTemplateById(id: ID!): SupSolutionTemplate
+  "Search a specific solution template by its unique identifier."
+  supSolutionTemplatesByIds(ids: [ID!]!): [SupSolutionTemplate]!
+  "List a solution templates."
+  supSolutionTemplates(q: String start: Int! = 0 limit: Int! = 10): [SupSolutionTemplate]!
+  "Search a specific solution template by application identifier."
+  supSolutionTemplatesByApplicationId(id: String!): [SupSolutionTemplate]!
+  "Search a specific solution template by its unique identifier."
+  supSolutionTemplateApplicationById(id: ID!): SupSolutionTemplateApplication
+  "Search a specific solution template by its application identifier."
+  supSolutionTemplateApplicationByApplicationId(id: String!): SupSolutionTemplateApplication
   "get a the quotes from previously submitted metadata"
   manRapidQuotes(id: ID!): ManRapidQuoteResponse
   manRapidQuoteRequest(id: ID!): ManRapidQuoteRequest
@@ -257,6 +297,8 @@ type Mutation {
   desRemoveFootprintFromComponent(input: DesRemoveFootprintFromComponentInput!): DesRemoveFootprintFromComponentPayload!
   "Upgrades components to use the latest symbol revision. This operation updates the link to the symbol and does not create new component revisions."
   desUpgradeComponentsToLatestSymbol(input: DesUpgradeComponentsToLatestSymbolInput!): DesUpgradeComponentsToLatestSymbolPayload!
+  "Upgrades components to use the latest footprint revision. This operation updates the link to the footprint and does not create new component revisions."
+  desUpgradeComponentsToLatestFootprint(input: DesUpgradeComponentsToLatestFootprintInput!): DesUpgradeComponentsToLatestFootprintPayload!
   "Adds part choices of the specified component."
   desAddComponentPartChoices(input: DesAddComponentPartChoicesInput!): DesAddComponentPartChoicesPayload!
   "Removes part choices of the specified component."
@@ -337,6 +379,30 @@ type Mutation {
   desCreateProjectExportJob(input: DesCreateProjectExportJobInput!): DesCreateProjectExportJobPayload!
   "Internal mutation to store Altium content vault metadata."
   supCreateContentVaultMetadata(input: SupCreateContentVaultMetadataInput!): SupCreateContentVaultMetadataPayload!
+  "Create a new evaluation kit."
+  supEvalKitCreateEvalKit(input: SupEvalKitCreateEvalKitInput!): SupEvalKitCreateEvalKitPayload!
+  "Update a evaluation kit."
+  supEvalKitUpdateEvalKit(input: SupEvalKitUpdateEvalKitInput!): SupEvalKitUpdateEvalKitPayload!
+  "Delete a evaluation kit."
+  supEvalKitDeleteEvalKit(input: SupEvalKitDeleteEvalKitInput!): SupEvalKitDeleteEvalKitPayload!
+  "Create a new solution template."
+  supSoftwareProjectCreateSoftwareProject(input: SupSoftwareProjectCreateSoftwareProjectInput!): SupSoftwareProjectCreateSoftwareProjectPayload!
+  "Update a solution template."
+  supSoftwareProjectUpdateSoftwareProject(input: SupSoftwareProjectUpdateSoftwareProjectInput!): SupSoftwareProjectUpdateSoftwareProjectPayload!
+  "Delete a solution template."
+  supSoftwareProjectDeleteSoftwareProject(input: SupSoftwareProjectDeleteSoftwareProjectInput!): SupSoftwareProjectDeleteSoftwareProjectPayload!
+  "Create a new solution template."
+  supSolutionTemplateCreateSolutionTemplate(input: SupSolutionTemplateCreateSolutionTemplateInput!): SupSolutionTemplateCreateSolutionTemplatePayload!
+  "Update a solution template."
+  supSolutionTemplateUpdateSolutionTemplate(input: SupSolutionTemplateUpdateSolutionTemplateInput!): SupSolutionTemplateUpdateSolutionTemplatePayload!
+  "Delete a solution template."
+  supSolutionTemplateDeleteSolutionTemplate(input: SupSolutionTemplateDeleteSolutionTemplateInput!): SupSolutionTemplateDeleteSolutionTemplatePayload!
+  "Create a new solution template application."
+  supSolutionTemplateCreateSolutionTemplateApplication(input: SupSolutionTemplateCreateSolutionTemplateApplicationInput!): SupSolutionTemplateCreateSolutionTemplateApplicationPayload!
+  "Update a new solution template application."
+  supSolutionTemplateUpdateSolutionTemplateApplication(input: SupSolutionTemplateUpdateSolutionTemplateApplicationInput!): SupSolutionTemplateUpdateSolutionTemplateApplicationPayload!
+  "Delete a solution template application."
+  supSolutionTemplateDeleteSolutionTemplateApplication(input: SupSolutionTemplateDeleteSolutionTemplateApplicationInput!): SupSolutionTemplateDeleteSolutionTemplateApplicationPayload!
   manCreateRapidQuoteRequest(qty: Int! meta: ManBoardMetaInput! shipping: ManShippingDetailsInput): ManRapidQuoteResponse
   "for a manufacturer to return a rapid quote reponse"
   manRespondRapidQuoteRequest("Unique request identifier" id: ID! "Quote Data From Manufactuerer" quote: ManQuoteInput!): ID!
@@ -1219,7 +1285,9 @@ type DesComponentTemplateRevision {
 "Represents a component type classification in the component library."
 type DesComponentType implements Node {
   "The node identifier for this component type."
-  id: ID!
+  id: ID! @deprecated(reason: "Use `componentTypeId` instead.")
+  "The reference identifier for this component type."
+  componentTypeId: String!
   "The display name of the component type."
   name: String!
   "The parent of this component type in the hierarchy."
@@ -1255,7 +1323,9 @@ type DesCreateCommentThreadPayload {
 "Payload associated with creating a folder."
 type DesCreateFolderPayload {
   "ID of the created folder."
-  id: ID
+  id: ID @deprecated(reason: "Use `folderId` instead.")
+  "Reference identifier of the created folder."
+  folderId: String
   "Payload errors."
   errors: [DesPayloadError!]!
 }
@@ -1360,6 +1430,26 @@ type DesDatasheet implements Node {
   description: String!
 }
 
+"A connection to a list of items."
+type DesDatasheetConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [DesDatasheetEdge!]
+  "A flattened list of the nodes."
+  nodes: [DesDatasheet!]
+  "Identifies the total count of items in the connection."
+  totalCount: Int!
+}
+
+"An edge in a connection."
+type DesDatasheetEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: DesDatasheet!
+}
+
 "Payload associated with deleting a comment."
 type DesDeleteCommentPayload {
   "Payload errors."
@@ -1436,7 +1526,11 @@ type DesDesignExchange {
 "A design item is a specific instance of a part used in the design."
 type DesDesignItem implements Node {
   "The node identifier for this project (used by `desDesignItemById`)."
-  id: ID!
+  id: ID! @deprecated(reason: "`SchId` and `PcbId` are now available.")
+  "The schematic identifier."
+  schId: String
+  "The PCB identifier."
+  pcbId: String
   "The detailed component information for this design item."
   component: DesComponent
   "*PROTOTYPE, SUBJECT TO CHANGE*"
@@ -1527,7 +1621,7 @@ type DesErrorPayload {
 "Information about a specific folder."
 type DesFolder implements Node {
   "Folder identifier."
-  id: ID!
+  id: ID! @deprecated(reason: "Use `folderId` instead.")
   "Folder name."
   name: String!
   "Folder path."
@@ -1705,7 +1799,7 @@ type DesLibrary {
   "The user that updated the library."
   updatedBy: DesUser!
   "Gets library folders."
-  folders: [DesFolder!]!
+  folders(where: DesFolderFilterInput): [DesFolder!]!
   "Gets library components."
   components("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesComponentFilterInput): DesComponentConnection
   "Gets library component templates."
@@ -1718,6 +1812,8 @@ type DesLibrary {
   symbols("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesSymbolFilterInput): DesSymbolConnection
   "Gets library footprints."
   footprints("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesFootprintFilterInput): DesFootprintConnection
+  "Gets library datasheets."
+  datasheets("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesDatasheetFilterInput): DesDatasheetConnection
   name: String!
   description: String!
   version: String!
@@ -1859,7 +1955,7 @@ type DesLifeCycleStateTransitionController {
 "Information about the manufacture package."
 type DesManufacturePackage implements Node {
   "The node identifier for this project (used by `desManufacturePackageById`)."
-  id: ID!
+  id: ID! @deprecated(reason: "Will be removed in the future.")
   "Manufacture package name."
   name: String!
   "Manufacture package download URL."
@@ -2138,6 +2234,8 @@ type DesProject implements Node {
   projectPermissions: [DesProjectPermission!]!
   "The list of project tasks. For a particular project consider using the more effective query `desProjectTasks`."
   tasks: [DesTask!]!
+  "The number of design variants."
+  variantCount: Int!
   "The Altium 365 web address."
   url: String!
   "The Altium 365 workspace URL."
@@ -2255,7 +2353,9 @@ type DesProjectTemplateEdge {
 }
 
 "Project template revision information."
-type DesProjectTemplateRevision {
+type DesProjectTemplateRevision implements Node {
+  "Project template revision identifier."
+  id: ID!
   "Project template revision name."
   name: String!
   "Creation date for project template revision."
@@ -2278,7 +2378,7 @@ type DesRectangle {
 
 "A release is a published version of a design with additional generated files for manufacturing."
 type DesRelease implements Node {
-  "The node identifier for this release (used by `desReleaseById`)."
+  "The identifier for this release (used by `desReleaseById`)."
   id: ID!
   "The list of variants contained in this release."
   variants(where: DesReleaseVariantFilterInput): [DesReleaseVariant!]!
@@ -2419,9 +2519,11 @@ type DesReuseBlockRevision implements Node {
 "Revision details ID for later use or full details."
 type DesRevision {
   "The revision details ID for `desRevisionDetailsById`. The instance may not exist for unmanaged components."
-  id: ID!
+  id: ID! @deprecated(reason: "Use `revisionId` instead.")
   "The revision details or null for unmanaged components."
   details: DesRevisionDetails
+  "The reference identifier for revision used in `desRevisionDetailsByRevisionId`. The instance may not exist for unmanaged components."
+  revisionId: String!
 }
 
 "Revision details."
@@ -2435,7 +2537,9 @@ type DesRevisionDetails {
   "The number of parents associated with this revision."
   parentCount: Int!
   "The node ID."
-  id: ID!
+  id: ID! @deprecated(reason: "Use `revisionId` instead.")
+  "The reference identifier."
+  revisionId: String!
   "Revision description."
   description: String
   "Revision comment."
@@ -2444,6 +2548,8 @@ type DesRevisionDetails {
   createdAt: DateTime!
   "The `DateTime` when this revision was last modified."
   modifiedAt: DateTime!
+  "The `DateTime` when this revision was released."
+  releaseDate: DateTime!
 }
 
 "Revision naming scheme details obtained by `desRevisionNamingSchemes`. More information is available on revision naming schemes at: https:\/\/www.altium.com\/documentation\/altium-designer\/accessing-detailed-item-view#!revision_naming_scheme_dlg"
@@ -2863,7 +2969,7 @@ type DesUpdateFolderPayload {
 "Payload associated with updating folder permissions."
 type DesUpdateFolderPermissionsPayload {
   "Folder identifier."
-  folderId: ID!
+  folderId: ID! @deprecated(reason: "This value will soon change from folder node identifier to folder reference identifier (GUID).")
 }
 
 "Payload associated with updating a footprint life cycle state."
@@ -2960,6 +3066,22 @@ type DesUpdateUserGroupPayload {
 
 "Payload associated with updating a user."
 type DesUpdateUserPayload {
+  "Payload errors."
+  errors: [DesPayloadError!]!
+}
+
+"Payload for upgrading components to use the latest footprint revision."
+type DesUpgradeComponentsToLatestFootprintPayload {
+  "The number of components that were successfully upgraded."
+  upgradedCount: Int!
+  "The number of components that failed to upgrade."
+  failedCount: Int!
+  "The total number of components that were processed."
+  totalProcessed: Int!
+  "List of component identifiers that were upgraded."
+  upgradedComponentIds: [ID!]!
+  "List of component identifiers that failed to upgrade."
+  failedComponentIds: [ID!]!
   "Payload errors."
   errors: [DesPayloadError!]!
 }
@@ -3102,7 +3224,9 @@ type DesWeight {
 "A variant contains a specific configuration of a base design."
 type DesWipVariant implements Node {
   "The node identifier (used by `desWipVariantById`)."
-  id: ID!
+  id: ID! @deprecated(reason: "Use `ProjectId` and `Name` with `desWipVariantByVariantName` instead.")
+  "The project identifier (used by `desWipVariantByVariantName`)."
+  projectId: String! @deprecated(reason: "This is temporary to illustrate project identifier as GRID`.")
   designExchange: DesDesignExchange
   "The Bill of Materials (BOM) for this design variant."
   bom: DesBom
@@ -3870,7 +3994,11 @@ input DesCreateCommentThreadInput {
   "Comment thread comment context type."
   commentContextType: DesCommentContextType!
   "Comment thread item as design item identifier."
-  itemAsDesignItemId: ID
+  itemAsDesignItemId: ID @deprecated(reason: "Use `ItemAsDesignItemSchUniqueId` or `ItemAsDesignItemPcbUniqueId` instead.")
+  "Comment thread item as design item schematic identifier."
+  itemAsDesignItemSchUniqueId: String
+  "Comment thread item as design item PCB identifier."
+  itemAsDesignItemPcbUniqueId: String
   "Comment thread item as internal object identifier."
   itemAsInternalObjectId: String
   "Comment thread area."
@@ -3889,8 +4017,10 @@ input DesCreateFolderInput {
   description: String
   "Folder type."
   folderType: DesFolderType!
-  "ID of the parent folder. If omitted or set to `null`, the folder will be placed under the library root."
-  parentId: ID
+  "Identifier of the parent folder. If both `parentId` and `parentFolderId` are omitted or set to `null`, the folder will be placed under the library root."
+  parentId: ID @deprecated(reason: "Use `parentFolderId` instead.")
+  "Reference identifier of the parent folder. If both `parentId` and `parentFolderId` are omitted or set to `null`, the folder will be placed under the library root."
+  parentFolderId: String
   "Naming scheme for the folder items."
   itemNamingSchemeTemplate: String
   "Folder permissions (non recursive)."
@@ -4084,6 +4214,18 @@ input DesCreateWorkspaceTaskInput {
   task: DesCreateTaskInput!
 }
 
+"A component datasheet."
+input DesDatasheetFilterInput {
+  and: [DesDatasheetFilterInput!]
+  or: [DesDatasheetFilterInput!]
+  "ECAD entity name."
+  name: StringOperationFilterInput
+  "ECAD entity description."
+  description: StringOperationFilterInput
+  "ECAD entity comment."
+  comment: StringOperationFilterInput
+}
+
 "Input for deleting a comment."
 input DesDeleteCommentInput {
   "Entity identifier."
@@ -4105,7 +4247,11 @@ input DesDeleteCommentThreadInput {
 "Input for deleting a folder."
 input DesDeleteFolderInput {
   "ID of the folder to delete."
-  id: ID!
+  id: ID @deprecated(reason: "Use `workspaceUrl` and `folderId` instead.")
+  "Reference identifier of the folder to delete."
+  folderId: String
+  "URL of the workspace in which the folder exists."
+  workspaceUrl: String
 }
 
 "Input for deleting a life cycle definition."
@@ -4168,6 +4314,17 @@ input DesDesignItemParameterFilterInput {
   name: StringOperationFilterInput
   "Parameter value."
   value: StringOperationFilterInput
+}
+
+input DesFolderFilterInput {
+  "Filters folders by their type. If null, this condition is ignored."
+  folderType: DesFolderType
+  "Filters folders by the GUID of their parent folder. If null, this condition is ignored."
+  parentFolderGuid: String
+  "Specifies how multiple conditions should be combined. Use AND to match all conditions, OR to match any condition. If null, AND operator is used."
+  matchMode: DesFolderFilterMatchMode
+  "Filters folders by their name. If null, this condition is ignored."
+  name: String
 }
 
 "Provides filter options for a list of footprints."
@@ -4294,9 +4451,15 @@ input DesLifecycleStateUpgradeOperationFilterInput {
 "Input for moving a folder."
 input DesMoveFolderInput {
   "ID of the folder to move."
-  id: ID!
-  "ID of the new parent folder. If omitted or set to `null`, the folder will be placed under the library root."
-  parentId: ID
+  id: ID @deprecated(reason: "Use `workspaceUrl` and `folderId` instead.")
+  "Identifier of the new parent folder. If both `parentId` and `parentFolderId` are omitted or set to `null`, the folder will be placed under the library root."
+  parentId: ID @deprecated(reason: "Use `workspaceUrl` and `parentFolderId` instead.")
+  "URL of the workspace in which the folder and parent folder (if used) exist."
+  workspaceUrl: String
+  "Reference identifier for the folder to update."
+  folderId: String
+  "Reference identifier of the parent folder. If both `parentId` and `parentFolderId` are omitted or set to `null`, the folder will be placed under the library root."
+  parentFolderId: String
 }
 
 "Input for subscribing to comment update notifications."
@@ -4390,6 +4553,12 @@ input DesProjectTypeOperationFilterInput {
   neq: DesProjectType
   in: [DesProjectType!]
   nin: [DesProjectType!]
+}
+
+"`desProjects` extra arguments."
+input DesProjectsInput {
+  "Tells to get projects with layers."
+  hasLayers: Boolean
 }
 
 input DesProjectsRequirementsBlockFilterInput {
@@ -4722,7 +4891,11 @@ input DesUpdateComponentTemplateInput {
 "Input for updating folder."
 input DesUpdateFolderInput {
   "ID of the folder to update."
-  id: ID!
+  id: ID @deprecated(reason: "Use `workspaceUrl` and `folderId` instead.")
+  "URL of the workspace in which the folder exists."
+  workspaceUrl: String
+  "Reference identifier for the folder to update."
+  folderId: String
   "New name of the folder. Not updated if omitted or set to `null`."
   name: String
   "New description of the folder. Not updated if omitted or set to `null`."
@@ -4749,8 +4922,10 @@ input DesUpdateFolderPermissionInput {
 
 "Input for updating folder permissions."
 input DesUpdateFolderPermissionsInput {
-  "Folder identifier for updating folder permissions."
+  "Folder identifier for updating folder permissions. Soon, `folderId` will be the reference identifier (GUID) instead of node identifier, and should be used along with `workspaceUrl`."
   folderId: ID!
+  "URL of the workspace in which the folder exists."
+  workspaceUrl: String
   "Tells to replace all existing permissions. By default permissions are added to existing."
   replaceExisting: Boolean
   "Permissions to update."
@@ -4931,6 +5106,14 @@ input DesUpdateUserInput {
   firstName: String
   "User last name."
   lastName: String
+}
+
+"Input for upgrading components to use the latest footprint revision."
+input DesUpgradeComponentsToLatestFootprintInput {
+  "The footprint identifier whose components should be upgraded."
+  footprintId: ID!
+  "Optional structured filter to limit which components are upgraded."
+  componentFilter: DesComponentUpgradeFilterInput
 }
 
 "Input for upgrading components to use the latest symbol revision."
@@ -5304,6 +5487,11 @@ enum DesContentTypeKind {
 enum DesDocumentType {
   SCHEMATIC
   PCB
+}
+
+enum DesFolderFilterMatchMode {
+  AND
+  OR
 }
 
 enum DesFolderType {
@@ -6334,6 +6522,441 @@ enum SupSpecAggsSelection {
   ALL
 }
 
+interface Error {
+  message: String!
+}
+
+type SupEvalKit {
+  "The evaluation kit identifier."
+  id: ID!
+  "The evaluation kit title."
+  title: String!
+  "The detailed description."
+  description: String
+  "The source url."
+  sourceUrl: String
+  "The creation date."
+  createdAt: DateTime
+  "The last updated date."
+  updatedAt: DateTime
+  "The list of evaluation kit images."
+  previewImages: [SupImage!]
+  "The best evaluation kit images."
+  bestPreviewImage: SupImage
+  "The list of part identifiers associated with the evaluation kit."
+  partIds: [String!]! @deprecated(reason: "Fields play a technical role for schema stitching purposes.")
+  "The list of reference design identifiers associated with the evaluation kit."
+  refDesignIds: [String!]! @deprecated(reason: "Fields play a technical role for schema stitching purposes.")
+  refDesigns: [SupRefDesign!]!
+  "The list of compatible software project identifiers associated with the evaluation kit."
+  compatibleSoftwareProjectIds(start: Int! = 0 limit: Int! = 100): [ID!]! @deprecated(reason: "Fields play a technical role for schema stitching purposes.")
+  compatibleSoftwareProjects: [SupSoftwareProject!]!
+  "The esd source."
+  esdSource: SupEvalKitESDSource
+  parts: [SupPart]!
+}
+
+"Payload associated with creating a evaluation kit."
+type SupEvalKitCreateEvalKitPayload {
+  "Evaluation kit identifier."
+  id: ID
+  errors: [SupEvalKitCreateEvalKitError!]
+}
+
+"Payload associated with deleting a evaluation kit."
+type SupEvalKitDeleteEvalKitPayload {
+  errors: [SupEvalKitDeleteEvalKitError!]
+}
+
+type SupEvalKitESDSource {
+  documentFileUrl: String
+  compileModelUrl: String
+}
+
+type SupEvalKitNotFoundError implements Error {
+  message: String!
+  errorCode: SupEvalKitErrorCode!
+}
+
+type SupEvalKitOperationFailedError implements Error {
+  message: String!
+  errorCode: SupEvalKitErrorCode!
+}
+
+"Payload associated with updating a evaluation kit."
+type SupEvalKitUpdateEvalKitPayload {
+  errors: [SupEvalKitUpdateEvalKitError!]
+}
+
+union SupEvalKitCreateEvalKitError = SupEvalKitOperationFailedError
+
+union SupEvalKitDeleteEvalKitError = SupEvalKitOperationFailedError | SupEvalKitNotFoundError
+
+union SupEvalKitUpdateEvalKitError = SupEvalKitOperationFailedError | SupEvalKitNotFoundError
+
+"Input for evaluation kit creation."
+input SupEvalKitCreateEvalKitInput {
+  "The evaluation kit title."
+  title: String!
+  "The evaluation kit description."
+  description: String
+  "The evaluation kit description."
+  sourceUrl: String
+  "The list of Reference Design identifiers associated with the evaluation kit."
+  refDesignIds: [ID!]
+  "The list of evaluation kit images input. The first image will be the best preview image."
+  previewImages: [SupEvalKitFileInput!]!
+  "The list of Part identifiers associated with the evaluation kit."
+  partIds: [String!]
+  "The list of Compatible Software Project identifiers associated with the evaluation kit."
+  compatibleSoftwareProjectIds: [ID!]
+}
+
+"Input for evaluation kit delete."
+input SupEvalKitDeleteEvalKitInput {
+  "The evaluation kit identifier."
+  id: ID!
+}
+
+input SupEvalKitFileInput {
+  fileId: String!
+  fileType: String!
+  fileName: String!
+}
+
+"Input for evaluation kit update."
+input SupEvalKitUpdateEvalKitInput {
+  id: ID!
+  "The evaluation kit title."
+  title: String
+  "The evaluation kit description."
+  description: String
+  "The evaluation kit description."
+  sourceUrl: String
+  "Remove list of Reference Design identifiers associated with the evaluation kit."
+  removeRefDesignIds: [ID!]
+  "Add list of Reference Design identifiers associated with the evaluation kit."
+  addRefDesignIds: [ID!]
+  "Remove list of Part identifiers associated with the evaluation kit."
+  removePartIds: [String!]
+  "Add list of Part identifiers associated with the evaluation kit."
+  addPartIds: [String!]
+  "Replace the current evaluation kit preview images with these ones. The first image will be used as a best preview image."
+  newPreviewImages: [SupEvalKitFileInput!]
+  "Add list of Compatible Software Project identifiers associated with the evaluation kit."
+  addCompatibleSoftwareProjectIds: [ID!]
+  "Remove list of Compatible Software Project identifiers associated with the evaluation kit."
+  removeCompatibleSoftwareProjectIds: [ID!]
+}
+
+enum SupEvalKitErrorCode {
+  OPERATION_FAILED
+  SUP_EVAL_KIT_NOT_FOUND
+}
+
+"Shared Fields between `SupPartFamily` and `SupPartGroup`."
+interface SupPartFamilyEntity {
+  id: ID!
+  stableName: String!
+  title: String!
+  subtitle: String!
+  overview: String!
+  categoryID: String!
+  manufacturerID: String!
+  applicationIDs: [String!]!
+  tags: [SupPartFamilyTag!]!
+  keyFeatures: [SupPartFamilyKeyFeature!]!
+}
+
+"`SupPartFamily` contains the relevant information related to a part family.\nIt exists in a hierarchy of other part families, they can contain children which represent other part families or\n`partGroups` which represent the leaves of the hierarchy tree."
+type SupPartFamily implements SupPartFamilyEntity {
+  "`id` is the global resource id (GRID) for this Part Family."
+  id: ID!
+  "`stableName` is an immutable name of this part family."
+  stableName: String!
+  "`familyType` describes the part family in a part family hierarchy.\nIt is vendor and part family specific.\nExamples include: 'Series', 'Family', etc."
+  familyType: String!
+  "`parent` is the the direct parent of this family. This will be `null` if this is the highest level."
+  parent: SupPartFamily
+  "`children` is a list of the part families that are the direct children of this family.\nThere will be one of either `children` or `partGroups`."
+  children: [SupPartFamily!]!
+  "`partGroups` is a list of the part groups that are the direct children of this family.\nThere will be one of either `children` or `partGroups`."
+  partGroups: [SupPartGroup!]!
+  "`siblings` is a list of direct sibling part families of the current group, which have the same parent.\nThey are usually a close alternative choice of the current group."
+  siblings: [SupPartFamily!]!
+  "`title` of the part family."
+  title: String!
+  "`subtitle` of the part family."
+  subtitle: String!
+  "`overview` of the part family."
+  overview: String!
+  "`categoryID` is the identifier of the part category of this part family."
+  categoryID: String!
+  "`applicationIDs` is a list of the identifiers of relevant applications this part family can be useful for."
+  applicationIDs: [String!]!
+  "`tags` is a list of additional metadata for categorizing this part family."
+  tags: [SupPartFamilyTag!]!
+  "`keyFeatures` is the list of key part features relevant to this part family."
+  keyFeatures: [SupPartFamilyKeyFeature!]!
+  "`manufacturerID` is the identifier of the manufacturer of this part family."
+  manufacturerID: String!
+  category: SupCategory!
+  applications: [SupCategory!]
+  manufacturer: [SupCompany!]
+}
+
+"Used to show the filters that are applied to current search."
+type SupPartFamilyAppliedFilter {
+  "Name of the filter applied, will match the filter key used in the search."
+  name: String!
+  "Human readable name to display in the UI."
+  displayName: String!
+  "Values in the filter Map."
+  values: SupPartFamilyFilterValues!
+  "Human readable values to display in the UI."
+  displayValues: [String!]!
+  "The units of the values."
+  units: String
+}
+
+"`SupPartFamilyComplementaryPart` contains the details of the complementary part for this part group."
+type SupPartFamilyComplementaryPart {
+  "`partGroupID` is the GRID of the part group."
+  partGroupID: ID!
+  "`name` of the part or part group."
+  name: String!
+  "`categoryID` of the category of this part or part group."
+  categoryID: String!
+  "`slug` is the url slug for this part or part group on Octopart."
+  slug: String!
+  "`lifecycle` status of this part or part group."
+  lifecycle: String!
+}
+
+"`SupPartFamilyDocument` contains the details for the documentation provided for a Part Family.\n`url` contains a link to the given document.\n`updatedAt` is the time we last updated this document."
+type SupPartFamilyDocument {
+  type: SupPartFamilyDocumentType!
+  description: String!
+  url: String!
+  updatedAt: DateTime!
+}
+
+"`SupPartFamilyFeatureMetadata` contains additional information about a given feature."
+type SupPartFamilyFeatureMetadata {
+  name: String!
+  value: String!
+  displayValue: String!
+  units: String!
+}
+
+"Values applied within the filter."
+type SupPartFamilyFilterValues {
+  values: [String]
+  min: String
+  max: String
+}
+
+"`SupPartFamilyKeyFeature` contains the key details for a Part Family feature."
+type SupPartFamilyKeyFeature {
+  name: String!
+  group: String!
+  value: String!
+  valueType: SupPartFamilyFeatureValueType!
+  displayValue: String!
+  units: String!
+  metadata: [SupPartFamilyFeatureMetadata!]!
+}
+
+"`SupPartFamilyParameter` is the parameter definition for a filterable parameter of a part group."
+type SupPartFamilyParameter {
+  "Name of this parameter."
+  name: String!
+  "Formatted name for use in the UI."
+  displayName: String!
+  "Methods of filtering available for this parameter."
+  filterTypes: [SupPartFamilyFilterType!]!
+  "Aggregation of parameter values."
+  parameterAgg: SupPartFamilyParameterAgg!
+}
+
+"Aggregation of parameter values, `buckets` contains aggregations of the different parameter values.\nWill contain a `min`, `max`, and `units` if the parameter is a numeric value."
+type SupPartFamilyParameterAgg {
+  "Aggregation buckets for this parameter.\n'size' specifies the number of aggregation buckets to include."
+  buckets(size: Int = 10): [SupPartFamilyParameterBucket!]!
+  "Min value of this parameter, if this is a numeric parameter."
+  min: Float
+  "Max value of this parameter, if this is a numeric parameter."
+  max: Float
+  "Units of this parameter, if this is a numeric parameter."
+  units: String
+}
+
+"Aggregation bucket for parameter values.\nIf the parameter is discrete it will be a terms aggregation.\nIf the parameter is numeric it will be a range aggregation and `min`, `max` will be populated."
+type SupPartFamilyParameterBucket {
+  displayValue: String!
+  min: Float
+  max: Float
+  count: Int!
+}
+
+"Represents a part object from the supply schema."
+type SupPartFamilyPart {
+  "Nexar ID of the part this object represents."
+  partID: ID!
+  "Nexar supply part data for internal use only. Array of size 1."
+  part(country: String! = "US" currency: String! = "USD"): [SupPart]!
+}
+
+"`SupPartFamilyPartResultSet` is the search results with pagination information."
+type SupPartFamilyPartResultSet {
+  "Total number of part and\/or groups found."
+  hits: Int!
+  "List of part or part groups in the current result set."
+  results: [SupPartFamilyPartSearchResult!]!
+  "List of filters that were applied to this search."
+  appliedFilters: [SupPartFamilyAppliedFilter!]!
+}
+
+"`SupPartFamilyPrice` contains the min and max price of parts in the group. Sourced from octopart part offers."
+type SupPartFamilyPrice {
+  "`min` is the minimum price of any part in this group."
+  min: Float!
+  "`max` is the maximum price of any part in this group."
+  max: Float!
+  "`median` is the median price of the parts in this group."
+  median: Float!
+  "`priceBreak` is the quantity break at which the prices were calculated."
+  priceBreak: Int!
+  "`currency` of the price provided."
+  currency: String!
+}
+
+"`SupPartFamilyResultSet` is the search results with pagination and aggregation information."
+type SupPartFamilyResultSet {
+  "Total number of part families and\/or groups found."
+  hits: Int!
+  "List of part families or part groups in the current result set."
+  results: [SupPartFamilySearchResult!]!
+}
+
+"`SupPartFamilySoftwareSupport` contains the details for the software support provided for a Part Family.\n`url` contains a link to the given software support package.\n`updatedAt` is the time we last updated this document."
+type SupPartFamilySoftwareSupport {
+  title: String!
+  url: String!
+  updatedAt: DateTime!
+}
+
+"`SupPartFamilyTag` represents additional metadata for a Part Family."
+type SupPartFamilyTag {
+  type: String!
+  value: String!
+}
+
+"`SupPartFamilyVideo` contains the details and link for a given training video."
+type SupPartFamilyVideo {
+  "Title of this training video."
+  title: String!
+  "URL at which this video can be accessed."
+  url: String!
+  "URL at which the video thumbnail can be accessed."
+  thumbnailUrl: String!
+  "Time at which we last updated this video."
+  updatedAt: DateTime!
+}
+
+"`SupPartGroup` contains the relevant information relating to a part group.\nIt represents the leaves of the Part Family hierarchy, and contain the parts represented by this group."
+type SupPartGroup implements SupPartFamilyEntity {
+  "`id` is the global resource id (GRID) for this Part Group."
+  id: ID!
+  "`stableName` is an immutable name of this part family."
+  stableName: String!
+  "`parent` is the the part family representing the direct parent of this group."
+  parent: SupPartFamily
+  "`siblings` is a list of direct sibling part groups of the current group, which have the same parent.\nThey are usually a close alternative choice of the current group."
+  siblings: [SupPartGroup!]!
+  "`title` of the part group."
+  title: String!
+  "`subtitle` of the part group."
+  subtitle: String!
+  "`overview` of the key details of this part group."
+  overview: String!
+  "`categoryID` is the identifier of the part category of this part group."
+  categoryID: String!
+  "`applicationIDs` is a list of the identifiers of relevant applications this part group can be useful for."
+  applicationIDs: [String!]!
+  "`tags` is a list of additional metadata for categorizing this part group."
+  tags: [SupPartFamilyTag!]!
+  "`lifecycleStatus` is an enum representing the normalized lifecycle status of this part group."
+  lifecycleStatus: SupPartFamilyLifecycleStatus!
+  "`keyFeatures` is the list of key part features relevant to this part group."
+  keyFeatures: [SupPartFamilyKeyFeature!]!
+  "`manufacturerID` is the identifier of the manufacturer of this part group."
+  manufacturerID: String!
+  "`partIDs` is the list of identifiers of the physical parts within this group.\nstart and limit are used for paging part results (including those under the parts field).\nlimit has a max value of 20, any value greater than this will be reduced to it."
+  partIDs(start: Int! = 0 limit: Int! = 10): [String!]!
+  "`price` contains pricing information for this part group.\nIt contains the minimum, maximum, and median unit price @ given quantity among all parts in the group."
+  price(country: String! = "US" currency: String! = "USD" quantity: Int! = 1000): SupPartFamilyPrice
+  "`complementaryParts` is a list of the identifiers of relevant parts which work with this group."
+  complementaryParts: [SupPartFamilyComplementaryPart!]!
+  "`referenceDesignIDs` is a list of the identifiers of reference designs relevant to this part group."
+  referenceDesignIDs: [String!]!
+  "`documents` is a list of the key documentation related to this part group."
+  documents(type: SupPartFamilyDocumentType): [SupPartFamilyDocument!]!
+  "`softwareSupport` is a list of the key supporting documents for this part group."
+  softwareSupport: [SupPartFamilySoftwareSupport!]!
+  "`videos` is a list of key videos related to this part group."
+  videos: [SupPartFamilyVideo!]!
+  category: SupCategory!
+  applications: [SupCategory]!
+  manufacturer: [SupCompany!]
+  parts: [SupPart]!
+}
+
+union SupPartFamilyPartSearchResult = SupPartFamilyPart | SupPartGroup
+
+union SupPartFamilySearchResult = SupPartFamily | SupPartGroup
+
+input SupPartFamilyFilterInput {
+  applicationIDs: [String!]
+  categoryIDs: [String!]
+  manufacturerIDs: [String!]
+}
+
+"Valid document types for Part Family documentation."
+enum SupPartFamilyDocumentType {
+  DATASHEET
+  MANUAL
+  APPLICATION_NOTE
+  REPORT
+  BROCHURE
+  FLYER
+  GUIDE
+  OTHER
+}
+
+"Valid types a features value can take."
+enum SupPartFamilyFeatureValueType {
+  STRING
+  SCALAR
+  RANGE
+  ENUMERATION
+}
+
+"Valid types for a parameter filter. These describe how this parameter can be used in filtering.\n`VALUES` indicates the parameter can be filtered based on a provided set of terms.\n`RANGE` indicates the parameter can be filtered based on a range of values, provided a min and max value."
+enum SupPartFamilyFilterType {
+  VALUES
+  RANGE
+}
+
+enum SupPartFamilyLifecycleStatus {
+  NEW
+  PRODUCTION
+  EOL
+  NRND
+  OBSOLETE
+  UNKNOWN
+}
+
 type SupRefApplicationBucket {
   applicationId: String!
   count: Int!
@@ -6355,7 +6978,7 @@ type SupRefDesign {
   "The stable name identifier."
   stableName: String!
   "The subtitle providing context."
-  subtitle: String!
+  subtitle: String
   "The detailed description."
   description: String!
   "The type identifier of this reference design."
@@ -6374,6 +6997,10 @@ type SupRefDesign {
   publisherId: String!
   "The bill of materials (BOM) identifier."
   bomId: String
+  "The default schematic file associated with the reference design."
+  defaultSchematicFile: String
+  "The status name."
+  status: SupRefDesignStatus
   "Part identifiers of the reference design, including their designators."
   parts(designators: [String!] type: SupRefPartType @deprecated(reason: "Use 'types' instead") types: [SupRefPartType] start: Int! = 0 limit: Int! = 50): [SupRefPart]!
   "The list of application identifiers related to the reference design."
@@ -6387,7 +7014,7 @@ type SupRefDesign {
   "Key features highlighting the capabilities of the reference design."
   keyFeatures: [SupRefKeyFeature]!
   "Design files, such as schematics and layouts, for the reference design."
-  designFiles(type: String): [SupRefDesignFile]!
+  designFiles(type: String extensions: [String!]): [SupRefDesignFile]!
   "Documentation resources related to the reference design."
   documentations: [SupDocument]!
   "Tags categorizing the reference design for search and organization."
@@ -6548,11 +7175,29 @@ input SupRefDesignFilterInput {
   publisherIds: [String!]
   tags: [String!]
   types: [SupRefDesignType!]
+  statuses: [SupRefDesignStatus!]
+}
+
+enum SupRefDesignStatus {
+  "Work in progress, not yet submitted for review."
+  DRAFT
+  "Design data has been submitted and awaits review."
+  SUBMITTED
+  "Review or progress is paused pending further action."
+  ON_HOLD
+  "The design is currently under review."
+  REVIEWING
+  "The design was reviewed and rejected."
+  REJECTED
+  "The design is approved and published and it has active status."
+  ACTIVE
+  "The design is not active."
+  INACTIVE
 }
 
 enum SupRefDesignType {
   "Highlights a component feature, often for marketing or sales purposes."
-  DEMOSTRATION
+  DEMONSTRATION
   "Intended to test specific electrical\/mechanical characteristics."
   EVALUATION
   "Enables code\/hardware development and prototyping."
@@ -6576,138 +7221,436 @@ enum SupRefPartType {
   OTHER
 }
 
-"Shared Fields between `SupPartFamily` and `SupPartGroup`."
-interface SupPartFamilyEntity {
+type SupSoftwareProject {
+  "The software project identifier."
   id: ID!
+  "The software project title."
   title: String!
-  subtitle: String!
-  overview: String!
-  categoryID: String!
-  manufacturerID: String!
-  applicationIDs: [String!]!
-  tags: [SupPartFamilyTag!]!
-  keyFeatures: [SupPartFamilyKeyFeature!]!
+  "The detailed description."
+  description: String
+  "The software project type."
+  type: SupSoftwareProjectType!
+  "The creation date."
+  createdAt: DateTime
+  "The last updated date."
+  updatedAt: DateTime
+  "The list of evaluation kit sources."
+  compatibleEvalKits: [SupSoftwareProjectEvalKitSource!]
+  "The evaluation kit source."
+  compatibleEvalKit(id: ID!): SupSoftwareProjectEvalKitSource
 }
 
-"`SupPartFamily` contains the relevant information related to a part family.\nIt exists in a hierarchy of other part families, they can contain children which represent other part families or\n`partGroups` which represent the leaves of the hierarchy tree."
-type SupPartFamily implements SupPartFamilyEntity {
-  "`id` is the global resource id (GRID) for this Part Family."
-  id: ID!
-  "`familyType` describes the part family in a part family hierarchy.\nIt is vendor and part family specific.\nExamples include: 'Series', 'Family', etc."
-  familyType: String!
-  "`parent` is the the direct parent of this family. This will be `null` if this is the highest level."
-  parent: SupPartFamily
-  "`children` is a list of the part families that are the direct children of this family.\nThere will be one of either `children` or `partGroups`."
-  children: [SupPartFamily!]!
-  "`partGroups` is a list of the part groups that are the direct children of this family.\nThere will be one of either `children` or `partGroups`."
-  partGroups: [SupPartGroup!]!
-  "`siblings` is a list of direct sibling part families of the current group, which have the same parent.\nThey are usually a close alternative choice of the current group."
-  siblings: [SupPartFamily!]!
-  "`title` of the part family."
+"Payload associated with creating a software project."
+type SupSoftwareProjectCreateSoftwareProjectPayload {
+  "Software project identifier."
+  id: ID
+  errors: [SupSoftwareProjectCreateSoftwareProjectError!]
+}
+
+"Payload associated with deleting a software project."
+type SupSoftwareProjectDeleteSoftwareProjectPayload {
+  errors: [SupSoftwareProjectDeleteSoftwareProjectError!]
+}
+
+type SupSoftwareProjectEvalKitSource {
+  sourceUrl: String!
+  configXmlUrl: String!
+  configUrl: String!
+  readmeUrl: String!
+  evalKitId: ID!
+  evalKit: SupEvalKit!
+}
+
+type SupSoftwareProjectNotFoundError implements Error {
+  message: String!
+  errorCode: SupSoftwareProjectErrorCode!
+}
+
+type SupSoftwareProjectOperationFailedError implements Error {
+  message: String!
+  errorCode: SupSoftwareProjectErrorCode!
+}
+
+"Payload associated with updating a software project."
+type SupSoftwareProjectUpdateSoftwareProjectPayload {
+  errors: [SupSoftwareProjectUpdateSoftwareProjectError!]
+}
+
+union SupSoftwareProjectCreateSoftwareProjectError = SupSoftwareProjectOperationFailedError
+
+union SupSoftwareProjectDeleteSoftwareProjectError = SupSoftwareProjectOperationFailedError | SupSoftwareProjectNotFoundError
+
+union SupSoftwareProjectUpdateSoftwareProjectError = SupSoftwareProjectOperationFailedError | SupSoftwareProjectNotFoundError
+
+"Input for software project creation."
+input SupSoftwareProjectCreateSoftwareProjectInput {
   title: String!
-  "`subtitle` of the part family."
-  subtitle: String!
-  "`overview` of the part family."
-  overview: String!
-  "`categoryID` is the identifier of the part category of this part family."
-  categoryID: String!
-  "`applicationIDs` is a list of the identifiers of relevant applications this part family can be useful for."
-  applicationIDs: [String!]!
-  "`tags` is a list of additional metadata for categorizing this part family."
-  tags: [SupPartFamilyTag!]!
-  "`keyFeatures` is the list of key part features relevant to this part family."
-  keyFeatures: [SupPartFamilyKeyFeature!]!
-  "`manufacturerID` is the identifier of the manufacturer of this part family."
-  manufacturerID: String!
-  category: SupCategory!
+  description: String
+  type: SupSoftwareProjectType!
+  compatibleEvalKits: [SupSoftwareProjectEvalKitSourceInput!]
+}
+
+"Input for software project delete."
+input SupSoftwareProjectDeleteSoftwareProjectInput {
+  "The software project identifier."
+  id: ID!
+}
+
+input SupSoftwareProjectEvalKitSourceInput {
+  sourceUrl: String!
+  configXmlUrl: String!
+  configUrl: String!
+  readmeUrl: String!
+  evalKitId: ID!
+}
+
+input SupSoftwareProjectFilterInput {
+  types: [SupSoftwareProjectType!]
+}
+
+"Input for software project update."
+input SupSoftwareProjectUpdateSoftwareProjectInput {
+  id: ID!
+  title: String
+  description: String
+  type: SupSoftwareProjectType
+  "Replace the current software project evaluation kit sources with these ones."
+  newCompatibleEvalKits: [SupSoftwareProjectEvalKitSourceInput!]!
+}
+
+enum SupSoftwareProjectErrorCode {
+  OPERATION_FAILED
+  SUP_SOFTWARE_PROJECT_NOT_FOUND
+}
+
+enum SupSoftwareProjectType {
+  APPLICATION
+  EXAMPLE
+}
+
+type SupSolutionTemplate {
+  "The solution template identifier."
+  id: ID!
+  "The solution template title."
+  title: String!
+  "The detailed description."
+  description: String
+  "The solution source url."
+  solutionSourceUrl: String
+  "The creation date."
+  createdAt: DateTime
+  "The last updated date."
+  updatedAt: DateTime
+  "The list of part identifiers associated with the solution template."
+  evalKitIds: [ID!]! @deprecated(reason: "Use 'compatibleEvalKits' instead")
+  "The list of software projects identifiers associated with the solution template."
+  softwareProjectIds: [ID!]!
+  evalKits: [SupEvalKit!]!
+  softwareProjects: [SupSoftwareProject!]!
+  "The esd source."
+  esdSource: SupSolutionTemplateESDSource!
+  "The list of solution template images."
+  previewImages: [SupImage!]
+  "The list of solution template images."
+  bestPreviewImage: SupImage
+  "The list of application identifiers associated with the solution template."
+  applicationIds: [String!]!
+  "The list of parameter bundles associated with the solution template."
+  parameters: [SupSolutionTemplateParameterBundle!]!
+  "The list of evaluation kit parameter bundles associated with the solution template."
+  compatibleEvalKits: [SupSolutionTemplateCompatibleEvalKit!]!
+  "The list of AI model identifiers associated with the solution template."
+  aiModelIds: [String!]
   applications: [SupCategory!]
-  manufacturer: [SupCompany!]
 }
 
-"`SupPartFamilyDocument` contains the details for the documentation provided for a Part Family.\n`url` contains a link to the given document.\n`updatedAt` is the time we last updated this document."
-type SupPartFamilyDocument {
-  type: SupPartFamilyDocumentType!
-  description: String!
-  url: String!
-  updatedAt: DateTime!
-}
-
-"`SupPartFamilyFeatureMetadata` contains additional information about a given feature."
-type SupPartFamilyFeatureMetadata {
-  name: String!
-  value: String!
-}
-
-"`SupPartFamilyKeyFeature` contains the key details for a Part Family feature."
-type SupPartFamilyKeyFeature {
-  name: String!
-  group: String!
-  value: String!
-  valueType: SupPartFamilyFeatureValueType!
-  units: String!
-  metadata: [SupPartFamilyFeatureMetadata!]!
-}
-
-"`SupPartFamilyTag` represents additional metadata for a Part Family."
-type SupPartFamilyTag {
-  type: String!
-  value: String!
-}
-
-"`SupPartGroup` contains the relevant information relating to a part group.\nIt represents the leaves of the Part Family hierarchy, and contain the parts represented by this group."
-type SupPartGroup implements SupPartFamilyEntity {
-  "`id` is the global resource id (GRID) for this Part Group."
+type SupSolutionTemplateApplication {
+  "The solution template application identifier."
   id: ID!
-  "`parent` is the the part family representing the direct parent of this group."
-  parent: SupPartFamily
-  "`siblings` is a list of direct sibling part groups of the current group, which have the same parent.\nThey are usually a close alternative choice of the current group."
-  siblings: [SupPartGroup!]!
-  "`title` of the part group."
+  "The solution template application description."
+  description: String
+  "The solution template application identifier."
+  applicationId: String!
+  "The list of parameter bundles associated with the solution template."
+  parameters: [SupSolutionTemplateApplicationParameterBundle!]!
+  application: [SupCategory!]
+}
+
+type SupSolutionTemplateApplicationIsExistedError implements Error {
+  message: String!
+  errorCode: SupSolutionTemplateErrorCode!
+}
+
+type SupSolutionTemplateApplicationNotFoundError implements Error {
+  message: String!
+  errorCode: SupSolutionTemplateErrorCode!
+}
+
+type SupSolutionTemplateApplicationParameterBundle {
+  question: String!
+  order: Int!
+  required: Boolean!
+  parameter: SupSolutionTemplateParameter!
+  values: [SupSolutionTemplateParameterValue!]!
+}
+
+type SupSolutionTemplateCompatibleEvalKit {
+  evalKitId: ID!
+  evalKit: SupEvalKit!
+  "The list of parameters."
+  parameters: [SupSolutionTemplateParameterBundle!]!
+}
+
+"Payload associated with creating a solution template application."
+type SupSolutionTemplateCreateSolutionTemplateApplicationPayload {
+  "Solution template application identifier."
+  id: ID
+  errors: [SupSolutionTemplateCreateSolutionTemplateApplicationError!]
+}
+
+"Payload associated with creating a solution template."
+type SupSolutionTemplateCreateSolutionTemplatePayload {
+  "Solution template identifier."
+  id: ID
+  errors: [SupSolutionTemplateCreateSolutionTemplateError!]
+}
+
+"Payload associated with deleting a solution template application."
+type SupSolutionTemplateDeleteSolutionTemplateApplicationPayload {
+  errors: [SupSolutionTemplateDeleteSolutionTemplateApplicationError!]
+}
+
+"Payload associated with deleting a solution template."
+type SupSolutionTemplateDeleteSolutionTemplatePayload {
+  errors: [SupSolutionTemplateDeleteSolutionTemplateError!]
+}
+
+type SupSolutionTemplateESDSource {
+  documentFileUrl: String
+  compileModelUrl: String
+}
+
+type SupSolutionTemplateNotFoundError implements Error {
+  message: String!
+  errorCode: SupSolutionTemplateErrorCode!
+}
+
+type SupSolutionTemplateOperationFailedError implements Error {
+  message: String!
+  errorCode: SupSolutionTemplateErrorCode!
+}
+
+type SupSolutionTemplateParameter {
   title: String!
-  "`subtitle` of the part group."
-  subtitle: String!
-  "`overview` of the key details of this part group."
-  overview: String!
-  "`categoryID` is the identifier of the part category of this part group."
-  categoryID: String!
-  "`applicationIDs` is a list of the identifiers of relevant applications this part group can be useful for."
-  applicationIDs: [String!]!
-  "`tags` is a list of additional metadata for categorizing this part group."
-  tags: [SupPartFamilyTag!]!
-  "`keyFeatures` is the list of key part features relevant to this part group."
-  keyFeatures: [SupPartFamilyKeyFeature!]!
-  "`manufacturerID` is the identifier of the manufacturer of this part group."
-  manufacturerID: String!
-  "`partIDs` is the list of identifiers of the physical parts within this group."
-  partIDs: [String!]!
-  "`referenceDesignIDs` is a list of the identifiers of reference designs relevant to this part group."
-  referenceDesignIDs: [String!]!
-  "`documents` is a list of the key documentation related to this part group."
-  documents(type: SupPartFamilyDocumentType): [SupPartFamilyDocument!]!
-  category: SupCategory!
-  applications: [SupCategory]!
-  manufacturer: [SupCompany!]
-  parts: [SupPart]!
+  info: SupSolutionTemplateParameterInfo
 }
 
-"Valid document types for Part Family documentation."
-enum SupPartFamilyDocumentType {
-  DATASHEET
-  MANUAL
-  APPLICATION_NOTE
-  REPORT
-  BROCHURE
-  FLYER
-  GUIDE
-  OTHER
+type SupSolutionTemplateParameterBundle {
+  parameter: SupSolutionTemplateParameter!
+  values: [SupSolutionTemplateParameterValue!]!
 }
 
-"Valid types a features value can take."
-enum SupPartFamilyFeatureValueType {
-  STRING
-  SCALAR
-  RANGE
-  ENUMERATION
+type SupSolutionTemplateParameterInfo {
+  description: String
+  imageUrl: String
+  summary: String
+}
+
+type SupSolutionTemplateParameterValue {
+  value: String!
+  name: String!
+  info: SupSolutionTemplateParameterInfo
+}
+
+"Payload associated with updating a solution template application."
+type SupSolutionTemplateUpdateSolutionTemplateApplicationPayload {
+  errors: [SupSolutionTemplateUpdateSolutionTemplateApplicationError!]
+}
+
+"Payload associated with updating a solution template."
+type SupSolutionTemplateUpdateSolutionTemplatePayload {
+  errors: [SupSolutionTemplateUpdateSolutionTemplateError!]
+}
+
+union SupSolutionTemplateCreateSolutionTemplateApplicationError = SupSolutionTemplateOperationFailedError | SupSolutionTemplateApplicationIsExistedError
+
+union SupSolutionTemplateCreateSolutionTemplateError = SupSolutionTemplateOperationFailedError
+
+union SupSolutionTemplateDeleteSolutionTemplateApplicationError = SupSolutionTemplateOperationFailedError | SupSolutionTemplateApplicationNotFoundError
+
+union SupSolutionTemplateDeleteSolutionTemplateError = SupSolutionTemplateOperationFailedError | SupSolutionTemplateNotFoundError
+
+union SupSolutionTemplateUpdateSolutionTemplateApplicationError = SupSolutionTemplateOperationFailedError | SupSolutionTemplateApplicationNotFoundError
+
+union SupSolutionTemplateUpdateSolutionTemplateError = SupSolutionTemplateOperationFailedError | SupSolutionTemplateNotFoundError
+
+input SupSolutionTemplateApplicationCreateParameterBundleInput {
+  order: Int!
+  required: Boolean!
+  parameter: SupSolutionTemplateCreateParameterInput!
+  values: [SupSolutionTemplateCreateParameterValueInput!]!
+  question: String!
+}
+
+input SupSolutionTemplateApplicationRemoveParameterBundleInput {
+  parameterTitle: String!
+}
+
+input SupSolutionTemplateApplicationUpdateParameterBundleInput {
+  order: Int
+  required: Boolean
+  "The parameter identifier by parameter's title."
+  parameter: SupSolutionTemplateUpdateParameterInput!
+  "Replace the parameter values with these ones."
+  newValues: [SupSolutionTemplateCreateParameterValueInput!]
+  question: String!
+}
+
+input SupSolutionTemplateCompatibleEvalKitInput {
+  "The evaluation kit identifier. Can be duplicated."
+  evalKitId: ID!
+  parameters: [SupSolutionTemplateParameterBundleInput!]
+}
+
+input SupSolutionTemplateCreateParameterInfoInput {
+  description: String!
+  imageUrl: String
+  summary: String
+}
+
+input SupSolutionTemplateCreateParameterInput {
+  info: SupSolutionTemplateCreateParameterInfoInput
+  title: String!
+}
+
+input SupSolutionTemplateCreateParameterValueInput {
+  info: SupSolutionTemplateCreateParameterInfoInput
+  value: String!
+  name: String!
+}
+
+input SupSolutionTemplateCreateSolutionTemplateApplicationInput {
+  "The solution template application indentifier."
+  applicationId: String!
+  "The solution template application description."
+  description: String
+  "The list of application parameters associated with the solution template application."
+  parameters: [SupSolutionTemplateApplicationCreateParameterBundleInput!]!
+}
+
+"Input for solution template creation."
+input SupSolutionTemplateCreateSolutionTemplateInput {
+  "The solution template title."
+  title: String!
+  "The solution template description."
+  description: String
+  "The ESD source."
+  esdSource: SupSolutionTemplateEsdSourceInput!
+  "The list of application identifiers associated with the solution template."
+  applicationIds: [String!]
+  "The list of software project identifiers associated with the solution template."
+  softwareProjectIds: [ID!]
+  "The list of solution template images input. The first image will be the best preview image."
+  previewImages: [SupSolutionTemplateFileInput!]!
+  "The list of parameters associated with the solution template application."
+  parameters: [SupSolutionTemplateParameterBundleInput!]
+  "The list of evaluation kit associated with the solution template."
+  compatibleEvalKits: [SupSolutionTemplateCompatibleEvalKitInput!]
+}
+
+"Input for solution template application delete."
+input SupSolutionTemplateDeleteSolutionTemplateApplicationInput {
+  "The solution template application identifier."
+  id: ID!
+}
+
+"Input for solution template delete."
+input SupSolutionTemplateDeleteSolutionTemplateInput {
+  "The solution template identifier."
+  id: ID!
+}
+
+input SupSolutionTemplateEsdSourceInput {
+  "The ESD document file."
+  documentFile: SupSolutionTemplateFileInput!
+  "The ESD compile model file."
+  compileModel: SupSolutionTemplateFileInput
+}
+
+input SupSolutionTemplateFileInput {
+  fileId: String!
+  fileType: String!
+  fileName: String!
+}
+
+input SupSolutionTemplateParameterBundleInput {
+  parameter: SupSolutionTemplateParameterInput!
+  values: [SupSolutionTemplateParameterValueInput!]!
+}
+
+input SupSolutionTemplateParameterInput {
+  title: String!
+}
+
+input SupSolutionTemplateParameterValueInput {
+  name: String!
+  value: String!
+}
+
+input SupSolutionTemplateUpdateParameterInfoInput {
+  description: String!
+  imageUrl: String
+  summary: String
+}
+
+input SupSolutionTemplateUpdateParameterInput {
+  info: SupSolutionTemplateUpdateParameterInfoInput
+  title: String!
+}
+
+input SupSolutionTemplateUpdateSolutionTemplateApplicationInput {
+  "The solution template application GRID indentifier."
+  id: ID!
+  "The solution template application description."
+  description: String
+  "The update list of application parameters associated with the solution template application."
+  updateParameters: [SupSolutionTemplateApplicationUpdateParameterBundleInput!]
+  "The add list of application parameters associated with the solution template application."
+  addParameters: [SupSolutionTemplateApplicationCreateParameterBundleInput!]
+  "The remove list of application parameters associated with the solution template application."
+  removeParameters: [SupSolutionTemplateApplicationRemoveParameterBundleInput!]
+}
+
+"Input for solution template update."
+input SupSolutionTemplateUpdateSolutionTemplateInput {
+  id: ID!
+  "The ESD source."
+  newEsdSource: SupSolutionTemplateEsdSourceInput
+  "The solution template title."
+  title: String!
+  "The solution template description."
+  description: String
+  "Remove list of application identifiers associated with the solution template."
+  removeApplicationIds: [String!]
+  "Remove list of application identifiers associated with the solution template."
+  addApplicationIds: [String!]
+  "Add list of software project identifiers associated with the solution template."
+  addSoftwareProjectIds: [ID!]
+  "Remove list of software project identifiers associated with the solution template."
+  removeSoftwareProjectIds: [ID!]
+  "Replace the current solution template preview images with these ones. The first image will be used as a best preview image."
+  newPreviewImages: [SupSolutionTemplateFileInput!]
+  "Replace the current solution template parameters with these ones."
+  newParameters: [SupSolutionTemplateParameterBundleInput!]
+  "Replace the current solution template compatible eval kits with these ones."
+  newCompatibleEvalKits: [SupSolutionTemplateCompatibleEvalKitInput!]
+}
+
+enum SupSolutionTemplateErrorCode {
+  OPERATION_FAILED
+  SUP_SOLUTION_TEMPLATE_NOT_FOUND
+  SUP_SOLUTION_TEMPLATE_APPLICATION_IS_EXISTED
+  SUP_SOLUTION_TEMPLATE_APPLICATION_NOT_FOUND
 }
 
 interface ManOrderEvent {
@@ -7997,10 +8940,6 @@ interface DatRepReport {
   fileSize: Int!
   createdDate: DateTime!
   title: String!
-}
-
-interface Error {
-  message: String!
 }
 
 type DatRepDownloadableFile {
