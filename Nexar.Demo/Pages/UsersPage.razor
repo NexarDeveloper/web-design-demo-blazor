@@ -1,0 +1,38 @@
+﻿@page "/Users"
+@inherits AbstractPage
+@using Data = WorkspaceUsersItem
+
+@if (Data.Current is null)
+    return;
+
+<ItemPageHeader Text="Authenticated User" Item=@Data.Current />
+
+@if (Data.Current.Tag is null)
+    return;
+
+<TextFieldCopy Label="GlobalUserId" Text=@Data.Current.Tag.GlobalUserId />
+
+<TextField Label="UserName" Text=@Data.Current.Tag.UserName />
+
+<TextField Label="Email" Text=@Data.Current.Tag.Email />
+
+<MudField Label="Picture" Variant=Variant.Outlined>
+    <MudAvatar Square=true Style="height:128px; width:128px;">
+        <MudImage Src=@Data.Current.Tag.PictureUrl />
+    </MudAvatar>
+</MudField>
+
+<br />
+<AlertGraphQL Files="Users.graphql" />
+
+@code {
+    protected override void OnInitialized()
+    {
+        Data.OnChange += StateHasChanged;
+    }
+
+    protected override void Disposing()
+    {
+        Data.OnChange -= StateHasChanged;
+    }
+}

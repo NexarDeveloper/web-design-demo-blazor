@@ -1,14 +1,11 @@
 ﻿using MudBlazor;
 using Nexar.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
 public sealed class WorkspaceUsersItem(WorkspaceItem parent) : NodeTreeItem(parent)
 {
+    public IMyUser? Tag { get; private set; }
     readonly WorkspaceItem _parent = parent;
     public override string Text => "Users";
     public override string Icon => Icons.Material.Filled.Person;
@@ -22,5 +19,25 @@ public sealed class WorkspaceUsersItem(WorkspaceItem parent) : NodeTreeItem(pare
             .OrderBy(x => x.UserName, StringComparer.OrdinalIgnoreCase)
             .Select(x => (TreeItem)new UserItem(x, this))
             .ToList();
+    }
+
+    public override string SetCurrent()
+    {
+        if (Current != this)
+        {
+            Current = this;
+            Update(() => OnChange?.Invoke());
+        }
+        return "Users";
+    }
+
+    public static event Action? OnChange;
+    public static WorkspaceUsersItem? Current { get; private set; }
+
+    protected override async Task UpdateAsync()
+    {
+        var res = await Client.UserByAuth.ExecuteAsync();
+        var data = res.AssertNoErrors();
+        Tag = data.DesUserByAuth;
     }
 }

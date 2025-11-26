@@ -66,7 +66,9 @@ type Query {
   "Searches a project WIP variant by its name."
   desWipVariantByVariantName("The project identifier." projectId: ID! variantName: String!): DesWipVariant
   "Searches a release variant by its node identifier."
-  desReleaseVariantById("The release variant node identifier." id: ID!): DesReleaseVariant
+  desReleaseVariantById("The release variant node identifier." id: ID!): DesReleaseVariant @deprecated(reason: "Use `desReleaseVariantByVariantName` instead.")
+  "Searches a project release variant by its name."
+  desReleaseVariantByVariantName("The project release identifier." releaseId: ID! variantName: String!): DesReleaseVariant
   "Gets the project identifier from its internal identifier."
   desProjectIdFromAfsId("The web address of a workspace." workspaceUrl: String "AFS internal identifier." afsId: String! "True for shared projects." isSharedProject: Boolean): DesProjectIdPayload!
   desBomById(id: ID!): DesBom @deprecated(reason: "Use `desWipVariantById` or `desReleaseVariantById` in order to access BOM.")
@@ -170,7 +172,7 @@ type Query {
   "Search for part families and groups.\nThere is a limit on the number of parts allowed for each group. If you want the complete set of parts for a group\nmake a follow up request to `supPartGroupByName` or `supPartGroupById`."
   supPartFamilySearch("The query text for the descriptive search of the part groups." q: String! "Part group filters to be applied to this search." filters: SupPartFamilyFilterInput "Start offset of the results in the result set." start: Int = 0 "Page size of the results in the result set." limit: Int = 10): SupPartFamilyResultSet!
   "Search for part and group them by Part Group if applicable."
-  supPartFamilyPartSearch("The query text for descriptive search." q: String "The query text for MPN matching search.\nOverride q when this input is given." mpn: String "Filter to remove parts with no stocking distributors." inStockOnly: Boolean "Filter to only include parts with a datasheet." hasDatasheetOnly: Boolean "Spec Filters to be applied." filters: Map): SupPartFamilyPartResultSet!
+  supPartFamilyPartSearch("The query text for descriptive search." q: String "The query text for MPN matching search.\nOverride q when this input is given." mpn: String "Filter to remove parts with no stocking distributors." inStockOnly: Boolean "Filter to only include parts with a datasheet." hasDatasheetOnly: Boolean "Spec Filters to be applied." filters: Map "Start offset of the results in the result set." start: Int! = 0 "Limit of the number of results to return in the result set." limit: Int! = 20): SupPartFamilyPartResultSet!
   "Get a specific part group by its unique identifier (GRID)."
   supPartGroupById(id: ID!): SupPartGroup!
   "Get a specific part group by its unique name."
@@ -2427,7 +2429,9 @@ type DesReleaseEdge {
 "A variant contains a specific configuration of a base design."
 type DesReleaseVariant implements Node {
   "The node identifier (used by `desReleaseVariantById`)."
-  id: ID!
+  id: ID! @deprecated(reason: "Use `ReleaseId` and `Name` with `desReleaseVariantByVariantName` instead.")
+  "The project release identifier (used by `desReleaseVariantByVariantName`)."
+  releaseId: String! @deprecated(reason: "This is temporary to illustrate project release identifier as GRID`.")
   "The project release package."
   downloadUrl: String!
   "The data needed for assembly of this published design variant."
@@ -6600,8 +6604,10 @@ input SupEvalKitCreateEvalKitInput {
   title: String!
   "The evaluation kit description."
   description: String
-  "The evaluation kit description."
+  "The evaluation kit source url."
   sourceUrl: String
+  "The evaluation kit source file for building source url."
+  sourceFile: SupEvalKitFileInput
   "The list of Reference Design identifiers associated with the evaluation kit."
   refDesignIds: [ID!]
   "The list of evaluation kit images input. The first image will be the best preview image."
@@ -6631,8 +6637,10 @@ input SupEvalKitUpdateEvalKitInput {
   title: String
   "The evaluation kit description."
   description: String
-  "The evaluation kit description."
+  "The evaluation kit source url."
   sourceUrl: String
+  "The evaluation kit source file for building source url."
+  sourceFile: SupEvalKitFileInput
   "Remove list of Reference Design identifiers associated with the evaluation kit."
   removeRefDesignIds: [ID!]
   "Add list of Reference Design identifiers associated with the evaluation kit."
@@ -6717,6 +6725,11 @@ type SupPartFamilyAppliedFilter {
   displayValues: [String!]!
   "The units of the values."
   units: String
+}
+
+type SupPartFamilyBucket {
+  PartFamily: SupPartFamily!
+  count: Int
 }
 
 "`SupPartFamilyComplementaryPart` contains the details of the complementary part for this part group."
@@ -6809,12 +6822,16 @@ type SupPartFamilyPart {
 
 "`SupPartFamilyPartResultSet` is the search results with pagination information."
 type SupPartFamilyPartResultSet {
-  "Total number of part and\/or groups found."
+  "Total number of parts and\/or groups found."
   hits: Int!
+  "Total number of parts found."
+  partHits: Int!
   "List of part or part groups in the current result set."
   results: [SupPartFamilyPartSearchResult!]!
   "List of filters that were applied to this search."
   appliedFilters: [SupPartFamilyAppliedFilter!]!
+  "Aggregation for parts by part family."
+  partFamilyAgg: [SupPartFamilyBucket!]!
 }
 
 "`SupPartFamilyPrice` contains the min and max price of parts in the group. Sourced from octopart part offers."
@@ -6920,6 +6937,8 @@ input SupPartFamilyFilterInput {
   applicationIDs: [String!]
   categoryIDs: [String!]
   manufacturerIDs: [String!]
+  families: [String!]
+  groups: [String!]
 }
 
 "Valid document types for Part Family documentation."
@@ -7297,11 +7316,18 @@ input SupSoftwareProjectDeleteSoftwareProjectInput {
 }
 
 input SupSoftwareProjectEvalKitSourceInput {
-  sourceUrl: String!
+  sourceUrl: String
+  sourceFile: SupSoftwareProjectFileInput
   configXmlUrl: String!
   configUrl: String!
   readmeUrl: String!
   evalKitId: ID!
+}
+
+input SupSoftwareProjectFileInput {
+  fileId: String!
+  fileType: String!
+  fileName: String!
 }
 
 input SupSoftwareProjectFilterInput {

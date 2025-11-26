@@ -7,8 +7,16 @@ query TeamUsers($workspaceUrl: String!) {
   }
 }
 
+# Gets the authenticated user.
+query UserByAuth {
+  desUserByAuth {
+    ...MyUser
+  }
+}
+
 # This fragment becomes IMyUser in C#.
 fragment MyUser on DesUser {
+  globalUserId
   userId
   userName
   email
