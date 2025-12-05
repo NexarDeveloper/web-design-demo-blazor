@@ -71,7 +71,6 @@ type Query {
   desReleaseVariantByVariantName("The project release identifier." releaseId: ID! variantName: String!): DesReleaseVariant
   "Gets the project identifier from its internal identifier."
   desProjectIdFromAfsId("The web address of a workspace." workspaceUrl: String "AFS internal identifier." afsId: String! "True for shared projects." isSharedProject: Boolean): DesProjectIdPayload!
-  desBomById(id: ID!): DesBom @deprecated(reason: "Use `desWipVariantById` or `desReleaseVariantById` in order to access BOM.")
   "Find a specific reuse block by its unique identifier."
   desReuseBlockById("The node identifier for a reuse block." id: ID!): DesReuseBlock
   "Find specific reuse blocks by their unique identifiers."
@@ -201,10 +200,12 @@ type Query {
   supSoftwareProjects(q: String start: Int! = 0 limit: Int! = 10 filter: SupSoftwareProjectFilterInput): [SupSoftwareProject]!
   "Search a specific solution template by its unique identifier."
   supSolutionTemplateById(id: ID!): SupSolutionTemplate
+  "Search a specific solution template by its unique stable name identifier."
+  supSolutionTemplateByName(name: String!): SupSolutionTemplate
   "Search a specific solution template by its unique identifier."
   supSolutionTemplatesByIds(ids: [ID!]!): [SupSolutionTemplate]!
   "List a solution templates."
-  supSolutionTemplates(q: String start: Int! = 0 limit: Int! = 10): [SupSolutionTemplate]!
+  supSolutionTemplates("The search query string. Leave empty to query all." q: String "Optional structured filter input for searching." filter: SupSolutionTemplateFilterInput "Offset in the result set." start: Int! = 0 "Page size of results." limit: Int! = 10): [SupSolutionTemplate]!
   "Search a specific solution template by application identifier."
   supSolutionTemplatesByApplicationId(id: String!): [SupSolutionTemplate]!
   "Search a specific solution template by its unique identifier."
@@ -485,8 +486,7 @@ type DesAssemblyDrawings {
 }
 
 "A Bill of Materials (BOM) contains a list of all of the parts needed for the assembly of a PCB."
-type DesBom implements Node {
-  id: ID! @deprecated(reason: "Use `desWipVariantById` and `desReleaseVariantById` in order to access BOM.")
+type DesBom {
   bomItems: [DesBomItem!]! @deprecated(reason: "Use `items`.")
   "The list of BOM items returned by pages."
   items("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesBomItemConnection
@@ -1398,8 +1398,8 @@ type DesCreateTaskPayload {
 
 "Payload associated with creating a user group."
 type DesCreateUserGroupPayload {
-  "User group identifier."
-  id: ID!
+  "User group reference identifier."
+  userGroupId: String!
 }
 
 "Payload associated with creating a user."
@@ -3147,9 +3147,9 @@ type DesUser {
 }
 
 "A user group information."
-type DesUserGroup implements Node {
-  "The node ID."
-  id: ID!
+type DesUserGroup {
+  "The reference identifier."
+  userGroupId: String!
   "The group name."
   name: String!
 }
@@ -3460,8 +3460,10 @@ input DesAddFootprintToComponentInput {
 
 "Input for adding users to a group."
 input DesAddUsersToGroupInput {
-  "The group node ID."
-  id: ID!
+  "The group reference identifier."
+  groupId: String!
+  "The workspace where the group exists."
+  workspaceUrl: String!
   "Workspace user identifiers."
   userIds: [String!]!
 }
@@ -4286,8 +4288,10 @@ input DesDeleteTaskInput {
 
 "Input for deleting a user group."
 input DesDeleteUserGroupInput {
-  "The group node ID."
-  id: ID!
+  "The group reference identifier."
+  groupId: String!
+  "The workspace URL where group exists."
+  workspaceUrl: String!
 }
 
 "Input for deleting a user."
@@ -4421,8 +4425,8 @@ input DesLifeCycleStateTransitionControllerInput {
   scope: DesPermissionScope!
   "Workspace user identifier."
   userId: String
-  "Group identifier."
-  groupId: ID
+  "Group reference identifier."
+  groupId: String
 }
 
 "Input for life cycle state transition."
@@ -4740,8 +4744,10 @@ input DesRemoveFootprintFromComponentInput {
 
 "Input to remove users from group."
 input DesRemoveUsersFromGroupInput {
-  "The group node ID."
-  id: ID!
+  "The group reference identifier."
+  groupId: String!
+  "The workspace where the group exists."
+  workspaceUrl: String!
   "Workspace user identifiers."
   userIds: [String!]!
 }
@@ -4920,8 +4926,8 @@ input DesUpdateFolderPermissionInput {
   scope: DesPermissionScope!
   "Workspace user identifier."
   userId: String
-  "Group identifier."
-  groupId: ID
+  "Group reference identifier."
+  groupId: String
 }
 
 "Input for updating folder permissions."
@@ -4984,8 +4990,8 @@ input DesUpdateProjectPermissionInput {
   canModify: Boolean!
   "Scope of the permission."
   scope: DesPermissionScope!
-  "Group identifier."
-  groupId: ID
+  "Group reference identifier."
+  groupId: String
 }
 
 "Input for updating project permissions."
@@ -5094,8 +5100,10 @@ input DesUpdateTaskInput {
 
 "Input for updating a user group."
 input DesUpdateUserGroupInput {
-  "The group node ID."
-  id: ID!
+  "The group reference identifier."
+  groupId: String!
+  "The workspace URL where the group exists."
+  workspaceUrl: String!
   "The group name."
   name: String!
 }
@@ -5486,6 +5494,7 @@ enum DesContentTypeKind {
   SOFTWARE_PROJECT
   DEVICE_CONFIGURATION
   SIMULATION
+  AI_MODEL
 }
 
 enum DesDocumentType {
@@ -7359,6 +7368,10 @@ type SupSolutionTemplate {
   id: ID!
   "The solution template title."
   title: String!
+  "The solution template stable name identifier."
+  stableName: String!
+  "The solution template status."
+  status: SupSolutionTemplateStatus!
   "The detailed description."
   description: String
   "The solution source url."
@@ -7413,14 +7426,20 @@ type SupSolutionTemplateApplicationNotFoundError implements Error {
 }
 
 type SupSolutionTemplateApplicationParameterBundle {
+  "The content of the question associated with this parameter bundle."
   question: String!
+  "The display order of the parameter bundle."
   order: Int!
+  "Indicates whether the parameter bundle is mandatory."
   required: Boolean!
+  "Details about the parameter of the parameter bundle."
   parameter: SupSolutionTemplateParameter!
+  "The parameter's list of values."
   values: [SupSolutionTemplateParameterValue!]!
 }
 
 type SupSolutionTemplateCompatibleEvalKit {
+  "The evaluation kit identifier associated with the solution template."
   evalKitId: ID!
   evalKit: SupEvalKit!
   "The list of parameters."
@@ -7452,7 +7471,9 @@ type SupSolutionTemplateDeleteSolutionTemplatePayload {
 }
 
 type SupSolutionTemplateESDSource {
+  "The URL of the document file associated with the solution template."
   documentFileUrl: String
+  "The URL of the compile model associated with the solution template."
   compileModelUrl: String
 }
 
@@ -7467,24 +7488,34 @@ type SupSolutionTemplateOperationFailedError implements Error {
 }
 
 type SupSolutionTemplateParameter {
+  "The parameter title."
   title: String!
+  "Details about the parameter."
   info: SupSolutionTemplateParameterInfo
 }
 
+"The parameter bundle's list of values."
 type SupSolutionTemplateParameterBundle {
+  "Details about the parameter of the parameter bundle."
   parameter: SupSolutionTemplateParameter!
   values: [SupSolutionTemplateParameterValue!]!
 }
 
 type SupSolutionTemplateParameterInfo {
+  "A detailed explanation of the parameter."
   description: String
+  "The URL of the image associated with this parameter."
   imageUrl: String
+  "A brief summary of the parameter."
   summary: String
 }
 
 type SupSolutionTemplateParameterValue {
+  "The value of this parameter value."
   value: String!
+  "The name of this parameter value."
   name: String!
+  "Details about the parameter."
   info: SupSolutionTemplateParameterInfo
 }
 
@@ -7511,21 +7542,28 @@ union SupSolutionTemplateUpdateSolutionTemplateApplicationError = SupSolutionTem
 union SupSolutionTemplateUpdateSolutionTemplateError = SupSolutionTemplateOperationFailedError | SupSolutionTemplateNotFoundError
 
 input SupSolutionTemplateApplicationCreateParameterBundleInput {
+  "The display order of the parameter bundle."
   order: Int!
+  "Indicates whether the parameter bundle is required."
   required: Boolean!
+  "The parameter associated with the bundle."
   parameter: SupSolutionTemplateCreateParameterInput!
+  "The list of values for the parameter."
   values: [SupSolutionTemplateCreateParameterValueInput!]!
   question: String!
 }
 
 input SupSolutionTemplateApplicationRemoveParameterBundleInput {
+  "The unique title of the parameter bundle to remove."
   parameterTitle: String!
 }
 
 input SupSolutionTemplateApplicationUpdateParameterBundleInput {
+  "The order of the parameter in the bundle."
   order: Int
+  "Indicates whether the parameter bundle is required."
   required: Boolean
-  "The parameter identifier by parameter's title."
+  "The parameter info identifier by parameter's title."
   parameter: SupSolutionTemplateUpdateParameterInput!
   "Replace the parameter values with these ones."
   newValues: [SupSolutionTemplateCreateParameterValueInput!]
@@ -7535,23 +7573,32 @@ input SupSolutionTemplateApplicationUpdateParameterBundleInput {
 input SupSolutionTemplateCompatibleEvalKitInput {
   "The evaluation kit identifier. Can be duplicated."
   evalKitId: ID!
+  "The list of parameters associated with the compatible evaluation kit."
   parameters: [SupSolutionTemplateParameterBundleInput!]
 }
 
 input SupSolutionTemplateCreateParameterInfoInput {
+  "A detailed explanation of the parameter."
   description: String!
+  "The URL of the image associated with this parameter."
   imageUrl: String
+  "A brief summary of the parameter."
   summary: String
 }
 
 input SupSolutionTemplateCreateParameterInput {
+  "The parameter info identifier by parameter's title."
   info: SupSolutionTemplateCreateParameterInfoInput
+  "The parameter title."
   title: String!
 }
 
 input SupSolutionTemplateCreateParameterValueInput {
+  "The parameter info identifier by parameter's title."
   info: SupSolutionTemplateCreateParameterInfoInput
+  "The value of this parameter value."
   value: String!
+  "The name of this parameter value."
   name: String!
 }
 
@@ -7568,6 +7615,8 @@ input SupSolutionTemplateCreateSolutionTemplateApplicationInput {
 input SupSolutionTemplateCreateSolutionTemplateInput {
   "The solution template title."
   title: String!
+  "The solution template stable name identifier."
+  stableName: String!
   "The solution template description."
   description: String
   "The ESD source."
@@ -7604,33 +7653,54 @@ input SupSolutionTemplateEsdSourceInput {
 }
 
 input SupSolutionTemplateFileInput {
+  "The nexar file service identifier of the file."
   fileId: String!
+  "The type of the file."
   fileType: String!
+  "The file’s name with extension included (e.g., example.json, image.jpg)."
   fileName: String!
 }
 
+"Input for filtering solution templates by additional conditions."
+input SupSolutionTemplateFilterInput {
+  "Filter by a list of solution template statuses if specified."
+  statuses: [SupSolutionTemplateStatus!]
+  "Filter by a list of AI model identifiers if specified."
+  aiModelIds: [String!]
+}
+
 input SupSolutionTemplateParameterBundleInput {
+  "The parameter to be bundled."
   parameter: SupSolutionTemplateParameterInput!
+  "The list of parameter values associated with the parameter bundle."
   values: [SupSolutionTemplateParameterValueInput!]!
 }
 
 input SupSolutionTemplateParameterInput {
+  "The identifier used to look up the parameter by its title."
   title: String!
 }
 
 input SupSolutionTemplateParameterValueInput {
+  "The identifier used to look up the parameter value by its pair of name and value."
   name: String!
+  "The identifier used to look up the parameter value by its pair of name and value."
   value: String!
 }
 
 input SupSolutionTemplateUpdateParameterInfoInput {
+  "A detailed explanation of the parameter."
   description: String!
+  "The URL of the image associated with this parameter."
   imageUrl: String
+  "A brief summary of the parameter."
   summary: String
 }
 
 input SupSolutionTemplateUpdateParameterInput {
+  "The information to update the parameter."
   info: SupSolutionTemplateUpdateParameterInfoInput
+  "The parameter title."
   title: String!
 }
 
@@ -7653,7 +7723,11 @@ input SupSolutionTemplateUpdateSolutionTemplateInput {
   "The ESD source."
   newEsdSource: SupSolutionTemplateEsdSourceInput
   "The solution template title."
-  title: String!
+  title: String
+  "The solution template stable name identifier."
+  stableName: String
+  "The solution template status."
+  status: SupSolutionTemplateStatus
   "The solution template description."
   description: String
   "Remove list of application identifiers associated with the solution template."
@@ -7673,10 +7747,33 @@ input SupSolutionTemplateUpdateSolutionTemplateInput {
 }
 
 enum SupSolutionTemplateErrorCode {
+  "The operation failed."
   OPERATION_FAILED
+  "The solution template was not found."
   SUP_SOLUTION_TEMPLATE_NOT_FOUND
+  "The solution template already exists."
   SUP_SOLUTION_TEMPLATE_APPLICATION_IS_EXISTED
+  "The solution template application was not found."
   SUP_SOLUTION_TEMPLATE_APPLICATION_NOT_FOUND
+  "The stable name is already in use."
+  SUP_SOLUTION_TEMPLATE_STABLE_NAME_IS_EXISTED
+}
+
+enum SupSolutionTemplateStatus {
+  "Work in progress, not yet submitted for review."
+  DRAFT
+  "Solution Template data has been submitted and awaits review."
+  SUBMITTED
+  "Review or progress is paused pending further action."
+  ON_HOLD
+  "The solution template is currently under review."
+  REVIEWING
+  "The solution template was reviewed and rejected."
+  REJECTED
+  "The solution template is approved and published and it has active status."
+  ACTIVE
+  "The solution template is not active."
+  INACTIVE
 }
 
 interface ManOrderEvent {
