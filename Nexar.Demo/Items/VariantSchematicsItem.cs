@@ -1,9 +1,5 @@
 ﻿using MudBlazor;
 using Nexar.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
@@ -19,9 +15,13 @@ public sealed class VariantSchematicsItem(NodeTreeItem parent) : NodeTreeItem(pa
             var res = await Client.DesignVariantSchematics.ExecuteAsync(variantItem.Tag.Id, SchematicItem.ItemsLimit);
             var data = res.AssertNoErrors();
 
-            return data.DesWipVariantById!.Schematics
-                .Select(x => (TreeItem)new SchematicItem(x, this))
-                .ToList();
+            if (data.DesWipVariantById is { } variant)
+            {
+                return variant.Schematics
+                    .Select(x => (TreeItem)new SchematicItem(x, this))
+                    .ToList();
+            }
+            return [];
         }
         else if (Parent is ReleaseVariantItem releaseVariantItem)
         {
