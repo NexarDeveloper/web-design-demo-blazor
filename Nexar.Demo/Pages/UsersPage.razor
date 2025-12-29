@@ -8,7 +8,10 @@
 <ItemPageHeader Text="Authenticated User" Item=@Data.Current />
 
 @if (Data.Current.Tag is null)
+{
+    <MudProgressLinear Indeterminate=true />
     return;
+}
 
 <TextFieldCopy Label="GlobalUserId" Text=@Data.Current.Tag.GlobalUserId />
 
