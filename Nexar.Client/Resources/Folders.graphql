@@ -9,13 +9,13 @@ query Folders($workspaceUrl: String!) {
 
 # This fragment becomes IMyFolder in C#.
 fragment MyFolder on DesFolder {
-  id
+  folderId
   name
   path
   description
   folderType
   itemNamingSchemeTemplate
   parent {
-    id
+    folderId
   }
 }

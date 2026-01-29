@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace Nexar.Client;
+﻿namespace Nexar.Client;
 
 public class FolderTreeNode(IMyFolder folder, List<FolderTreeNode> nodes)
 {
@@ -20,7 +17,7 @@ public class FolderTreeNode(IMyFolder folder, List<FolderTreeNode> nodes)
     public static List<FolderTreeNode> GetFolderNodes(IMyFolder folder, IEnumerable<IMyFolder> folders)
     {
         return folders
-            .Where(x => x.Parent?.Id == folder.Id)
+            .Where(x => x.Parent?.FolderId == folder.FolderId)
             .OrderBy(x => x.Name)
             .Select(x => new FolderTreeNode(x, GetFolderNodes(x, folders)))
             .ToList();

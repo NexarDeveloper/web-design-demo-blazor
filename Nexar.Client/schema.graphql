@@ -16,32 +16,31 @@ type Query {
   "The project latest ECAD, MCAD or ESD revision."
   desProjectCollaborationLatestRevision("The identifier for a specific project." projectId: ID! "The collaboration domain." domain: DesCollaborationDomain!): DesCollaborationRevision
   "The project ECAD, MCAD or ESD revisions returned by pages."
-  desProjectCollaborationRevisions("The identifier for a specific project." projectId: ID! domain: DesCollaborationDomain! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesCollaborationRevisionConnection
+  desProjectCollaborationRevisions("The identifier for a specific project." projectId: ID! "The collaboration domain." domain: DesCollaborationDomain! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesCollaborationRevisionConnection
   "*PROTOTYPE, SUBJECT TO CHANGE*"
-  desProjectCollaborationSimulationRevisions(projectId: ID! domainName: String! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesCollaborationSimulationRevisionConnection
+  desProjectCollaborationSimulationRevisions("The project identifier." projectId: ID! "The collaboration domain name." domainName: String! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesCollaborationSimulationRevisionConnection
   "*PROTOTYPE, SUBJECT TO CHANGE*"
-  desProjectCollaborationSimulationLatestRevision(projectId: ID! domainName: String! projectTypeName: String!): DesCollaborationSimulationRevision
+  desProjectCollaborationSimulationLatestRevision("The project identifier." projectId: ID! "The collaboration domain name." domainName: String! "The project type name." projectTypeName: String!): DesCollaborationSimulationRevision
   "Search for comment threads associated with a project."
-  desCommentThreads("The identifier for a project (This is the project field named \"id\")." projectId: ID!): [DesCommentThread!]!
+  desCommentThreads("The project identifier (`DesProject.id`)." projectId: ID!): [DesCommentThread!]!
   "Search for a specific comment thread associated with a project."
-  desCommentThread("The identifier for a project (This is the project field named \"id\")." projectId: ID! "The reference identifier for a comment thread." threadId: String!): DesCommentThread
-  desDesignItemById(id: ID!): DesDesignItem @deprecated(reason: "Will be removed in the future.")
+  desCommentThread("The project identifier (`DesProject.id`)." projectId: ID! "The reference identifier for a comment thread." threadId: String!): DesCommentThread
   "Gets the library by workspace URL."
-  desLibrary(workspaceUrl: String): DesLibrary!
+  desLibrary("The workspace URL." workspaceUrl: String args: DesLibraryArgsInput): DesLibrary!
   "Search a specific component by its unique identifier."
   desComponentById("The identifier for a component." id: ID!): DesComponent
+  "Search a specific datasheet by its unique identifier."
+  desDatasheetById("The identifier for a datasheet." id: ID!): DesDatasheet
   "Searches multiple components by their unique identifiers."
   desComponentsByIds("The identifiers for components." ids: [ID!]!): [DesUnionPayload!]!
-  "Searches details of a revision by its unique identifier."
   desRevisionDetailsById("The node identifier for specific revision details." id: ID!): DesRevisionDetails @deprecated(reason: "Use `desRevisionDetailsByRevisionId` instead.")
   "Searches details of a revision by its reference identifier."
   desRevisionDetailsByRevisionId("The workspace in which the revision exists." workspaceUrl: String! "The reference identifier for a specific revision." revisionId: String!): DesRevisionDetails
   "Searches for a specific template for a component by its unique identifier."
   desComponentTemplateById("The node identifier for a component template." id: ID!): DesComponentTemplate
-  "Searches for a specific folder by its unique identifier."
   desFolderById("The node identifier for a folder." id: ID!): DesFolder @deprecated(reason: "Use `DesFolderByFolderId` instead.")
   "Searches for a specific folder by its reference identifier."
-  desFolderByFolderId(workspaceUrl: String! "The folder reference identifier." folderId: String!): DesFolder
+  desFolderByFolderId("The workspace URL." workspaceUrl: String! "The folder reference identifier." folderId: String!): DesFolder
   "Searches for a specific footprint by its unique identifier."
   desFootprintById("The node identifier for a footprint." id: ID!): DesFootprint
   "Searches for a specific symbol by its unique identifier."
@@ -50,8 +49,8 @@ type Query {
   desProjectTasks("The identifier for a specific project." projectId: ID! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesTaskConnection
   "The list of workspace tasks."
   desWorkspaceTasks("The URL of the workspace to get tasks from." workspaceUrl: String "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesTaskConnection
+  "Gets manufacture packages."
   desManufacturePackages: [DesManufacturePackage!]!
-  "Gets the manufacture package by its unique identifier."
   desManufacturePackageById("The node identifier for manufacture package." id: ID!): DesManufacturePackage @deprecated(reason: "Will be removed in the future.")
   "Search projects within a workspace with results in paged groups."
   desProjects("The web address of a workspace." workspaceUrl: String "Extra arguments." args: DesProjectsInput "Requirements block filter." requirementsBlockFilter: DesProjectsRequirementsBlockFilterInput "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesProjectFilterInput): DesProjectConnection
@@ -61,14 +60,12 @@ type Query {
   desProjectsByIds("An array of project identifiers." ids: [ID!]!): [DesProject]!
   "Searches a release by its identifier."
   desReleaseById("The release identifier." id: ID!): DesRelease
-  "Searches a project variant by its node identifier."
   desWipVariantById("The project variant node identifier." id: ID!): DesWipVariant @deprecated(reason: "Use `desWipVariantByVariantName` instead.")
   "Searches a project WIP variant by its name."
-  desWipVariantByVariantName("The project identifier." projectId: ID! variantName: String!): DesWipVariant
-  "Searches a release variant by its node identifier."
+  desWipVariantByVariantName("The project identifier." projectId: ID! "The variant name." variantName: String!): DesWipVariant
   desReleaseVariantById("The release variant node identifier." id: ID!): DesReleaseVariant @deprecated(reason: "Use `desReleaseVariantByVariantName` instead.")
   "Searches a project release variant by its name."
-  desReleaseVariantByVariantName("The project release identifier." releaseId: ID! variantName: String!): DesReleaseVariant
+  desReleaseVariantByVariantName("The project release identifier." releaseId: ID! "The variant name." variantName: String!): DesReleaseVariant
   "Gets the project identifier from its internal identifier."
   desProjectIdFromAfsId("The web address of a workspace." workspaceUrl: String "AFS internal identifier." afsId: String! "True for shared projects." isSharedProject: Boolean): DesProjectIdPayload!
   "Find a specific reuse block by its unique identifier."
@@ -80,13 +77,13 @@ type Query {
   "Find specific reuse block revisions by their unique identifiers."
   desReuseBlockRevisionsByIds("Node identifiers for the reuse block revisions." ids: [ID!]!): [DesReuseBlockRevision]!
   "Gets the specified workspace team."
-  desTeam(workspaceUrl: String): DesTeam!
-  "Gets the specified workspace users by IDs."
-  desUsers(workspaceUrl: String ids: [String!]!): [DesUser]!
+  desTeam("The workspace URL." workspaceUrl: String): DesTeam!
+  "Gets the specified workspace users by identifiers."
+  desUsers("The workspace URL." workspaceUrl: String "The list of user identifiers." ids: [String!]!): [DesUser]!
   "Gets the authorized user."
   desUserByAuth: DesUser!
-  "Gets a user by the specified global ID."
-  desUserByGlobalId(id: String!): DesUser
+  "Gets a user by the specified global identifier."
+  desUserByGlobalId("The global user identifier." id: String!): DesUser
   "Search for workspaces associated with this account."
   desWorkspaceInfos: [DesWorkspaceInfo!]!
   "Search a specific workspace by its unique identifier."
@@ -94,21 +91,21 @@ type Query {
   "Get a list of workspace locations."
   desWorkspaceLocations: [DesWorkspaceLocation!]!
   "Gets the specified settings."
-  desSettings(workspaceUrl: String names: [String!]!): [String]!
+  desSettings("The workspace URL." workspaceUrl: String "The setting names to retrieve." names: [String!]!): [String]!
   "Gets life cycle definitions."
-  desLifeCycleDefinitions(workspaceUrl: String): [DesLifeCycleDefinition!]!
-  "Gets a life cycle definition based on the id provided."
-  desLifeCycleDefinitionById(id: ID!): DesLifeCycleDefinition
+  desLifeCycleDefinitions("The workspace URL." workspaceUrl: String): [DesLifeCycleDefinition!]!
+  "Gets a life cycle definition based on the identifier provided."
+  desLifeCycleDefinitionById("The life cycle definition identifier." id: ID!): DesLifeCycleDefinition
   "Gets the first allowed life cycle by the content kind."
-  desLifeCycleDefinitionByContentTypeKind(workspaceUrl: String kind: DesContentTypeKind!): DesLifeCycleDefinition!
+  desLifeCycleDefinitionByContentTypeKind("The workspace URL." workspaceUrl: String "The content kind." kind: DesContentTypeKind!): DesLifeCycleDefinition!
   "Gets revision naming schemes."
-  desRevisionNamingSchemes(workspaceUrl: String): [DesRevisionNamingScheme!]!
-  "Gets a revision naming scheme based on the ID provided."
-  desRevisionNamingSchemeById(id: ID!): DesRevisionNamingScheme
+  desRevisionNamingSchemes("The workspace URL." workspaceUrl: String): [DesRevisionNamingScheme!]!
+  "Gets a revision naming scheme based on the identifier provided."
+  desRevisionNamingSchemeById("The naming scheme identifier." id: ID!): DesRevisionNamingScheme
   "Gets the first allowed naming scheme by the content kind."
-  desRevisionNamingSchemeByContentTypeKind(workspaceUrl: String kind: DesContentTypeKind!): DesRevisionNamingScheme!
+  desRevisionNamingSchemeByContentTypeKind("The workspace URL." workspaceUrl: String "The content kind." kind: DesContentTypeKind!): DesRevisionNamingScheme!
   "Gets the workspace configuration."
-  desWorkspaceConfiguration(workspaceUrl: String): DesWorkspaceConfiguration!
+  desWorkspaceConfiguration("The workspace URL." workspaceUrl: String): DesWorkspaceConfiguration!
   "Searches for a project template by its identifier."
   desProjectTemplateById("The project template node identifier." id: ID!): DesProjectTemplate
   "Searches for a project template revision by its identifier."
@@ -116,23 +113,24 @@ type Query {
   "Gets the creation job for a manufacture package by its unique identifier."
   desManufacturePackageCreationJob("The node identifier for a manufacture package creation job." id: ID!): DesManufacturePackageCreationJob
   "Gets the specified project export job."
-  desProjectExportJob(projectExportJobId: String!): DesProjectExportJob!
+  desProjectExportJob("The job identifier." projectExportJobId: String!): DesProjectExportJob!
+  "Gets items shared with me."
   desSharedWithMe: DesSharedWithMe!
-  supOctopartIdFromCiivaId(workspaceUrl: String ciivaId: String!): String @deprecated(reason: "Use `supPartIdFromCiivaId`.")
+  supOctopartIdFromCiivaId("Deprecated." workspaceUrl: String "Deprecated." ciivaId: String!): String @deprecated(reason: "Use `supPartIdFromCiivaId`.")
   "Nexar infrastructure, subject to change."
-  supPartIdFromCiivaId(ciivaId: String!): String
+  supPartIdFromCiivaId("The Ciiva identifier." ciivaId: String!): String
   "Nexar infrastructure, subject to change."
-  supPartIdsFromCiivaIds(ciivaIds: [String!]!): [String]!
+  supPartIdsFromCiivaIds("The Ciiva identifiers." ciivaIds: [String!]!): [String]!
   "Nexar infrastructure, subject to change."
-  supCiivaIdFromPartId(partId: String!): String
+  supCiivaIdFromPartId("The part identifier." partId: String!): String
   "Nexar infrastructure, subject to change."
-  supCiivaIdsFromPartIds(partIds: [String!]!): [String]!
+  supCiivaIdsFromPartIds("The part identifiers." partIds: [String!]!): [String]!
   "Nexar supply part data for internal use only."
-  supPartExtrasByPartId(partId: String!): SupPartExtras
+  supPartExtrasByPartId("The part identifier." partId: String!): SupPartExtras
   "Nexar supply part data for internal use only."
-  supPartExtrasByPartIds(partIds: [String!]!): [SupUnionPayload!]!
+  supPartExtrasByPartIds("The part identifiers." partIds: [String!]!): [SupUnionPayload!]!
   "Search a specific workspace by its URL."
-  desWorkspaceByUrl(workspaceUrl: String!): DesWorkspace
+  desWorkspaceByUrl("The workspace URL." workspaceUrl: String!): DesWorkspace
   desWorkspaces(where: DesWorkspaceFilterInput): [DesWorkspace!]! @deprecated(reason: "Use `desWorkspaceInfos`.")
   "Get all attributes"
   supAttributes: [SupAttribute!]!
@@ -167,7 +165,9 @@ type Query {
   "Search a specific evaluation kit by its unique identifier."
   supEvalKitsByIds(ids: [ID!]!): [SupEvalKit]!
   "List a evaluation kits."
-  supEvalKits(q: String start: Int! = 0 limit: Int! = 10): [SupEvalKit]!
+  supEvalKits("The search query string. Leave empty to query all." q: String "Offset in the result set." start: Int! = 0 "Page size of results." limit: Int! = 10 "Optional structured filter input for searching." filter: SupEvalKitFilterInput "Order the results by one or more fields. The first input is main order field." order: [SupEvalKitOrderInput!]): [SupEvalKit]!
+  "Searches evaluation kits."
+  supEvalKitSearch(where: SupEvalKitSearchFilterInput "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [SupEvalKitSortInput!]): SupEvalKitConnection
   "Search for part families and groups.\nThere is a limit on the number of parts allowed for each group. If you want the complete set of parts for a group\nmake a follow up request to `supPartGroupByName` or `supPartGroupById`."
   supPartFamilySearch("The query text for the descriptive search of the part groups." q: String! "Part group filters to be applied to this search." filters: SupPartFamilyFilterInput "Start offset of the results in the result set." start: Int = 0 "Page size of the results in the result set." limit: Int = 10): SupPartFamilyResultSet!
   "Search for part and group them by Part Group if applicable."
@@ -189,7 +189,7 @@ type Query {
   "Search a specific reference design by its unique name."
   supRefDesignByName(name: String!): SupRefDesign
   "Search a reference designs."
-  supRefDesigns(q: String! filter: SupRefDesignFilterInput start: Int! = 0 limit: Int! = 10): SupRefDesignResultSet!
+  supRefDesigns("The search query string. Leave empty to query all." q: String! "Optional structured filter input for searching." filter: SupRefDesignFilterInput "Offset in the result set." start: Int! = 0 "Page size of results." limit: Int! = 10): SupRefDesignResultSet!
   "Search a specific parts by reference design unique identifier and part's designators."
   supRefParts(refDesignId: ID! designators: [String!] start: Int! = 0 limit: Int! = 50): [SupRefPart!]
   "Search a specific software project by its unique identifier."
@@ -197,7 +197,9 @@ type Query {
   "Search a specific software project by its unique identifier."
   supSoftwareProjectsByIds(ids: [ID!]!): [SupSoftwareProject]!
   "List a reference solutions."
-  supSoftwareProjects(q: String start: Int! = 0 limit: Int! = 10 filter: SupSoftwareProjectFilterInput): [SupSoftwareProject]!
+  supSoftwareProjects("The search query string. Leave empty to query all." q: String "Offset in the result set." start: Int! = 0 "Page size of results." limit: Int! = 10 "Optional structured filter input for searching." filter: SupSoftwareProjectFilterInput "Order the results by one or more fields. The first input is main order field." order: [SupSoftwareProjectOrderInput!]): [SupSoftwareProject]!
+  "Searches software projects."
+  supSoftwareProjectSearch(where: SupSoftwareProjectSearchFilterInput "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [SupSoftwareProjectSortInput!]): SupSoftwareProjectConnection
   "Search a specific solution template by its unique identifier."
   supSolutionTemplateById(id: ID!): SupSolutionTemplate
   "Search a specific solution template by its unique stable name identifier."
@@ -212,6 +214,12 @@ type Query {
   supSolutionTemplateApplicationById(id: ID!): SupSolutionTemplateApplication
   "Search a specific solution template by its application identifier."
   supSolutionTemplateApplicationByApplicationId(id: String!): SupSolutionTemplateApplication
+  "List a solution template applications."
+  supSolutionTemplateApplications("The search query string. Leave empty to query all." q: String "Offset in the result set." start: Int! = 0 "Page size of results." limit: Int! = 10): [SupSolutionTemplateApplication]!
+  "Searches solution templates."
+  supSolutionTemplateSearch(where: SupSolutionTemplateSearchFilterInput "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [SupSolutionTemplateSortInput!]): SupSolutionTemplateConnection
+  "Searches solution template applications."
+  supSolutionTemplateApplicationsSearch(where: SupSolutionTemplateApplicationSearchFilterInput "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [SupSolutionTemplateApplicationSortInput!]): SupSolutionTemplateApplicationConnection
   "get a the quotes from previously submitted metadata"
   manRapidQuotes(id: ID!): ManRapidQuoteResponse
   manRapidQuoteRequest(id: ID!): ManRapidQuoteRequest
@@ -318,7 +326,7 @@ type Mutation {
   desCreateProjectTask(input: DesCreateProjectTaskInput!): DesCreateTaskPayload!
   "Creates a workspace task. A task is a job activity in Altium 365."
   desCreateWorkspaceTask(input: DesCreateWorkspaceTaskInput!): DesCreateTaskPayload!
-  "Deletes the task specified by its node ID."
+  "Deletes the task specified by its node identifier."
   desDeleteTask(input: DesDeleteTaskInput!): DesDeleteTaskPayload!
   "Updates the specified task."
   desUpdateTask(input: DesUpdateTaskInput!): DesUpdateTaskPayload!
@@ -340,6 +348,8 @@ type Mutation {
   desSetProjectRequirementsBlock(input: DesSetProjectRequirementsBlockInput!): DesSetProjectRequirementsBlockPayload!
   "Updates parameters for the specified project (does not affect the revision)."
   desUpdateProjectParameters(input: DesUpdateProjectParametersInput!): DesUpdateProjectParametersPayload!
+  "Updates the owner for the associated project."
+  desUpdateProjectOwner(input: DesUpdateProjectOwnerInput!): DesUpdateProjectOwnerPayload!
   "Updates a specific result block."
   desUpdateReuseBlock(input: DesUpdateReuseBlockInput!): DesUpdateReuseBlockPayload!
   "Creates a user."
@@ -438,6 +448,7 @@ type Mutation {
 }
 
 type Subscription {
+  "Called on subscription events."
   desOnCommentUpdated(input: DesOnCommentUpdatedInput!): DesCommentNotification!
 }
 
@@ -468,6 +479,7 @@ type DesAddUsersToGroupPayload {
 
 "Area in mm^2 and mils^2. Mils are one thousandth of an inch."
 type DesArea {
+  "Area value."
   x: Float!
   "Area in mm^2."
   xMm2: Decimal!
@@ -652,9 +664,9 @@ type DesCadBoardComponentType {
   id: String
   "CAD board component type internal identifier."
   internalId: String
-  "CAD board component type item GUID."
+  "CAD board component type item identifier."
   itemGuid: String
-  "CAD board component type revision GUID."
+  "CAD board component type revision identifier."
   revisionGuid: String
   "CAD board component type company component identifier."
   companyComponentId: String
@@ -846,14 +858,23 @@ type DesCadBoardVia {
 
 "Information about a transformation of the CAD board."
 type DesCadBodyTransformation {
+  "The translation along the X axis."
   translationX: Float!
+  "The translation along the Y axis."
   translationY: Float!
+  "The translation along the Z axis."
   translationZ: Float!
+  "The rotation around the X axis in degrees."
   rotationX: Float!
+  "The rotation around the Y axis in degrees."
   rotationY: Float!
+  "The rotation around the Z axis in degrees."
   rotationZ: Float!
+  "The scaling factor along the X axis."
   scaleX: Float!
+  "The scaling factor along the Y axis."
   scaleY: Float!
+  "The scaling factor along the Z axis."
   scaleZ: Float!
 }
 
@@ -897,7 +918,7 @@ type DesCadDesign {
   workflowState: DesCadWorkflowState!
   "CAD design file name."
   designFileName: String
-  "CAD design variant ID."
+  "CAD design variant identifier."
   designVariantId: String
   "CAD design variant name."
   designVariantName: String
@@ -1027,15 +1048,21 @@ type DesCollaborationRevisionEdge {
 
 "*PROTOTYPE, SUBJECT TO CHANGE*"
 type DesCollaborationSimulationFile {
+  "The file type."
   fileTypeName: String!
+  "The file download URL."
   downloadUrl: String!
 }
 
 "*PROTOTYPE, SUBJECT TO CHANGE*"
 type DesCollaborationSimulationRevision {
+  "The files associated with the simulation revision."
   files: [DesCollaborationSimulationFile!]!
+  "The user who created the simulation revision."
   createdBy: DesUser!
+  "The metadata associated with the simulation revision."
   metadata: String!
+  "The date and time when the simulation revision was created."
   createdAt: DateTime!
 }
 
@@ -1075,7 +1102,7 @@ type DesComment {
   modifiedBy: DesUser!
   "The users mentioned by this comment."
   mentions: [DesMention!]!
-  "The comment reference ID."
+  "The comment reference identifier."
   commentId: String!
   "The comment text."
   text: String!
@@ -1159,7 +1186,7 @@ type DesCommentThread {
 
 "A component contains the parametric details of a PCB part."
 type DesComponent implements Node {
-  "The node ID used by `desComponentById`. Unmanaged components may be not found."
+  "The node identifier used by `desComponentById`. Unmanaged components may be not found."
   id: ID!
   "The component folder."
   folder: DesFolder
@@ -1187,6 +1214,8 @@ type DesComponent implements Node {
   isManaged: Boolean!
   "The component revision."
   revision: DesRevision!
+  "The identifier of the component revision."
+  revisionId: String!
 }
 
 "A connection to a list of items."
@@ -1201,6 +1230,7 @@ type DesComponentConnection {
   totalCount: Int!
 }
 
+"Detailed component information."
 type DesComponentDetails {
   "The component item internal identifier."
   itemInternalId: String!
@@ -1238,7 +1268,7 @@ type DesComponentParameter {
 
 "Information about a component template."
 type DesComponentTemplate implements Node {
-  "The node ID (used by `desComponentTemplateById`)."
+  "The node identifier (used by `desComponentTemplateById`)."
   id: ID!
   "Component template name."
   name: String!
@@ -1285,9 +1315,7 @@ type DesComponentTemplateRevision {
 }
 
 "Represents a component type classification in the component library."
-type DesComponentType implements Node {
-  "The node identifier for this component type."
-  id: ID! @deprecated(reason: "Use `componentTypeId` instead.")
+type DesComponentType {
   "The reference identifier for this component type."
   componentTypeId: String!
   "The display name of the component type."
@@ -1324,7 +1352,6 @@ type DesCreateCommentThreadPayload {
 
 "Payload associated with creating a folder."
 type DesCreateFolderPayload {
-  "ID of the created folder."
   id: ID @deprecated(reason: "Use `folderId` instead.")
   "Reference identifier of the created folder."
   folderId: String
@@ -1358,7 +1385,7 @@ type DesCreateManufacturePackagePayload {
 
 "Payload associated with creating a project export job."
 type DesCreateProjectExportJobPayload {
-  "The job ID to be used by `desProjectExportJob`."
+  "The job identifier to be used by `desProjectExportJob`."
   projectExportJobId: String
   "Payload errors."
   errors: [DesPayloadError!]!
@@ -1366,7 +1393,7 @@ type DesCreateProjectExportJobPayload {
 
 "Payload associated with creating a revision naming scheme."
 type DesCreateRevisionNamingSchemePayload {
-  "ID of the created revision naming scheme."
+  "Identifier of the created revision naming scheme."
   id: ID!
   "Payload errors."
   errors: [DesPayloadError!]!
@@ -1526,9 +1553,7 @@ type DesDesignExchange {
 }
 
 "A design item is a specific instance of a part used in the design."
-type DesDesignItem implements Node {
-  "The node identifier for this project (used by `desDesignItemById`)."
-  id: ID! @deprecated(reason: "`SchId` and `PcbId` are now available.")
+type DesDesignItem {
   "The schematic identifier."
   schId: String
   "The PCB identifier."
@@ -1622,7 +1647,6 @@ type DesErrorPayload {
 
 "Information about a specific folder."
 type DesFolder implements Node {
-  "Folder identifier."
   id: ID! @deprecated(reason: "Use `folderId` instead.")
   "Folder name."
   name: String!
@@ -1770,9 +1794,7 @@ type DesLayer {
   dielectricConstant: Decimal
   "Layer copper weight."
   copperWeight: DesWeight
-  "The copper area."
   copperArea: DesArea @deprecated(reason: "No longer used - always returns null.")
-  "The ratio of copper area to PCB area."
   copperRatio: Decimal @deprecated(reason: "No longer used - always returns null.")
   "Layer material."
   material: String
@@ -1809,18 +1831,24 @@ type DesLibrary {
   "Gets library reuse blocks."
   reuseBlocks("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesReuseBlockConnection
   "*PROTOTYPE, SUBJECT TO CHANGE*"
-  downloadUrlsByTokens(tokens: [String!]!): [String]!
+  downloadUrlsByTokens("The list of tokens to get download URLs for." tokens: [String!]!): [String]!
   "Gets library symbols."
   symbols("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesSymbolFilterInput): DesSymbolConnection
   "Gets library footprints."
   footprints("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesFootprintFilterInput): DesFootprintConnection
   "Gets library datasheets."
   datasheets("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesDatasheetFilterInput): DesDatasheetConnection
+  "The name of the library."
   name: String!
+  "A description of the library."
   description: String!
+  "The version of the library."
   version: String!
+  "The event channel of the library."
   eventChannel: String!
+  "The date and time the library was created."
   createdAt: DateTime!
+  "The date and time the library was last updated."
   updatedAt: DateTime!
 }
 
@@ -1832,9 +1860,8 @@ type DesLifeCycleDefinition {
   updatedBy: DesUser!
   "The `DesLifeCycleStateTransition` list for this life cycle definition."
   stateTransitions: [DesLifeCycleStateTransition!]!
-  "The node ID."
+  "The node identifier."
   id: ID!
-  "The reference ID for this life cycle definition."
   lifeCycleDefinitionId: String! @deprecated(reason: "Use `id` instead.")
   "The name of this life cycle definition."
   name: String!
@@ -1860,7 +1887,7 @@ type DesLifeCycleStage {
   createdBy: DesUser!
   "The user this life cycle stage was last updated by."
   updatedBy: DesUser!
-  "The reference ID for this life cycle stage."
+  "The reference identifier for this life cycle stage."
   lifeCycleStageId: String!
   "The name of this life cycle stage."
   name: String!
@@ -1880,7 +1907,7 @@ type DesLifeCycleState {
   createdBy: DesUser!
   "The user this life cycle state was last updated by."
   updatedBy: DesUser!
-  "The reference ID for this life cycle state."
+  "The reference identifier for this life cycle state."
   lifeCycleStateId: String!
   "The name of this life cycle state."
   name: String!
@@ -1920,7 +1947,7 @@ type DesLifeCycleStateTransition {
   isPublic: Boolean!
   "The groups that must provide an approval for the transition to be applied. If using controlled transitions, this will return null."
   approvals: [DesLifeCycleStateTransitionApprovalGroup!]
-  "The reference ID for this life cycle state transition."
+  "The reference identifier for this life cycle state transition."
   lifeCycleStateTransitionId: String!
   "The name of this life cycle state transition."
   name: String!
@@ -1956,7 +1983,6 @@ type DesLifeCycleStateTransitionController {
 
 "Information about the manufacture package."
 type DesManufacturePackage implements Node {
-  "The node identifier for this project (used by `desManufacturePackageById`)."
   id: ID! @deprecated(reason: "Will be removed in the future.")
   "Manufacture package name."
   name: String!
@@ -1986,8 +2012,9 @@ type DesManufacturePackageCreationJobPayload {
 
 "Manufacturer part information."
 type DesManufacturerPart {
+  "The list of supplier parts associated with this manufacturer part."
   supplierParts: [DesSupplierPart!]!
-  "The Octopart ID."
+  "The Octopart identifier."
   octopartId: String
   "The manufacturer company name."
   companyName: String!
@@ -2003,11 +2030,13 @@ type DesMention {
   user: DesUser!
 }
 
+"3D mesh information."
 type DesMesh3D {
   "The downloadable file for the 3D mesh."
   glbFile: DesDownloadableFile
 }
 
+"3D model information."
 type DesModel3D {
   "The downloadable 3D model Parasolid file."
   parasolidFile: DesDownloadableFile
@@ -2143,17 +2172,11 @@ type DesPcbFabrication {
   packageName: String!
   "Downloadable folders."
   folders: [DesDownloadableFolder!]!
-  "ODB files and download URL."
   odb: DesOdb! @deprecated(reason: "Use `folders`.")
-  "IPC 2581 files and download URL."
   ipc2581: DesIpc2581! @deprecated(reason: "Use `folders`.")
-  "Gerber files and download URL."
   gerber: DesGerber! @deprecated(reason: "Use `folders`.")
-  "Gerber X2 files and download URL."
   gerberX2: DesGerberX2! @deprecated(reason: "Use `folders`.")
-  "NC Drill files and download URL."
   ncDrill: DesNcDrill! @deprecated(reason: "Use `folders`.")
-  "Test point files and download URL."
   testPoints: DesTestPoints! @deprecated(reason: "Use `folders`.")
   "Download URL."
   downloadUrl: String!
@@ -2222,17 +2245,18 @@ type DesProject implements Node {
   "The list of the parameters describing this project."
   parameters("An optional list of parameter names to search." names: [String!]): [DesProjectParameter!]!
   "The web address to download a preview image for this project."
-  previewUrl(isDirectLink: Boolean! = false): String!
+  previewUrl("Tells to get a direct link to the preview image." isDirectLink: Boolean! = false): String!
   "The list of workflows associated with this project."
   workflows("An option to search workflows that have been modified after a specific `DateTime`." modifiedAfter: DateTime "Filter workflows by a variable." withVariable: DesWorkflowFilterByVariableInput "An option to search workflows that have been completed." isClosed: Boolean! = false where: DesWorkflowFilterInput): [DesWorkflow!]
-  "The latest VCS revision."
-  latestRevision: DesVcsRevision!
+  "The latest VCS revision. May be null, see GraphQL errors."
+  latestRevision: DesVcsRevision
   "The list of VCS revisions."
   revisions("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesVcsRevisionConnection
   "The latest ECAD, MCAD or ESD revision. See also `desProjectCollaborationLatestRevision`."
-  collaborationLatestRevision(domain: DesCollaborationDomain!): DesCollaborationRevision
+  collaborationLatestRevision("The collaboration domain to get the latest revision for." domain: DesCollaborationDomain!): DesCollaborationRevision
   "ECAD, MCAD or ESD revisions returned by pages. See also `desProjectCollaborationRevisions`."
-  collaborationRevisions(domain: DesCollaborationDomain! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesCollaborationRevisionConnection
+  collaborationRevisions("The collaboration domain to get the revisions for." domain: DesCollaborationDomain! "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesCollaborationRevisionConnection
+  "The list of project permissions."
   projectPermissions: [DesProjectPermission!]!
   "The list of project tasks. For a particular project consider using the more effective query `desProjectTasks`."
   tasks: [DesTask!]!
@@ -2278,6 +2302,7 @@ type DesProjectEdge {
   node: DesProject!
 }
 
+"The status of a project export job."
 type DesProjectExportJob {
   "The job current status."
   status: DesJobStatus!
@@ -2287,8 +2312,9 @@ type DesProjectExportJob {
   downloadUrl: String
 }
 
-"Payload associated with project node id."
+"Payload associated with project node identifier."
 type DesProjectIdPayload {
+  "The project identifier."
   id: ID!
 }
 
@@ -2322,7 +2348,7 @@ type DesProjectPermission {
 
 "Information about a project template."
 type DesProjectTemplate implements Node {
-  "The node ID (used by `desProjectTemplateById`)."
+  "The node identifier (used by `desProjectTemplateById`)."
   id: ID!
   "Project template name."
   name: String!
@@ -2384,6 +2410,7 @@ type DesRelease implements Node {
   id: ID!
   "The list of variants contained in this release."
   variants(where: DesReleaseVariantFilterInput): [DesReleaseVariant!]!
+  "Not implemented."
   manufacturePackages: [DesManufacturePackage!]!
   "The `DateTime` when this release was created."
   createdAt: DateTime!
@@ -2401,6 +2428,7 @@ type DesReleaseComponentPayload {
 
 "Payload associated with releasing a component template."
 type DesReleaseComponentTemplatePayload {
+  "Component template identifier."
   componentTemplateId: ID!
   "Payload errors."
   errors: [DesPayloadError!]!
@@ -2428,9 +2456,7 @@ type DesReleaseEdge {
 
 "A variant contains a specific configuration of a base design."
 type DesReleaseVariant implements Node {
-  "The node identifier (used by `desReleaseVariantById`)."
   id: ID! @deprecated(reason: "Use `ReleaseId` and `Name` with `desReleaseVariantByVariantName` instead.")
-  "The project release identifier (used by `desReleaseVariantByVariantName`)."
   releaseId: String! @deprecated(reason: "This is temporary to illustrate project release identifier as GRID`.")
   "The project release package."
   downloadUrl: String!
@@ -2520,9 +2546,8 @@ type DesReuseBlockRevision implements Node {
   description: String!
 }
 
-"Revision details ID for later use or full details."
+"Revision details identifier for later use or full details."
 type DesRevision {
-  "The revision details ID for `desRevisionDetailsById`. The instance may not exist for unmanaged components."
   id: ID! @deprecated(reason: "Use `revisionId` instead.")
   "The revision details or null for unmanaged components."
   details: DesRevisionDetails
@@ -2532,6 +2557,7 @@ type DesRevision {
 
 "Revision details."
 type DesRevisionDetails {
+  id: ID! @deprecated(reason: "Use `revisionId` instead.")
   "The life cycle state information of the revision."
   lifeCycleState: DesLifeCycleState!
   "Number of children associated with this revision."
@@ -2540,8 +2566,6 @@ type DesRevisionDetails {
   references: [DesDownloadableFile!]!
   "The number of parents associated with this revision."
   parentCount: Int!
-  "The node ID."
-  id: ID! @deprecated(reason: "Use `revisionId` instead.")
   "The reference identifier."
   revisionId: String!
   "Revision description."
@@ -2562,9 +2586,8 @@ type DesRevisionNamingScheme {
   createdBy: DesUser!
   "The user this revision naming scheme was last updated by."
   updatedBy: DesUser!
-  "The node ID."
+  "The node identifier."
   id: ID!
-  "The reference ID for this revision naming scheme."
   revisionNamingSchemeId: String! @deprecated(reason: "Use `id` instead.")
   "The name of this revision naming scheme."
   name: String!
@@ -2576,7 +2599,7 @@ type DesRevisionNamingScheme {
   updatedAt: DateTime!
   "The `DesRevisionNamingSchemeLevel` list for this revision naming scheme."
   levels: [DesRevisionNamingSchemeLevel!]!
-  "The separator used between item ID and revision ID."
+  "The separator used between item identifier and revision identifier."
   itemRevisionSeparator: String!
   "If true, the revision naming scheme is only applicable to objects of the content types specified by `contentTypes`."
   isControlledPerContentType: Boolean!
@@ -2588,7 +2611,7 @@ type DesRevisionNamingSchemeLevel {
   createdBy: DesUser!
   "The user this revision naming scheme level was last updated by."
   updatedBy: DesUser!
-  "The reference ID for this revision naming scheme level."
+  "The reference identifier for this revision naming scheme level."
   revisionNameLevelId: String!
   "The name of this revision naming scheme level. In Altium Designer it is known as 'Caption'."
   name: String!
@@ -2604,7 +2627,6 @@ type DesRevisionNamingSchemeLevel {
   levelSeparator: String!
   "The naming policy for this revision naming scheme level."
   revisionNamingPolicy: DesRevisionNamingPolicy!
-  "The level sequence of this revision naming scheme level."
   levelSequence: String! @deprecated(reason: "Use `RevisionNamingPolicy` instead.")
 }
 
@@ -2620,6 +2642,7 @@ type DesSchematic {
   documentName: String!
 }
 
+"Payload for setting the requirements block of a project."
 type DesSetProjectRequirementsBlockPayload {
   "Payload errors."
   errors: [DesPayloadError!]!
@@ -2627,13 +2650,17 @@ type DesSetProjectRequirementsBlockPayload {
 
 "Setting information."
 type DesSetting {
+  "The name of the setting."
   name: String!
+  "The value of the setting."
   value: String!
 }
 
 "Projects and manufacture packages shared with user."
 type DesSharedWithMe {
+  "Projects shared with user."
   projects("Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesSharedWithMeProjectInfoFilterInput): DesSharedWithMeProjectInfoConnection
+  "Manufacture packages shared with user."
   manufacturePackages: [DesManufacturePackage!]!
 }
 
@@ -2641,7 +2668,7 @@ type DesSharedWithMe {
 type DesSharedWithMeProjectInfo {
   "The project or null if its workspace is deleted. Avoid this field on getting many projects at once. Consider using `projectId` and `desProjectById`."
   project: DesProject
-  "The project node ID. Use it for getting the project by `desProjectById`."
+  "The project node identifier. Use it for getting the project by `desProjectById`."
   projectId: ID!
   "The project name."
   name: String!
@@ -2720,7 +2747,9 @@ type DesSize2D {
 
 "Information about layer stack."
 type DesStack {
+  "The name of the stack."
   name: String!
+  "Layers in the stack."
   layers: [DesLayer!]!
 }
 
@@ -2823,6 +2852,7 @@ type DesSymbolEdge {
   node: DesSymbol!
 }
 
+"System diagram information."
 type DesSystemDiagram {
   "The downloadable file for the system diagram."
   systemDiagramFile: DesDownloadableFile
@@ -2838,9 +2868,9 @@ type DesTask implements Node {
   modifiedBy: DesUser!
   "The list of task comments."
   comments: [DesComment!]!
-  "The node ID."
+  "The node identifier."
   id: ID!
-  "The task ID shown in Altium 365."
+  "The task identifier shown in Altium 365."
   refId: String!
   "The task name."
   name: String!
@@ -2972,7 +3002,6 @@ type DesUpdateFolderPayload {
 
 "Payload associated with updating folder permissions."
 type DesUpdateFolderPermissionsPayload {
-  "Folder identifier."
   folderId: ID! @deprecated(reason: "This value will soon change from folder node identifier to folder reference identifier (GUID).")
 }
 
@@ -2998,6 +3027,12 @@ type DesUpdateLifeCycleDefinitionPayload {
   id: ID!
   "Payload errors."
   errors: [DesPayloadError!]!
+}
+
+"Payload associated with updating project owner."
+type DesUpdateProjectOwnerPayload {
+  "Project identifier."
+  projectId: ID!
 }
 
 "Payload associated with updating project parameters."
@@ -3129,7 +3164,7 @@ type DesUploadProjectPayload {
 "User details with the identifier and nullable extra fields."
 type DesUser {
   "Null if the user no longer exists."
-  pictureUrl(size: DesUserPictureSize): String
+  pictureUrl("The size of the picture to retrieve." size: DesUserPictureSize): String
   "Null if the user no longer exists."
   groups: [DesUserGroup!]
   "The workspace specific user identifier."
@@ -3220,17 +3255,19 @@ type DesVia {
 
 "Weight in grams and ounces."
 type DesWeight {
+  "The weight value in the base unit."
   x: Decimal!
+  "The weight value in grams."
   gram: Decimal!
+  "The weight value in ounces."
   ounce: Decimal!
 }
 
 "A variant contains a specific configuration of a base design."
 type DesWipVariant implements Node {
-  "The node identifier (used by `desWipVariantById`)."
   id: ID! @deprecated(reason: "Use `ProjectId` and `Name` with `desWipVariantByVariantName` instead.")
-  "The project identifier (used by `desWipVariantByVariantName`)."
   projectId: String! @deprecated(reason: "This is temporary to illustrate project identifier as GRID`.")
+  "The design exchange information."
   designExchange: DesDesignExchange
   "The Bill of Materials (BOM) for this design variant."
   bom: DesBom
@@ -3311,7 +3348,7 @@ type DesWorkspace implements Node {
   "The location of this workspace."
   location: DesWorkspaceLocation!
   "The resource managing components for this workspace."
-  library: DesLibrary!
+  library(args: DesLibraryArgsInput): DesLibrary!
   "The configuration of this workspace."
   configuration: DesWorkspaceConfiguration!
   "The list of members authorized for this workspace."
@@ -3328,7 +3365,7 @@ type DesWorkspace implements Node {
   name: String!
   "The web address of this workspace."
   url: String!
-  "The ID of this workspace used for authorization."
+  "The identifier of this workspace used for authorization."
   authId: String!
   "The summary of this workspace content or purpose."
   description: String
@@ -3350,7 +3387,7 @@ type DesWorkspaceInfo {
   name: String!
   "The web address of this workspace."
   url: String!
-  "The ID of this workspace used for authorization."
+  "The identifier of this workspace used for authorization."
   authId: String!
   "The summary of this workspace content or purpose."
   description: String
@@ -3390,32 +3427,47 @@ type SupErrorPayload {
 
 "Nexar supply part data for internal use only."
 type SupPartExtras {
-  alternatives(first: Int! = 100): [SupPartExtras!]!
+  "Alternative manufacturer components."
+  alternatives("Limits the number returned." first: Int! = 100): [SupPartExtras!]!
+  "Part identifier."
   partId: String!
+  "Part description."
   description: String
+  "Indicates whether the part is *RoHS* compliant."
   isRohsCompliant: Boolean
+  "Confidence score for the data from the source."
   confidence: Float
+  "List of datasheet URLs associated with the part."
   datasheetUrls: [String!]
+  "Lifecycle state of the supplier part."
   lifeCycle: SupPartLifeCycle!
+  "Part parameters."
   parameters: [SupPartExtrasParameter!]
   technicalDetails: [SupPartExtrasTechnicalDetail!] @deprecated(reason: "Use `parameters`.")
 }
 
 "Nexar supply part data for internal use only."
 type SupPartExtrasParameter {
+  "Parameter name."
   name: String!
+  "Parameter unit."
   unit: String
+  "Parameter value."
   value: [String!]
 }
 
 "Nexar supply part data for internal use only."
 type SupPartExtrasTechnicalDetail {
+  "Technical detail name."
   name: String!
+  "Technical detail value."
   value: String!
 }
 
+"Union type for various payloads."
 union DesUnionPayload = DesComponent | DesErrorPayload
 
+"Possible payloads returned by supply-related operations."
 union SupUnionPayload = SupErrorPayload | SupPartExtras
 
 input BooleanOperationFilterInput {
@@ -3490,7 +3542,7 @@ input DesCadBoard3DBodyModelDataInput {
   modelFilePath: String
   "File hash for model."
   modelFileHash: String
-  "Unique ID for model on server."
+  "Unique identifier for model on server."
   modelIdOnServer: String
   "Model display name."
   modelDisplayName: String
@@ -3518,7 +3570,7 @@ input DesCadBoardAreaInput {
   rotation: Float
   "CAD board area location."
   location: DesCadBoardPointInput
-  "CAD board area unique ID."
+  "CAD board area unique identifier."
   uniqueId: String
   "CAD board area comment."
   comment: String
@@ -3960,10 +4012,12 @@ input DesComponentItemParameterInput {
   value: String!
 }
 
+"String operation filter input type for components."
 input DesComponentStringOperationFilterInput {
   eq: String
 }
 
+"Filter input type for component upgrades."
 input DesComponentUpgradeFilterInput {
   "Filter by component name (HRID)."
   name: DesStringUpgradeOperationFilterInput
@@ -3999,11 +4053,9 @@ input DesCreateCommentThreadInput {
   text: String!
   "Comment thread comment context type."
   commentContextType: DesCommentContextType!
-  "Comment thread item as design item identifier."
-  itemAsDesignItemId: ID @deprecated(reason: "Use `ItemAsDesignItemSchUniqueId` or `ItemAsDesignItemPcbUniqueId` instead.")
-  "Comment thread item as design item schematic identifier."
+  "Comment thread item as design item schematic reference identifier."
   itemAsDesignItemSchUniqueId: String
-  "Comment thread item as design item PCB identifier."
+  "Comment thread item as design item PCB reference identifier."
   itemAsDesignItemPcbUniqueId: String
   "Comment thread item as internal object identifier."
   itemAsInternalObjectId: String
@@ -4023,7 +4075,6 @@ input DesCreateFolderInput {
   description: String
   "Folder type."
   folderType: DesFolderType!
-  "Identifier of the parent folder. If both `parentId` and `parentFolderId` are omitted or set to `null`, the folder will be placed under the library root."
   parentId: ID @deprecated(reason: "Use `parentFolderId` instead.")
   "Reference identifier of the parent folder. If both `parentId` and `parentFolderId` are omitted or set to `null`, the folder will be placed under the library root."
   parentFolderId: String
@@ -4067,6 +4118,7 @@ input DesCreateFootprintInput {
 input DesCreateLifeCycleDefinitionInput {
   "Defines which workspace the life cycle definition should be created on."
   workspaceUrl: String
+  "The life cycle definition to create."
   lifeCycleDefinition: DesLifeCycleDefinitionInput!
 }
 
@@ -4128,7 +4180,7 @@ input DesCreateRevisionNamingSchemeInput {
   contentTypes: [DesContentTypeKind!]
   "The list of numbering levels for this revision naming scheme. Maximum of 3 levels."
   levels: [DesCreateRevisionNamingSchemeLevelInput!]!
-  "The separator used between item ID and revision ID. Allowed characters are: ',', '.', '-', '_'."
+  "The separator used between item identifier and revision identifier. Allowed characters are: ',', '.', '-', '_'."
   itemRevisionSeparator: String!
 }
 
@@ -4170,7 +4222,7 @@ input DesCreateSymbolInput {
 
 "Input for task comment creation."
 input DesCreateTaskCommentInput {
-  "The task node ID."
+  "The task node identifier."
   taskId: ID!
   "The comment text."
   text: String!
@@ -4252,7 +4304,6 @@ input DesDeleteCommentThreadInput {
 
 "Input for deleting a folder."
 input DesDeleteFolderInput {
-  "ID of the folder to delete."
   id: ID @deprecated(reason: "Use `workspaceUrl` and `folderId` instead.")
   "Reference identifier of the folder to delete."
   folderId: String
@@ -4274,15 +4325,15 @@ input DesDeleteRevisionNamingSchemeInput {
 
 "Input for deleting a task comment."
 input DesDeleteTaskCommentInput {
-  "The task node ID."
+  "The task node identifier."
   taskId: ID!
-  "The comment ID."
+  "The comment identifier."
   commentId: String!
 }
 
 "Input for deleting a task."
 input DesDeleteTaskInput {
-  "The task node ID."
+  "The task node identifier."
   taskId: ID!
 }
 
@@ -4324,6 +4375,7 @@ input DesDesignItemParameterFilterInput {
   value: StringOperationFilterInput
 }
 
+"Input type for filtering folders in the design library."
 input DesFolderFilterInput {
   "Filters folders by their type. If null, this condition is ignored."
   folderType: DesFolderType
@@ -4367,6 +4419,12 @@ input DesLayerFilterInput {
   or: [DesLayerFilterInput!]
   "Layer name."
   name: StringOperationFilterInput
+}
+
+"`desLibrary` extra arguments."
+input DesLibraryArgsInput {
+  "Fetch all component revisions when listing components. When set to false, only the latest component revisions are returned. Defaults to false."
+  allComponentRevisions: Boolean
 }
 
 "Input for life cycle definition."
@@ -4445,6 +4503,7 @@ input DesLifeCycleStateTransitionInput {
   approvals: [DesLifeCycleStateTransitionApprovalGroupInput!]
 }
 
+"Filter input type for lifecycle state names."
 input DesLifecycleStateUpgradeOperationFilterInput {
   "Equals."
   eq: String
@@ -4458,9 +4517,7 @@ input DesLifecycleStateUpgradeOperationFilterInput {
 
 "Input for moving a folder."
 input DesMoveFolderInput {
-  "ID of the folder to move."
   id: ID @deprecated(reason: "Use `workspaceUrl` and `folderId` instead.")
-  "Identifier of the new parent folder. If both `parentId` and `parentFolderId` are omitted or set to `null`, the folder will be placed under the library root."
   parentId: ID @deprecated(reason: "Use `workspaceUrl` and `parentFolderId` instead.")
   "URL of the workspace in which the folder and parent folder (if used) exist."
   workspaceUrl: String
@@ -4569,8 +4626,9 @@ input DesProjectsInput {
   hasLayers: Boolean
 }
 
+"Filter for requirements blocks in projects."
 input DesProjectsRequirementsBlockFilterInput {
-  "Requirements block IDs."
+  "Requirements block identifiers."
   blockIds: [String!]!
 }
 
@@ -4584,15 +4642,15 @@ input DesRectangleInput {
 
 "Input for releasing component datasheet."
 input DesReleaseComponentDatasheetInput {
-  "Datasheet identifier for adding an existing datasheet to the release. Either 'id' or 'file' must be provided."
+  "Datasheet identifier for adding an existing datasheet to the release. Either `id` or `file` must be provided."
   id: ID
-  "The datasheet name for the 'file'. Use null to be generated."
+  "The datasheet name for the `file`. Use null to be generated."
   itemName: String
-  "The datasheet file for adding a new datasheet to the release. Either 'id' or 'file' must be provided."
+  "The datasheet file for adding a new datasheet to the release. Either `id` or `file` must be provided."
   file: DesReleaseComponentFileInput
-  "The datasheet revision naming scheme identifier. Required when 'file' is provided."
+  "The datasheet revision naming scheme identifier. Required when `file` is provided."
   revisionNamingSchemeNodeId: ID
-  "The datasheet life cycle definition identifier. Required when 'file' is provided."
+  "The datasheet life cycle definition identifier. Required when `file` is provided."
   lifeCycleDefinitionNodeId: ID
 }
 
@@ -4692,9 +4750,9 @@ input DesReleaseComponentTemplateInput {
   name: String!
   "The component template content (CMPT format JSON string)."
   contentAsText: String!
-  "Optional naming scheme ID."
+  "Optional naming scheme identifier."
   revisionNamingSchemeId: String
-  "Optional life cycle ID."
+  "Optional life cycle identifier."
   lifeCycleDefinitionId: String
   "Optional comment."
   comment: String
@@ -4770,10 +4828,11 @@ input DesSchematicFilterInput {
   documentName: StringOperationFilterInput
 }
 
+"Sets the requirements block for a project."
 input DesSetProjectRequirementsBlockInput {
   "Project identifier."
   projectId: ID!
-  "Requirements block ID."
+  "Requirements block identifier."
   requirementsBlockId: String
 }
 
@@ -4787,6 +4846,7 @@ input DesSharedWithMeProjectInfoFilterInput {
   description: StringOperationFilterInput
 }
 
+"String filter input type for component upgrades."
 input DesStringUpgradeOperationFilterInput {
   "Equals."
   eq: String
@@ -4888,7 +4948,7 @@ input DesUpdateComponentSymbolInput {
 
 "Input for updating component template."
 input DesUpdateComponentTemplateInput {
-  "The node ID."
+  "The node identifier."
   componentTemplateId: ID!
   "The component template content (CMPT format JSON string)."
   contentAsText: String!
@@ -4900,7 +4960,6 @@ input DesUpdateComponentTemplateInput {
 
 "Input for updating folder."
 input DesUpdateFolderInput {
-  "ID of the folder to update."
   id: ID @deprecated(reason: "Use `workspaceUrl` and `folderId` instead.")
   "URL of the workspace in which the folder exists."
   workspaceUrl: String
@@ -4972,6 +5031,14 @@ input DesUpdateLifeCycleDefinitionInput {
   lifeCycleDefinition: DesLifeCycleDefinitionInput!
 }
 
+"Input for updating project owner."
+input DesUpdateProjectOwnerInput {
+  "Project identifier."
+  projectId: ID!
+  "Workspace user identifier of the new project owner."
+  userId: String!
+}
+
 "Input for updating project parameters."
 input DesUpdateProjectParametersInput {
   "Project identifier."
@@ -5026,7 +5093,7 @@ input DesUpdateRevisionNamingSchemeInput {
   contentTypes: [DesContentTypeKind!]
   "The list of numbering levels for this revision naming scheme. Maximum of 3 levels."
   levels: [DesUpdateRevisionNamingSchemeLevelInput!]
-  "The separator used between item ID and revision ID. Allowed characters are: ',', '.', '-', '_'."
+  "The separator used between item identifier and revision identifier. Allowed characters are: ',', '.', '-', '_'."
   itemRevisionSeparator: String
 }
 
@@ -5076,9 +5143,9 @@ input DesUpdateSymbolLifeCycleStateInput {
 
 "Input for updating a task comment."
 input DesUpdateTaskCommentInput {
-  "The task node ID."
+  "The task node identifier."
   taskId: ID!
-  "The comment ID."
+  "The comment identifier."
   commentId: String!
   "New comment text."
   text: String!
@@ -5086,7 +5153,7 @@ input DesUpdateTaskCommentInput {
 
 "Input for updating a task."
 input DesUpdateTaskInput {
-  "The task node ID."
+  "The task node identifier."
   taskId: ID!
   "New task name or null to keep old."
   name: String
@@ -5144,7 +5211,7 @@ input DesUploadCollaborationInput {
   domain: DesCollaborationDomain!
   "The uploaded file comment."
   comment: String!
-  "The uploaded file ID. Either the file ID or design must be given."
+  "The uploaded file identifier. Either the file identifier or design must be given."
   fileId: String
   "*PROTOTYPE, SUBJECT TO CHANGE*"
   design: DesCadDesignInput
@@ -5170,7 +5237,7 @@ input DesUploadCollaborationSimulationInput {
 input DesUploadProjectInput {
   "The workspace URL."
   workspaceUrl: String
-  "The uploaded zip file ID."
+  "The uploaded zip file identifier."
   fileId: String!
   "The project name."
   name: String!
@@ -5264,7 +5331,7 @@ input DesWorkspaceFilterInput {
   name: StringOperationFilterInput
   "The web address of this workspace."
   url: StringOperationFilterInput
-  "The ID of this workspace used for authorization."
+  "The identifier of this workspace used for authorization."
   authId: StringOperationFilterInput
   "The summary of this workspace content or purpose."
   description: StringOperationFilterInput
@@ -5294,17 +5361,20 @@ input StringOperationFilterInput {
   nendsWith: String
 }
 
+"Board option flags."
 enum DesCadBoardCollaborationFlag {
   IGNORE_DUPLICATE_PAD_DESIGNATORS
   BASELINE_UNIT_IMPERIAL
 }
 
+"Component placement kind."
 enum DesCadBoardComponentPlacement {
   TOP
   BOTTOM
   BOTH
 }
 
+"Specifies which copper features to include when exporting board copper data."
 enum DesCadBoardCopperExportFeature {
   COPPER_REGIONS
   PADS
@@ -5312,22 +5382,26 @@ enum DesCadBoardCopperExportFeature {
   VIAS
 }
 
+"Specifies the type of copper region."
 enum DesCadBoardCopperRegionType {
   REGION
   PAD
 }
 
+"Category of the board layer."
 enum DesCadBoardLayerCategory {
   PHYSICAL
   MECHANICAL
 }
 
+"Component placement for the signal layer."
 enum DesCadBoardLayerComponentPlacement {
   NONE
   BODY_UP
   BODY_DOWN
 }
 
+"Dielectric type for the dielectric layer."
 enum DesCadBoardLayerDielectricType {
   NONE
   CORE
@@ -5336,6 +5410,7 @@ enum DesCadBoardLayerDielectricType {
   FILM
 }
 
+"Physical category of the board layer."
 enum DesCadBoardLayerPhysicalCategory {
   ELECTRICAL_INTERNAL_PLANE
   ELECTRICAL_SIGNAL_LAYER
@@ -5345,18 +5420,21 @@ enum DesCadBoardLayerPhysicalCategory {
   PHYSICAL_PASTE_MASK
 }
 
+"Position of the board layer within the stackup."
 enum DesCadBoardLayerPosition {
   TOP
   INTERNAL
   BOTTOM
 }
 
+"Type of the board layer."
 enum DesCadBoardLayerType {
   DIELECTRIC
   SIGNAL
   INTERNAL_PLANE
 }
 
+"The type of the board object."
 enum DesCadBoardObjectType {
   COMPONENT
   HOLE
@@ -5372,12 +5450,14 @@ enum DesCadBoardObjectType {
   TRACK
 }
 
+"The kind of component variation in a CAD design."
 enum DesCadComponentVariationKind {
   FITTED
   NOT_FITTED
   ALTERNATE
 }
 
+"The type of the hole."
 enum DesCadCounterType {
   NONE
   COUNTERSINK_TOP
@@ -5386,6 +5466,7 @@ enum DesCadCounterType {
   COUNTERBORE_BOTTOM
 }
 
+"The type of the hole."
 enum DesCadHoleType {
   CIRCULAR
   RECTANGULAR
@@ -5393,12 +5474,14 @@ enum DesCadHoleType {
   UNKNOWN
 }
 
+"The mode for exporting layers in a design."
 enum DesCadLayersExportMode {
   NO_LAYERS
   ALL_LAYERS
   OUTER_SIGNAL_LAYERS_ONLY
 }
 
+"The workflow state for proposed changes."
 enum DesCadWorkflowState {
   NONE
   SENT_PROPOSED_CHANGES
@@ -5413,6 +5496,7 @@ enum DesCollaborationDomain {
   ESD
 }
 
+"The comment context type."
 enum DesCommentContextType {
   NONE
   COMPONENT
@@ -5421,6 +5505,7 @@ enum DesCommentContextType {
   AREA
 }
 
+"Kinds of content types stored in the library."
 enum DesContentTypeKind {
   COMPONENT
   EMBEDDED_DESIGN
@@ -5497,16 +5582,19 @@ enum DesContentTypeKind {
   AI_MODEL
 }
 
+"The document type."
 enum DesDocumentType {
   SCHEMATIC
   PCB
 }
 
+"The filter match mode."
 enum DesFolderFilterMatchMode {
   AND
   OR
 }
 
+"Folder category used in the library."
 enum DesFolderType {
   GENERIC_FOLDER
   ALTIUM_DESIGNER_PLUGIN_ZONE
@@ -5558,6 +5646,7 @@ enum DesFolderType {
   PART_REPORTS_CATALOG
 }
 
+"Status of a job."
 enum DesJobStatus {
   PENDING
   PROCESSING
@@ -5565,6 +5654,7 @@ enum DesJobStatus {
   ERROR
 }
 
+"The type of PCB layer."
 enum DesLayerType {
   ABSTRACT
   UNKNOWN
@@ -5590,11 +5680,13 @@ enum DesLayerType {
   NON_CONDUCTIVE
 }
 
+"Type of lifecycle management strategy."
 enum DesLifeCycleManagementType {
   SIMPLE
   STRUCTURED
 }
 
+"The kind of life cycle state transition."
 enum DesLifeCycleStateTransitionKind {
   "The transition can be applied subject to default server permissions."
   CONTROLLED
@@ -5602,11 +5694,13 @@ enum DesLifeCycleStateTransitionKind {
   APPROVALS
 }
 
+"Pad type: SMD or free."
 enum DesPadType {
   SMD
   FREE
 }
 
+"Component parameter type."
 enum DesParameterType {
   NONE
   TEXT
@@ -5628,6 +5722,7 @@ enum DesParameterType {
   TIME
 }
 
+"Scope for permission checks (user, group, organisation, etc.)."
 enum DesPermissionScope {
   USER
   GUEST
@@ -5638,6 +5733,7 @@ enum DesPermissionScope {
   COLLABORATOR
 }
 
+"The electrical type of a pin."
 enum DesPinElectricalType {
   INPUT
   IO
@@ -5649,6 +5745,7 @@ enum DesPinElectricalType {
   POWER
 }
 
+"Shape of a PCB primitive."
 enum DesPrimitiveShape {
   NONE
   ROUND
@@ -5663,6 +5760,7 @@ enum DesPrimitiveShape {
   CUSTOM
 }
 
+"Type of project."
 enum DesProjectType {
   NONE
   PCB_PROJECT
@@ -5670,6 +5768,7 @@ enum DesProjectType {
   HARNESS_DESIGN
 }
 
+"Describes the naming policy for design revisions."
 enum DesRevisionNamingPolicy {
   "Number whose sequence starts at 0."
   NUMERIC_ZERO
@@ -5683,6 +5782,7 @@ enum DesRevisionNamingPolicy {
   ASME_Y14_35M
 }
 
+"Priority levels for a task."
 enum DesTaskPriority {
   UNDEFINED
   LOW
@@ -5691,6 +5791,7 @@ enum DesTaskPriority {
   HIGHEST
 }
 
+"Status values for a task."
 enum DesTaskStatus {
   UNDEFINED
   TO_DO
@@ -5698,6 +5799,7 @@ enum DesTaskStatus {
   RESOLVED
 }
 
+"Sizes for user profile pictures."
 enum DesUserPictureSize {
   SIZE48X48
   SIZE70X70
@@ -5713,6 +5815,7 @@ enum DesVcsChangeKind {
   MODIFIED
 }
 
+"Lifecycle state for a supplier part."
 enum SupPartLifeCycle {
   UNKNOWN
   NEW
@@ -6544,14 +6647,20 @@ type SupEvalKit {
   id: ID!
   "The evaluation kit title."
   title: String!
+  "The publisher identifier."
+  publisherId: String!
   "The detailed description."
   description: String
   "The source url."
   sourceUrl: String
   "The creation date."
-  createdAt: DateTime
+  createdAt: DateTime!
   "The last updated date."
-  updatedAt: DateTime
+  updatedAt: DateTime!
+  "The user id who last updated the evaluation kit."
+  updatedById: String
+  "The user name who last updated the evaluation kit."
+  updatedByName: String
   "The list of evaluation kit images."
   previewImages: [SupImage!]
   "The best evaluation kit images."
@@ -6567,6 +6676,19 @@ type SupEvalKit {
   "The esd source."
   esdSource: SupEvalKitESDSource
   parts: [SupPart]!
+  publisher: [SupCompany!]
+}
+
+"A connection to a list of items."
+type SupEvalKitConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [SupEvalKitEdge!]
+  "A flattened list of the nodes."
+  nodes: [SupEvalKit!]
+  "Identifies the total count of items in the connection."
+  totalCount: Int!
 }
 
 "Payload associated with creating a evaluation kit."
@@ -6582,8 +6704,18 @@ type SupEvalKitDeleteEvalKitPayload {
 }
 
 type SupEvalKitESDSource {
+  "The URL of the document file associated with the evaluation kit."
   documentFileUrl: String
+  "The URL of the compile model associated with the evaluation kit."
   compileModelUrl: String
+}
+
+"An edge in a connection."
+type SupEvalKitEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: SupEvalKit!
 }
 
 type SupEvalKitNotFoundError implements Error {
@@ -6611,6 +6743,8 @@ union SupEvalKitUpdateEvalKitError = SupEvalKitOperationFailedError | SupEvalKit
 input SupEvalKitCreateEvalKitInput {
   "The evaluation kit title."
   title: String!
+  "The publisher identifier."
+  publisherId: String!
   "The evaluation kit description."
   description: String
   "The evaluation kit source url."
@@ -6634,16 +6768,60 @@ input SupEvalKitDeleteEvalKitInput {
 }
 
 input SupEvalKitFileInput {
+  "The nexar file service identifier of the file."
   fileId: String!
+  "The type of the file."
   fileType: String!
+  "The file’s name with extension included (e.g., example.json, image.jpg)."
   fileName: String!
+}
+
+"Input for filtering evaluation kits by additional conditions."
+input SupEvalKitFilterInput {
+  "Filter by a list of publisher (company) identifiers if specified."
+  publisherIds: [String!]
+}
+
+"Input type for ordering."
+input SupEvalKitOrderInput {
+  "The field to order by."
+  field: SupEvalKitOrderField!
+  "The direction of the order."
+  direction: SupEvalKitOrderDirection!
+}
+
+"Represents the filter for searching evaluation kits."
+input SupEvalKitSearchFilterInput {
+  "Searches by important fields (title, description)."
+  q: String
+  "Searches by title."
+  title: String
+  "Searches by description."
+  description: String
+  "Searches by part identifiers."
+  partIds: [String!]
+  "Searches by reference design identifiers."
+  refDesignIds: [ID!]
+}
+
+"Input type for sorting."
+input SupEvalKitSortInput {
+  "Sorting by title."
+  title: SortEnumType
+  "Sorting by creation date."
+  createdAt: SortEnumType
+  "Sorting by last update date."
+  updatedAt: SortEnumType
 }
 
 "Input for evaluation kit update."
 input SupEvalKitUpdateEvalKitInput {
+  "The evaluation kit identifier."
   id: ID!
   "The evaluation kit title."
   title: String
+  "The publisher identifier."
+  publisherId: String
   "The evaluation kit description."
   description: String
   "The evaluation kit source url."
@@ -6666,9 +6844,34 @@ input SupEvalKitUpdateEvalKitInput {
   removeCompatibleSoftwareProjectIds: [ID!]
 }
 
+enum SortEnumType {
+  ASC
+  DESC
+}
+
 enum SupEvalKitErrorCode {
+  "The operation failed."
   OPERATION_FAILED
+  "The evaluation kit was not found."
   SUP_EVAL_KIT_NOT_FOUND
+}
+
+enum SupEvalKitOrderDirection {
+  "Ascending order."
+  ASC
+  "Descending order."
+  DESC
+}
+
+enum SupEvalKitOrderField {
+  "Order by title."
+  TITLE
+  "Order by description."
+  DESCRIPTION
+  "Order by creation date."
+  CREATED_AT
+  "Order by last update date."
+  UPDATED_AT
 }
 
 "Shared Fields between `SupPartFamily` and `SupPartGroup`."
@@ -6985,14 +7188,20 @@ enum SupPartFamilyLifecycleStatus {
   UNKNOWN
 }
 
+"Aggregation bucket for reference design applications with application identifier + counts."
 type SupRefApplicationBucket {
+  "The identifier of application."
   applicationId: String!
+  "Number of items in the bucket."
   count: Int!
   application: [SupCategory!]
 }
 
+"Aggregation bucket for reference design categories with category identifier + counts."
 type SupRefCategoryBucket {
+  "The identifier of category."
   categoryId: String!
+  "Number of items in the bucket."
   count: Int!
   category: [SupCategory!]
 }
@@ -7016,9 +7225,9 @@ type SupRefDesign {
   "Indicates whether the reference design is verified."
   isVerified: Boolean!
   "The creation date."
-  createdAt: DateTime
+  createdAt: DateTime!
   "The last updated date."
-  updatedAt: DateTime
+  updatedAt: DateTime!
   "Indicates if an evaluation board is available."
   hasEvalBoard: Boolean!
   "The publisher identifier."
@@ -7103,8 +7312,11 @@ type SupRefDesignResultSet {
   typeAgg(size: Int = 10): [SupRefDesignTypeBucket!]
 }
 
+"Aggregation bucket for reference design types with type + counts."
 type SupRefDesignTypeBucket {
+  "Reference design type."
   type: SupRefDesignType!
+  "Number of items in the bucket."
   count: Int!
 }
 
@@ -7158,8 +7370,11 @@ type SupRefPoint2D {
   y: Float!
 }
 
+"Aggregation bucket for reference design publishers with company identifier + counts."
 type SupRefPublisherBucket {
+  "The identifier of the company that publish the reference design."
   publisherId: String!
+  "Number of items in the bucket."
   count: Int!
   publisher: [SupCompany!]
 }
@@ -7190,19 +7405,31 @@ type SupRefTag {
   category: String!
 }
 
+"Aggregation bucket for reference design tags with name + counts."
 type SupRefTagBucket {
+  "Tag name associated with reference design."
   name: String!
+  "Number of items in the bucket."
   count: Int!
 }
 
+"Input for filtering reference designs by additional conditions."
 input SupRefDesignFilterInput {
+  "Filter by verification status if specified."
   isVerified: Boolean
+  "Filter to only include designs that have evaluation boards."
   hasEvalBoard: Boolean
+  "Filter by a list of application identifiers if specified."
   applicationIds: [String!]
+  "Filter by a list of category identifiers if specified."
   categoryIds: [String!]
+  "Filter by a list of publisher (company) identifiers if specified."
   publisherIds: [String!]
+  "Filter by a list of tags if specified."
   tags: [String!]
+  "Filter by a list of reference design types if specified."
   types: [SupRefDesignType!]
+  "Filter by a list of reference design statuses if specified."
   statuses: [SupRefDesignStatus!]
 }
 
@@ -7254,18 +7481,37 @@ type SupSoftwareProject {
   id: ID!
   "The software project title."
   title: String!
+  "The publisher identifier."
+  publisherId: String!
   "The detailed description."
   description: String
   "The software project type."
   type: SupSoftwareProjectType!
   "The creation date."
-  createdAt: DateTime
+  createdAt: DateTime!
   "The last updated date."
-  updatedAt: DateTime
-  "The list of evaluation kit sources."
+  updatedAt: DateTime!
+  "The user id who last updated the software project."
+  updatedById: String
+  "The user name who last updated the software project."
+  updatedByName: String
+  "The list of evaluation kit sources associated with the software project."
   compatibleEvalKits: [SupSoftwareProjectEvalKitSource!]
-  "The evaluation kit source."
+  "The evaluation kit source associated with the software project."
   compatibleEvalKit(id: ID!): SupSoftwareProjectEvalKitSource
+  publisher: [SupCompany!]
+}
+
+"A connection to a list of items."
+type SupSoftwareProjectConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [SupSoftwareProjectEdge!]
+  "A flattened list of the nodes."
+  nodes: [SupSoftwareProject!]
+  "Identifies the total count of items in the connection."
+  totalCount: Int!
 }
 
 "Payload associated with creating a software project."
@@ -7280,13 +7526,39 @@ type SupSoftwareProjectDeleteSoftwareProjectPayload {
   errors: [SupSoftwareProjectDeleteSoftwareProjectError!]
 }
 
-type SupSoftwareProjectEvalKitSource {
+"An edge in a connection."
+type SupSoftwareProjectEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: SupSoftwareProject!
+}
+
+type SupSoftwareProjectEvalKitProjectSource {
+  "The type of the compatible evaluation kit project source."
+  type: SupSoftwareProjectEvalKitProjectSourceType!
+  "The URL of the source."
   sourceUrl: String!
+  "The URL of the config XML."
   configXmlUrl: String!
+}
+
+type SupSoftwareProjectEvalKitSource {
+  "The compatible evaluation kit identifier."
+  compatibleEvalKitId: String!
+  "The URL of the source associated with the software project."
+  sourceUrl: String!
+  "The URL of the config XML associated with the software project."
+  configXmlUrl: String!
+  "The URL of the config associated with the software project."
   configUrl: String!
+  "The URL of the readme associated with the software project."
   readmeUrl: String!
+  "The evaluation kit identifier."
   evalKitId: ID!
   evalKit: SupEvalKit!
+  "The list of evaluation kit project sources."
+  projectSources(types: [SupSoftwareProjectEvalKitProjectSourceType]): [SupSoftwareProjectEvalKitProjectSource!]
 }
 
 type SupSoftwareProjectNotFoundError implements Error {
@@ -7310,11 +7582,24 @@ union SupSoftwareProjectDeleteSoftwareProjectError = SupSoftwareProjectOperation
 
 union SupSoftwareProjectUpdateSoftwareProjectError = SupSoftwareProjectOperationFailedError | SupSoftwareProjectNotFoundError
 
+input SupSoftwareProjectCreateEvalKitSourceInput {
+  "The evaluation kit identifier."
+  evalKitId: ID!
+  "The project sources associated with the evaluation kit source."
+  projectSources: [SupSoftwareProjectEvalKitProjectSourceInput!]!
+}
+
 "Input for software project creation."
 input SupSoftwareProjectCreateSoftwareProjectInput {
+  "The software project title."
   title: String!
+  "The publisher identifier."
+  publisherId: String!
+  "The software project description."
   description: String
+  "The software project type."
   type: SupSoftwareProjectType!
+  "The list of evaluation kit sources associated with the software project."
   compatibleEvalKits: [SupSoftwareProjectEvalKitSourceInput!]
 }
 
@@ -7324,13 +7609,32 @@ input SupSoftwareProjectDeleteSoftwareProjectInput {
   id: ID!
 }
 
-input SupSoftwareProjectEvalKitSourceInput {
+input SupSoftwareProjectEvalKitProjectSourceInput {
+  "The URL of the source associated with the evaluation kit source."
   sourceUrl: String
+  "The upload file of the source associated with the evaluation kit source."
   sourceFile: SupSoftwareProjectFileInput
+  "The URL of the config XML associated with the evaluation kit source."
   configXmlUrl: String!
-  configUrl: String!
-  readmeUrl: String!
+  "The project source type."
+  type: SupSoftwareProjectEvalKitProjectSourceType!
+}
+
+input SupSoftwareProjectEvalKitSourceInput {
+  "The URL of the source associated with the evaluation kit source."
+  sourceUrl: String @deprecated(reason: "Use 'projectSources.sourceUrl' instead.")
+  "The upload file of the source associated with the evaluation kit source."
+  sourceFile: SupSoftwareProjectFileInput @deprecated(reason: "Use 'projectSources.sourceFile' instead.")
+  "The URL of the config XML associated with the evaluation kit source."
+  configXmlUrl: String @deprecated(reason: "Use 'projectSources.configXmlUrl' instead.")
+  "The URL of the config associated with the evaluation kit source."
+  configUrl: String @deprecated(reason: "Use 'projectSources' instead.")
+  "The URL of the readme associated with the evaluation kit source."
+  readmeUrl: String @deprecated(reason: "Use 'projectSources' instead.")
+  "The evaluation kit identifier."
   evalKitId: ID!
+  "The project sources associated with the evaluation kit source."
+  projectSources: [SupSoftwareProjectEvalKitProjectSourceInput!]!
 }
 
 input SupSoftwareProjectFileInput {
@@ -7339,27 +7643,118 @@ input SupSoftwareProjectFileInput {
   fileName: String!
 }
 
+"Input for filtering software projects by additional conditions."
 input SupSoftwareProjectFilterInput {
+  "Filter by a list of software project types if specified."
   types: [SupSoftwareProjectType!]
+  "Filter by a list of publisher identifiers if specified."
+  publisherIds: [String!]
+}
+
+"Input type for ordering."
+input SupSoftwareProjectOrderInput {
+  "The field to order by."
+  field: SupSoftwareProjectOrderField!
+  "The direction of the order."
+  direction: SupSoftwareProjectOrderDirection!
+}
+
+input SupSoftwareProjectRemoveEvalKitSourceInput {
+  "The compatible evaluation kit identifier."
+  compatibleEvalKitId: String!
+}
+
+"Represents the filter for searching software projects."
+input SupSoftwareProjectSearchFilterInput {
+  "Searches by important fields (title, description)."
+  q: String
+  "Searches by title."
+  title: String
+  "Searches by description."
+  description: String
+  "Searches by type."
+  types: [SupSoftwareProjectType!]
+}
+
+"Input type for sorting."
+input SupSoftwareProjectSortInput {
+  "Sorting by title."
+  title: SortEnumType
+  "Sorting by creation date."
+  createdAt: SortEnumType
+  "Sorting by last update date."
+  updatedAt: SortEnumType
+}
+
+input SupSoftwareProjectUpdateEvalKitSourceInput {
+  "The compatible evaluation kit identifier."
+  compatibleEvalKitId: String!
+  "The evaluation kit identifier."
+  evalKitId: ID!
+  "Replace the current software project evaluation kit project sources with these ones."
+  newProjectSources: [SupSoftwareProjectEvalKitProjectSourceInput!]
 }
 
 "Input for software project update."
 input SupSoftwareProjectUpdateSoftwareProjectInput {
+  "The software project identifier."
   id: ID!
+  "The software project title."
   title: String
+  "The publisher identifier."
+  publisherId: String
+  "The software project description."
   description: String
+  "The software project type."
   type: SupSoftwareProjectType
   "Replace the current software project evaluation kit sources with these ones."
-  newCompatibleEvalKits: [SupSoftwareProjectEvalKitSourceInput!]!
+  newCompatibleEvalKits: [SupSoftwareProjectEvalKitSourceInput!] @deprecated(reason: "Use 'AddCompatibleEvalKits', 'UpdateCompatibleEvalKits', 'RemoveCompatibleEvalKits' instead.")
+  "Add a new software project evaluation kit project sources."
+  addCompatibleEvalKits: [SupSoftwareProjectCreateEvalKitSourceInput!]
+  "Update current existing evaluation kit project sources."
+  updateCompatibleEvalKits: [SupSoftwareProjectUpdateEvalKitSourceInput!]
+  "Remove current existing evaluation kit project sources."
+  removeCompatibleEvalKits: [SupSoftwareProjectRemoveEvalKitSourceInput!]
 }
 
 enum SupSoftwareProjectErrorCode {
+  "The operation failed."
   OPERATION_FAILED
+  "The software project was not found."
   SUP_SOFTWARE_PROJECT_NOT_FOUND
 }
 
+enum SupSoftwareProjectEvalKitProjectSourceType {
+  "CMAKE project."
+  CMAKE
+  "E2STUDIO project."
+  E2STUDIO
+}
+
+enum SupSoftwareProjectOrderDirection {
+  "Ascending order."
+  ASC
+  "Descending order."
+  DESC
+}
+
+enum SupSoftwareProjectOrderField {
+  "Order by title."
+  TITLE
+  "Order by description."
+  DESCRIPTION
+  "Order by type."
+  TYPE
+  "Order by creation date."
+  CREATED_AT
+  "Order by last update date."
+  UPDATED_AT
+}
+
 enum SupSoftwareProjectType {
+  "Defines the Application type used to classify software projects."
   APPLICATION
+  "Defines the Example type used to classify software projects."
   EXAMPLE
 }
 
@@ -7370,6 +7765,8 @@ type SupSolutionTemplate {
   title: String!
   "The solution template stable name identifier."
   stableName: String!
+  "The publisher identifier."
+  publisherId: String!
   "The solution template status."
   status: SupSolutionTemplateStatus!
   "The detailed description."
@@ -7377,9 +7774,13 @@ type SupSolutionTemplate {
   "The solution source url."
   solutionSourceUrl: String
   "The creation date."
-  createdAt: DateTime
+  createdAt: DateTime!
   "The last updated date."
-  updatedAt: DateTime
+  updatedAt: DateTime!
+  "The user id who last updated the solution template."
+  updatedById: String
+  "The user name who last updated the solution template."
+  updatedByName: String
   "The list of part identifiers associated with the solution template."
   evalKitIds: [ID!]! @deprecated(reason: "Use 'compatibleEvalKits' instead")
   "The list of software projects identifiers associated with the solution template."
@@ -7401,6 +7802,7 @@ type SupSolutionTemplate {
   "The list of AI model identifiers associated with the solution template."
   aiModelIds: [String!]
   applications: [SupCategory!]
+  publisher: [SupCompany!]
 }
 
 type SupSolutionTemplateApplication {
@@ -7410,9 +7812,33 @@ type SupSolutionTemplateApplication {
   description: String
   "The solution template application identifier."
   applicationId: String!
+  "The date and time when the solution template application was created."
+  createdAt: DateTime!
+  "The date and time when the solution template application was updated."
+  updatedAt: DateTime!
   "The list of parameter bundles associated with the solution template."
   parameters: [SupSolutionTemplateApplicationParameterBundle!]!
   application: [SupCategory!]
+}
+
+"A connection to a list of items."
+type SupSolutionTemplateApplicationConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [SupSolutionTemplateApplicationEdge!]
+  "A flattened list of the nodes."
+  nodes: [SupSolutionTemplateApplication!]
+  "Identifies the total count of items in the connection."
+  totalCount: Int!
+}
+
+"An edge in a connection."
+type SupSolutionTemplateApplicationEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: SupSolutionTemplateApplication!
 }
 
 type SupSolutionTemplateApplicationIsExistedError implements Error {
@@ -7446,6 +7872,18 @@ type SupSolutionTemplateCompatibleEvalKit {
   parameters: [SupSolutionTemplateParameterBundle!]!
 }
 
+"A connection to a list of items."
+type SupSolutionTemplateConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [SupSolutionTemplateEdge!]
+  "A flattened list of the nodes."
+  nodes: [SupSolutionTemplate!]
+  "Identifies the total count of items in the connection."
+  totalCount: Int!
+}
+
 "Payload associated with creating a solution template application."
 type SupSolutionTemplateCreateSolutionTemplateApplicationPayload {
   "Solution template application identifier."
@@ -7475,6 +7913,14 @@ type SupSolutionTemplateESDSource {
   documentFileUrl: String
   "The URL of the compile model associated with the solution template."
   compileModelUrl: String
+}
+
+"An edge in a connection."
+type SupSolutionTemplateEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: SupSolutionTemplate!
 }
 
 type SupSolutionTemplateNotFoundError implements Error {
@@ -7558,6 +8004,20 @@ input SupSolutionTemplateApplicationRemoveParameterBundleInput {
   parameterTitle: String!
 }
 
+"Represents the filter for searching solution template applications."
+input SupSolutionTemplateApplicationSearchFilterInput {
+  "Searches by text data."
+  q: String
+}
+
+"Input type for solution template application sorting."
+input SupSolutionTemplateApplicationSortInput {
+  "Sort by creation date."
+  createdAt: SortEnumType
+  "Sort by last update date."
+  updatedAt: SortEnumType
+}
+
 input SupSolutionTemplateApplicationUpdateParameterBundleInput {
   "The order of the parameter in the bundle."
   order: Int
@@ -7617,6 +8077,8 @@ input SupSolutionTemplateCreateSolutionTemplateInput {
   title: String!
   "The solution template stable name identifier."
   stableName: String!
+  "The publisher identifier."
+  publisherId: String!
   "The solution template description."
   description: String
   "The ESD source."
@@ -7665,8 +8127,12 @@ input SupSolutionTemplateFileInput {
 input SupSolutionTemplateFilterInput {
   "Filter by a list of solution template statuses if specified."
   statuses: [SupSolutionTemplateStatus!]
+  "Filter by a list of publisher (company) identifiers if specified."
+  publisherIds: [String!]
   "Filter by a list of AI model identifiers if specified."
   aiModelIds: [String!]
+  "Indicates whether the solution template has AI models; null applies no filtering."
+  hasAIModels: Boolean
 }
 
 input SupSolutionTemplateParameterBundleInput {
@@ -7686,6 +8152,36 @@ input SupSolutionTemplateParameterValueInput {
   name: String!
   "The identifier used to look up the parameter value by its pair of name and value."
   value: String!
+}
+
+"Represents the filter for searching solution templates."
+input SupSolutionTemplateSearchFilterInput {
+  "Searches by text data (title, stable name, description)."
+  q: String
+  "Searches by solution template title."
+  title: String
+  "Searches by description."
+  description: String
+  "Searches by stable name identifier."
+  stableNames: [String!]
+  "Searches by solution template status."
+  statuses: [SupSolutionTemplateStatus!]
+  "Searches by AI model identifiers."
+  aiModelIds: [String!]
+  "Indicates whether the solution template has AI models; null applies no filtering."
+  hasAIModels: Boolean
+}
+
+"Input type for solution template sorting."
+input SupSolutionTemplateSortInput {
+  "Sort by the solution template title."
+  title: SortEnumType
+  "Sort by the stable name identifier."
+  stableName: SortEnumType
+  "Sort by creation date."
+  createdAt: SortEnumType
+  "Sort by last update date."
+  updatedAt: SortEnumType
 }
 
 input SupSolutionTemplateUpdateParameterInfoInput {
@@ -7726,6 +8222,8 @@ input SupSolutionTemplateUpdateSolutionTemplateInput {
   title: String
   "The solution template stable name identifier."
   stableName: String
+  "The publisher identifier."
+  publisherId: String
   "The solution template status."
   status: SupSolutionTemplateStatus
   "The solution template description."
@@ -9150,11 +9648,6 @@ input IDatRepReportSortInput {
   fileSize: SortEnumType
   createdDate: SortEnumType
   title: SortEnumType
-}
-
-enum SortEnumType {
-  ASC
-  DESC
 }
 
 enum ApplyPolicy {

@@ -16,15 +16,6 @@ query LibraryComponentsByName($workspaceUrl: String! $name: String!) {
   }
 }
 
-# Gets the component of the specified design item.
-query ComponentByDesignItemId($designItemId: ID!) {
-  desDesignItemById(id: $designItemId) {
-    component {
-      ...MyComponent
-    }
-  }
-}
-
 # This fragment becomes IMyComponent in C#.
 fragment MyComponent on DesComponent {
   id
@@ -37,7 +28,7 @@ fragment MyComponent on DesComponent {
     path
   }
   revision {
-    id
+    revisionId
     details {
       comment
       description

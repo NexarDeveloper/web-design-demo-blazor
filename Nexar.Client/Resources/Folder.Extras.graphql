@@ -1,6 +1,6 @@
 ﻿# Gets more details for the specified folder.
-query FolderExtras($folderId: ID!) {
-  desFolderById(id: $folderId) {
+query FolderExtras($workspaceUrl: String!, $folderId: String!) {
+  desFolderByFolderId(workspaceUrl: $workspaceUrl, folderId: $folderId) {
     ...MyFolderExtras
   }
 }

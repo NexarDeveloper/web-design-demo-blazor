@@ -11,7 +11,6 @@
     <MudCardContent>
         <MudSelect @bind-Value="_what" Label="Subject" Variant="Variant.Filled">
             <MudSelectItem Value=WhatComponentId />
-            <MudSelectItem Value=WhatDesignItemId />
             <MudSelectItem Value=WhatComponentName />
         </MudSelect>
 
@@ -68,7 +67,7 @@
                         </CardHeaderContent>
                     </MudCardHeader>
                     <MudCardContent>
-                        <TextFieldCopy Label="Revision.Id" Text=@component.Revision.Id />
+                        <TextFieldCopy Label="Revision.RevisionId" Text=@component.Revision.RevisionId />
 
                         @if (component.Revision.Details is { })
                         {
@@ -155,7 +154,6 @@
 
 @code {
     const string WhatComponentId = "Component ID";
-    const string WhatDesignItemId = "Design item ID";
     const string WhatComponentName = "Component name";
     const string KeyWhat = "Design.Demo.ComponentSearch.what";
     const string KeySearch = "Design.Demo.ComponentSearch.search";
@@ -195,9 +193,6 @@
                     break;
                 case WhatComponentName:
                     await Data.Current.SearchByName(_search);
-                    break;
-                case WhatDesignItemId:
-                    await Data.Current.SearchByDesignItemId(_search);
                     break;
             }
         }

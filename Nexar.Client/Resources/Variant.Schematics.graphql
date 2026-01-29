@@ -23,7 +23,7 @@ fragment MySchematic on DesSchematic {
   designItems(first: $limit) {
     totalCount
     nodes {
-      id
+      schId
       designator
       component {
         name

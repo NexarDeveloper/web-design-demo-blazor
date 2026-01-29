@@ -1,15 +1,12 @@
 ﻿using MudBlazor;
 using Nexar.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
-public sealed class FolderItem(NodeTreeItem parent, FolderTreeNode node) : NodeTreeItem(parent)
+public sealed class FolderItem : NodeTreeItem
 {
-    readonly FolderTreeNode _node = node;
+    private readonly FolderTreeNode _node;
+    private readonly string _workspaceUrl;
 
     public IMyFolderExtras? Extras { get; private set; }
 
@@ -18,6 +15,18 @@ public sealed class FolderItem(NodeTreeItem parent, FolderTreeNode node) : NodeT
     public override string Icon => Icons.Material.Outlined.SnippetFolder;
 
     public override bool CanExpand => _node.Nodes.Count > 0;
+
+    public FolderItem(NodeTreeItem parent, FolderTreeNode node) : base(parent)
+    {
+        _node = node;
+
+        _workspaceUrl = parent switch
+        {
+            FoldersItem item1 => item1.Parent.Parent.Tag.Url,
+            FolderItem item2 => item2._workspaceUrl,
+            _ => null!
+        };
+    }
 
     public override Task<List<TreeItem>> ServerData()
     {
@@ -43,10 +52,10 @@ public sealed class FolderItem(NodeTreeItem parent, FolderTreeNode node) : NodeT
 
     protected override async Task UpdateAsync()
     {
-        var res = await Client.FolderExtras.ExecuteAsync(Tag.Id);
+        var res = await Client.FolderExtras.ExecuteAsync(_workspaceUrl, Tag.FolderId);
         var data = res.AssertNoErrors();
 
-        Extras = data.DesFolderById
+        Extras = data.DesFolderByFolderId
             ?? throw new Exception("Cannot get folder extras.");
     }
 }

@@ -25,16 +25,13 @@
     <br />
     <MudTable Items=@Data.Current.Tag.DesignItems.Nodes Dense=true>
         <HeaderContent>
-            <MudTh Style="width:1%"></MudTh>
+            <MudTh>SchId</MudTh>
             <MudTh>Component.Name</MudTh>
             <MudTh>Component.IsManaged</MudTh>
             <MudTh>Designator</MudTh>
         </HeaderContent>
         <RowTemplate>
-            <MudTooltip Text="Copy design item ID">
-                <MudIconButton Icon=@Icons.Material.Filled.ContentCopy
-                               OnClick=@(() => JS.InvokeVoidAsyncWithErrorHandling("navigator.clipboard.writeText", context.Id)) />
-            </MudTooltip>
+            <MudTd DataLabel="SchId">@context.SchId</MudTd>
             <MudTd DataLabel="Name">@context.Component?.Name</MudTd>
             <MudTd DataLabel="IsManaged">@context.Component?.IsManaged</MudTd>
             <MudTd DataLabel="Designator">@context.Designator</MudTd>

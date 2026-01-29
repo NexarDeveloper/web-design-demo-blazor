@@ -27,13 +27,6 @@ public sealed class ComponentSearchItem(WorkspaceLibraryItem parent) : LeafTreeI
         Components = data.DesComponentById is { } x ? [x] : null;
     }
 
-    public async Task SearchByDesignItemId(string designItemId)
-    {
-        var res = await Client.ComponentByDesignItemId.ExecuteAsync(designItemId);
-        var data = res.AssertNoErrors();
-        Components = data.DesDesignItemById?.Component is { } x ? [x] : null;
-    }
-
     public async Task SearchByName(string name)
     {
         var res = await Client.LibraryComponentsByName.ExecuteAsync(Parent.Tag.Url, name);

@@ -27,7 +27,7 @@ fragment MyPcb on DesPcb {
   designItems(first: $limit) {
     totalCount
     nodes {
-      id
+      pcbId
       designator
       component {
         name
