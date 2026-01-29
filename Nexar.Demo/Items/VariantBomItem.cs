@@ -1,9 +1,5 @@
 ﻿using MudBlazor;
 using Nexar.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
@@ -33,17 +29,17 @@ public sealed class VariantBomItem(NodeTreeItem parent) : LeafTreeItem(parent)
     {
         if (Parent is VariantItem variantItem)
         {
-            var res = await Client.DesignVariantBom.ExecuteAsync(variantItem.Tag.Id, ItemsLimit);
+            var res = await Client.DesignVariantBom.ExecuteAsync(((ProjectDesignItem)variantItem.Parent).Parent.Tag.Id, variantItem.Tag.Name, ItemsLimit);
             var data = res.AssertNoErrors();
 
-            Tag = data.DesWipVariantById?.Bom;
+            Tag = data.DesWipVariantByVariantName?.Bom;
         }
         else if (Parent is ReleaseVariantItem releaseVariantItem)
         {
-            var res = await Client.ReleaseVariantBom.ExecuteAsync(releaseVariantItem.Tag.Id, ItemsLimit);
+            var res = await Client.ReleaseVariantBom.ExecuteAsync(((ReleaseItem)releaseVariantItem.Parent).Tag.Id, releaseVariantItem.Tag.Name, ItemsLimit);
             var data = res.AssertNoErrors();
 
-            Tag = data.DesReleaseVariantById?.Bom;
+            Tag = data.DesReleaseVariantByVariantName?.Bom;
         }
         else
         {

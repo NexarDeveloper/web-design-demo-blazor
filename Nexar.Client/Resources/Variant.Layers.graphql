@@ -1,6 +1,6 @@
 ﻿# Gets the design variant layer stack information.
-query DesignVariantLayers($variantId: ID!) {
-  desWipVariantById(id: $variantId) {
+query DesignVariantLayers($projectId: ID!, $variantName: String!) {
+  desWipVariantByVariantName(projectId: $projectId, variantName: $variantName) {
     pcb {
       layerStack {
         ...MyStackup

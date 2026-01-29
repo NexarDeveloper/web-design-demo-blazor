@@ -1,6 +1,6 @@
 ﻿# Gets the design variant schematics.
-query DesignVariantSchematics($variantId: ID!, $limit: Int!) {
-  desWipVariantById(id: $variantId) {
+query DesignVariantSchematics($projectId: ID!, $variantName: String!, $limit: Int!) {
+  desWipVariantByVariantName(projectId: $projectId, variantName: $variantName) {
     schematics {
       ...MySchematic
     }
@@ -8,8 +8,8 @@ query DesignVariantSchematics($variantId: ID!, $limit: Int!) {
 }
 
 # Gets the release variant schematics.
-query ReleaseVariantSchematics($variantId: ID!, $limit: Int!) {
-  desReleaseVariantById(id: $variantId) {
+query ReleaseVariantSchematics($releaseId: ID!, $variantName: String!, $limit: Int!) {
+  desReleaseVariantByVariantName(releaseId: $releaseId, variantName: $variantName) {
     schematics {
       ...MySchematic
     }

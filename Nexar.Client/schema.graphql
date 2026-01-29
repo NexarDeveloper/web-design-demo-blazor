@@ -50,8 +50,7 @@ type Query {
   "The list of workspace tasks."
   desWorkspaceTasks("The URL of the workspace to get tasks from." workspaceUrl: String "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): DesTaskConnection
   "Gets manufacture packages."
-  desManufacturePackages: [DesManufacturePackage!]!
-  desManufacturePackageById("The node identifier for manufacture package." id: ID!): DesManufacturePackage @deprecated(reason: "Will be removed in the future.")
+  desManufacturePackages: [DesManufacturePackage!]! @deprecated(reason: "Not implemented. Will soon be removed.")
   "Search projects within a workspace with results in paged groups."
   desProjects("The web address of a workspace." workspaceUrl: String "Extra arguments." args: DesProjectsInput "Requirements block filter." requirementsBlockFilter: DesProjectsRequirementsBlockFilterInput "Returns the first N elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last N elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesProjectFilterInput): DesProjectConnection
   "Searches a project by its identifier."
@@ -60,7 +59,6 @@ type Query {
   desProjectsByIds("An array of project identifiers." ids: [ID!]!): [DesProject]!
   "Searches a release by its identifier."
   desReleaseById("The release identifier." id: ID!): DesRelease
-  desWipVariantById("The project variant node identifier." id: ID!): DesWipVariant @deprecated(reason: "Use `desWipVariantByVariantName` instead.")
   "Searches a project WIP variant by its name."
   desWipVariantByVariantName("The project identifier." projectId: ID! "The variant name." variantName: String!): DesWipVariant
   desReleaseVariantById("The release variant node identifier." id: ID!): DesReleaseVariant @deprecated(reason: "Use `desReleaseVariantByVariantName` instead.")
@@ -1982,8 +1980,9 @@ type DesLifeCycleStateTransitionController {
 }
 
 "Information about the manufacture package."
-type DesManufacturePackage implements Node {
-  id: ID! @deprecated(reason: "Will be removed in the future.")
+type DesManufacturePackage {
+  "Manufacture package reference identifier."
+  manufacturePackageId: String!
   "Manufacture package name."
   name: String!
   "Manufacture package download URL."
@@ -2004,8 +2003,8 @@ type DesManufacturePackageCreationJob {
 
 "Payload associated with a manufacture package creation job."
 type DesManufacturePackageCreationJobPayload {
-  "Manufacture package identifier."
-  packageId: ID
+  "Manufacture package reference identifier."
+  packageId: String
   "Payload errors."
   errors: [DesPayloadError!]!
 }
@@ -2411,7 +2410,7 @@ type DesRelease implements Node {
   "The list of variants contained in this release."
   variants(where: DesReleaseVariantFilterInput): [DesReleaseVariant!]!
   "Not implemented."
-  manufacturePackages: [DesManufacturePackage!]!
+  manufacturePackages: [DesManufacturePackage!]! @deprecated(reason: "Not implemented. Will soon be removed.")
   "The `DateTime` when this release was created."
   createdAt: DateTime!
   "The summary of this release content or purpose."
@@ -3264,9 +3263,8 @@ type DesWeight {
 }
 
 "A variant contains a specific configuration of a base design."
-type DesWipVariant implements Node {
-  id: ID! @deprecated(reason: "Use `ProjectId` and `Name` with `desWipVariantByVariantName` instead.")
-  projectId: String! @deprecated(reason: "This is temporary to illustrate project identifier as GRID`.")
+type DesWipVariant {
+  projectId: ID! @deprecated(reason: "This is temporary to illustrate project identifier as GRID`.")
   "The design exchange information."
   designExchange: DesDesignExchange
   "The Bill of Materials (BOM) for this design variant."

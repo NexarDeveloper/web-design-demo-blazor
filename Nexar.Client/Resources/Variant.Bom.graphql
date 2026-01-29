@@ -1,6 +1,6 @@
 ﻿# Gets the design variant BOM.
-query DesignVariantBom($variantId: ID!, $limit: Int!) {
-  desWipVariantById(id: $variantId) {
+query DesignVariantBom($projectId: ID!, $variantName: String!, $limit: Int!) {
+  desWipVariantByVariantName(projectId: $projectId, variantName: $variantName) {
     bom {
       ...MyBom
     }
@@ -8,8 +8,8 @@ query DesignVariantBom($variantId: ID!, $limit: Int!) {
 }
 
 # Gets the release variant BOM.
-query ReleaseVariantBom($variantId: ID!, $limit: Int!) {
-  desReleaseVariantById(id: $variantId) {
+query ReleaseVariantBom($releaseId: ID!, $variantName: String!, $limit: Int!) {
+  desReleaseVariantByVariantName(releaseId: $releaseId, variantName: $variantName) {
     bom {
       ...MyBom
     }

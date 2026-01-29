@@ -12,10 +12,10 @@ public sealed class VariantSchematicsItem(NodeTreeItem parent) : NodeTreeItem(pa
     {
         if (Parent is VariantItem variantItem)
         {
-            var res = await Client.DesignVariantSchematics.ExecuteAsync(variantItem.Tag.Id, SchematicItem.ItemsLimit);
+            var res = await Client.DesignVariantSchematics.ExecuteAsync(((ProjectDesignItem)variantItem.Parent).Parent.Tag.Id, variantItem.Tag.Name, SchematicItem.ItemsLimit);
             var data = res.AssertNoErrors();
 
-            if (data.DesWipVariantById is { } variant)
+            if (data.DesWipVariantByVariantName is { } variant)
             {
                 return variant.Schematics
                     .Select(x => (TreeItem)new SchematicItem(x, this))
@@ -25,10 +25,10 @@ public sealed class VariantSchematicsItem(NodeTreeItem parent) : NodeTreeItem(pa
         }
         else if (Parent is ReleaseVariantItem releaseVariantItem)
         {
-            var res = await Client.ReleaseVariantSchematics.ExecuteAsync(releaseVariantItem.Tag.Id, SchematicItem.ItemsLimit);
+            var res = await Client.ReleaseVariantSchematics.ExecuteAsync(((ReleaseItem)releaseVariantItem.Parent).Tag.Id, releaseVariantItem.Tag.Name, SchematicItem.ItemsLimit);
             var data = res.AssertNoErrors();
 
-            return data.DesReleaseVariantById!.Schematics
+            return data.DesReleaseVariantByVariantName!.Schematics
                 .Select(x => (TreeItem)new SchematicItem(x, this))
                 .ToList();
         }

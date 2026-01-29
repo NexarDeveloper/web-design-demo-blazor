@@ -9,7 +9,6 @@ query ProjectReleaseById($id: ID!) {
 
 # This fragment becomes IMyReleaseVariant in C#.
 fragment MyReleaseVariant on DesReleaseVariant {
-  id
   name
   downloadUrl
   pcbAssembly {

@@ -1,7 +1,5 @@
 ﻿using MudBlazor;
 using Nexar.Client;
-using System;
-using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
@@ -30,17 +28,17 @@ public sealed class VariantPcbItem(NodeTreeItem parent) : LeafTreeItem(parent)
     {
         if (Parent is VariantItem variantItem)
         {
-            var res = await Client.DesignVariantPcb.ExecuteAsync(variantItem.Tag.Id, ItemsLimit);
+            var res = await Client.DesignVariantPcb.ExecuteAsync(((ProjectDesignItem)variantItem.Parent).Parent.Tag.Id, variantItem.Tag.Name, ItemsLimit);
             var data = res.AssertNoErrors();
 
-            Tag = data.DesWipVariantById?.Pcb;
+            Tag = data.DesWipVariantByVariantName?.Pcb;
         }
         else if (Parent is ReleaseVariantItem releaseVariantItem)
         {
-            var res = await Client.ReleaseVariantPcb.ExecuteAsync(releaseVariantItem.Tag.Id, ItemsLimit);
+            var res = await Client.ReleaseVariantPcb.ExecuteAsync(((ReleaseItem)releaseVariantItem.Parent).Tag.Id, releaseVariantItem.Tag.Name, ItemsLimit);
             var data = res.AssertNoErrors();
 
-            Tag = data.DesReleaseVariantById?.Pcb;
+            Tag = data.DesReleaseVariantByVariantName?.Pcb;
         }
         else
         {

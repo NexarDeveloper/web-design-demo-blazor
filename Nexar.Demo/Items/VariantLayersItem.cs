@@ -1,7 +1,5 @@
 ﻿using MudBlazor;
 using Nexar.Client;
-using System;
-using System.Threading.Tasks;
 
 namespace Nexar.Demo;
 
@@ -27,10 +25,10 @@ public sealed class VariantLayersItem(VariantItem parent) : LeafTreeItem(parent)
 
     protected override async Task UpdateAsync()
     {
-        var res = await Client.DesignVariantLayers.ExecuteAsync(Parent.Tag.Id);
+        var res = await Client.DesignVariantLayers.ExecuteAsync(((ProjectDesignItem)Parent.Parent).Parent.Tag.Id, Parent.Tag.Name);
         var data = res.AssertNoErrors();
 
-        var pcb = data.DesWipVariantById?.Pcb;
+        var pcb = data.DesWipVariantByVariantName?.Pcb;
         if (pcb is null)
             return;
 
