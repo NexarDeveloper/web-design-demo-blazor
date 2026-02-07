@@ -3,6 +3,6 @@
     <TargetFramework>net9.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="StrawberryShake.Blazor" Version="15.1.11" />
+    <PackageReference Include="StrawberryShake.Blazor" Version="15.1.12" />
   </ItemGroup>
 </Project>

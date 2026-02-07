@@ -30,29 +30,13 @@ fragment MyReleaseVariant on DesReleaseVariant {
     downloadUrl
     version
     lifeCycleStateName
-    odb {
-      packageName
+    folders {
+      relativePath
       downloadUrl
-    }
-    ipc2581 {
-      packageName
-      downloadUrl
-    }
-    gerber {
-      packageName
-      downloadUrl
-    }
-    gerberX2 {
-      packageName
-      downloadUrl
-    }
-    ncDrill {
-      packageName
-      downloadUrl
-    }
-    testPoints {
-      packageName
-      downloadUrl
+      files {
+        fileName
+        downloadUrl
+      }
     }
   }
 }
